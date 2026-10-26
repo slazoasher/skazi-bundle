@@ -1,34 +1,42 @@
 name: Build SKAZI Bundle
 
-# Builds every SKAZI plugin and both installers:
+# Builds every SKAZI plugin and the platform packages:
 #   Mac:     SKAZI Bundle.pkg          (VST3 + AU + apps, Apple Silicon + Intel)
 #   Windows: SKAZI Bundle Setup.exe    (VST3 + apps)
-# On main, when both build, they are published as the next release (v1.3, v1.4, ...) and marked latest,
-# so the download page (which links to releases/latest) serves them right away.
-# Other branches: download them from the run's "Artifacts" section.
+#   Linux:   SKAZI Bundle Linux.tar.gz (VST3 + apps)
+# Download them from the run's "Artifacts" section. A v* tag also creates a
+# GitHub Release containing all three packages.
 on:
   push:
+    branches: [main]
+    tags: ["v*"]
     paths-ignore:
       - "docs/**"
       - "**.md"
   workflow_dispatch:
-
-# one build per branch at a time: a running build always finishes (and releases), the newest push waits
-# its turn and older waiting pushes are dropped, so releases stay in order without starving each other
-concurrency:
-  group: bundle-${{ github.ref }}
-  cancel-in-progress: false
+    inputs:
+      mac_arch:
+        description: macOS architecture for manual builds
+        type: choice
+        required: true
+        default: universal
+        options:
+          - universal
+          - arm64
+          - x86_64
 
 jobs:
   mac:
     runs-on: macos-14
+    env:
+      MAC_ARCH: ${{ inputs.mac_arch || 'universal' }}
     steps:
       - uses: actions/checkout@v4
       - name: Build plugins and SKAZI Bundle.pkg
         run: bash mac/build_mac.sh
       - uses: actions/upload-artifact@v4
         with:
-          name: SKAZI-Bundle-Mac
+          name: SKAZI-Bundle-Mac-${{ inputs.mac_arch || 'universal' }}
           path: dist/SKAZI Bundle.pkg
 
   windows:
@@ -43,48 +51,65 @@ jobs:
           name: SKAZI-Bundle-Windows
           path: dist/SKAZI Bundle Setup.exe
 
+  linux:
+    # Build on the oldest supported hosted Ubuntu image so the binaries use
+    # an older glibc baseline and run on newer Debian-family distributions.
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Linux build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libasound2-dev \
+            libcurl4-openssl-dev \
+            libfontconfig1-dev \
+            libfreetype6-dev \
+            libgl1-mesa-dev \
+            libgtk-3-dev \
+            libjack-jackd2-dev \
+            libwebkit2gtk-4.0-dev \
+            libx11-dev \
+            libxcomposite-dev \
+            libxcursor-dev \
+            libxext-dev \
+            libxinerama-dev \
+            libxrandr-dev
+      - name: Build Linux bundle
+        env:
+          VERSION: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || '1.1' }}
+        run: bash linux/build_linux.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SKAZI-Bundle-Linux
+          path: |
+            dist/SKAZI Bundle Linux.tar.gz
+            dist/SKAZI Bundle Linux.deb
+
   release:
-    needs: [mac, windows]
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [mac, windows, linux]
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - uses: actions/download-artifact@v4
         with:
-          path: art
-      - name: Publish the next release
+          path: release-assets
+      - name: Create GitHub Release
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          set -euo pipefail
-          mv "art/SKAZI-Bundle-Windows/SKAZI Bundle Setup.exe" SKAZI.Bundle.Setup.exe
-          mv "art/SKAZI-Bundle-Mac/SKAZI Bundle.pkg" SKAZI.Bundle.pkg
-
-          # next version: the highest vX.Y tag with Y + 1
-          last=$(git tag -l 'v*' | grep -E '^v[0-9]+\.[0-9]+$' | sort -V | tail -1)
-          last=${last:-v1.0}
-          major=${last#v}; minor=${major#*.}; major=${major%%.*}
-          tag="v${major}.$((minor + 1))"
-          echo "Publishing $tag"
-
-          # the plugin table comes from the README, so a plugin added there shows up in the notes
-          plugins=$(awk -F'|' '/^\| Folder/ {on=1; next} on && /^\|---/ {next} on && /^\|/ {gsub(/^ +| +$/, "", $3); gsub(/^ +| +$/, "", $4); print "| **" $3 "** | " $4 " |"; next} on {exit}' README.md)
-          count=$(printf '%s\n' "$plugins" | grep -c .)
-          {
-            echo "# SKAZI Bundle ${tag#v} by Asher Swissa"
-            echo
-            echo "All $count SKAZI plugins in one installer, listed under **SKAZI** in your DAW."
-            echo
-            echo "| Plugin | What it is |"
-            echo "|---|---|"
-            printf '%s\n' "$plugins"
-            echo
-            cat .github/release-install.md
-          } > notes.md
-
-          gh release create "$tag" --target "$GITHUB_SHA" --title "SKAZI Bundle ${tag#v}" \
-            --notes-file notes.md --latest SKAZI.Bundle.Setup.exe SKAZI.Bundle.pkg
+          if ! gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$GITHUB_REF_NAME" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "SKAZI Bundle $GITHUB_REF_NAME" \
+              --generate-notes
+          fi
+          gh release upload "$GITHUB_REF_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            --clobber \
+            "release-assets/SKAZI-Bundle-Mac-universal/SKAZI Bundle.pkg#SKAZI.Bundle.pkg" \
+            "release-assets/SKAZI-Bundle-Windows/SKAZI Bundle Setup.exe#SKAZI.Bundle.Setup.exe" \
+            "release-assets/SKAZI-Bundle-Linux/SKAZI Bundle Linux.tar.gz" \
+            "release-assets/SKAZI-Bundle-Linux/SKAZI Bundle Linux.deb"

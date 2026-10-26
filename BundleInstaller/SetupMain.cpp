@@ -15,7 +15,7 @@ using namespace juce;
 
 namespace
 {
-    const String kVersion = "1.0.0";
+    const String kVersion = "1.1";
     const String kUninstallKey = "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\SKAZI Bundle\\";
     const char kMagic[8] = { 'S', 'K', 'Z', 'B', 'N', 'D', 'L', '1' };
 

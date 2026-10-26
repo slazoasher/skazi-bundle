@@ -1,4 +1,5 @@
 # Mac scripts must keep Unix line endings or they won't run
 *.sh       text eol=lf
 *.command  text eol=lf
+linux/*.sh  text eol=lf
 mac/scripts-au/postinstall text eol=lf

@@ -44,7 +44,7 @@ $products = @(
     @{ Folder = "Salat";       Target = "Salat";      Name = "SALAT";          Juce = "4";  Flag = "FETCHCONTENT_SOURCE_DIR_JUCE" },
     @{ Folder = "TBON303";     Target = "Skazi303";   Name = "SKAZI 303";      Juce = "4";  Flag = "FETCHCONTENT_SOURCE_DIR_JUCE" },
     @{ Folder = "MidiGod";     Target = "MidiGod";    Name = "MIDI GOD";       Juce = "4";  Flag = "FETCHCONTENT_SOURCE_DIR_JUCE" },
-    @{ Folder = "Kube";        Target = "Kube";       Name = "KUBE";           Juce = "4";  Flag = "FETCHCONTENT_SOURCE_DIR_JUCE" },
+    @{ Folder = "Kube";        Target = "Kube";       Name = "KUBE";           Juce = "4";  Flag = "FETCHCONTENT_SOURCE_DIR_JUCE" }
 )
 
 $stage = Join-Path $BuildRoot "stage"

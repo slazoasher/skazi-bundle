@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(SKAZI_BUNDLE_SETUP VERSION 1.0.0)
+project(SKAZI_BUNDLE_SETUP VERSION 1.1)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -16,7 +16,7 @@ FetchContent_MakeAvailable(JUCE)
 juce_add_gui_app(SkaziBundleSetup
     PRODUCT_NAME "SKAZI Bundle Setup"
     COMPANY_NAME "SKAZI"
-    VERSION      1.0.0)
+    VERSION      1.1)
 target_sources(SkaziBundleSetup PRIVATE SetupMain.cpp)
 target_compile_definitions(SkaziBundleSetup PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0)
 

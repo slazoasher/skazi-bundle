@@ -14,8 +14,17 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BUILD="${BUILD_DIR:-$ROOT/build-mac}"
 DIST="$ROOT/dist"
-VERSION="1.0.0"
+VERSION="1.1"
 JOBS="$(sysctl -n hw.ncpu)"
+MAC_ARCH="${MAC_ARCH:-universal}"
+
+case "$MAC_ARCH" in
+    universal) CMAKE_ARCHITECTURES="arm64;x86_64" ;;
+    arm64|x86_64) CMAKE_ARCHITECTURES="$MAC_ARCH" ;;
+    *) echo "Unsupported MAC_ARCH: $MAC_ARCH (use universal, arm64, or x86_64)" >&2; exit 2 ;;
+esac
+
+echo "== macOS architecture: $MAC_ARCH ($CMAKE_ARCHITECTURES)"
 mkdir -p "$BUILD" "$DIST"
 chmod +x "$ROOT/mac/scripts-au/postinstall" # pkgbuild only runs executable scripts
 
@@ -37,7 +46,7 @@ build() {
     local b="$BUILD/b-$target"
     echo "== Building $name"
     cmake -S "$ROOT/$folder" -B "$b" -DCMAKE_BUILD_TYPE=Release "-D$flag=$juce" \
-          "-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET=10.13
+          "-DCMAKE_OSX_ARCHITECTURES=$CMAKE_ARCHITECTURES" -DCMAKE_OSX_DEPLOYMENT_TARGET=10.13
     cmake --build "$b" --config Release --target "${target}_VST3" "${target}_AU" "${target}_Standalone" -j "$JOBS"
     local art="$b/${target}_artefacts/Release"
     cp -R "$art/VST3/$name.vst3" "$STAGE/VST3/SKAZI/"
