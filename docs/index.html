@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SKAZI Bundle · 15 Plugins by Asher Swissa</title>
+<title>SKAZI · 15 Free Psytrance Plugins</title>
 <meta name="description" content="SKAZI Bundle: 15 synths and effects for psytrance, techno and beyond. VST3 and AU for Windows and Mac. Free download.">
-<meta property="og:title" content="SKAZI Bundle · 15 Plugins by Asher Swissa">
+<meta property="og:title" content="SKAZI · 15 Free Psytrance Plugins">
 <meta property="og:description" content="Synths, kicks, acid and bass lines, MIDI patterns, risers, chops, sidechain, tape delay and saturation. VST3 / AU for Windows and Mac.">
-<meta property="og:image" content="img/skazi.png?v=5">
+<meta property="og:image" content="https://slazoasher.github.io/skazi-bundle/img/skazi-artist.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#07070a; --bg2:#0e0e12; --card:#121217; --line:#23232b; --text:#f2f2f4; --dim:#9a9aa6;
@@ -43,6 +43,21 @@
   .btn-sm{padding:9px 16px;font-size:14px}
   .btn small{display:block;font-weight:500;font-size:11.5px;opacity:.75;line-height:1.1}
   .btn .txt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15}
+  .download-mark{width:42px;height:42px;display:grid;place-items:center;flex:none;border:1px solid currentColor;border-radius:50%;transition:transform .28s cubic-bezier(.2,.8,.2,1),background-color .28s}
+  .download-mark svg{width:22px;height:22px;fill:currentColor;overflow:visible;transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+  .ctas{align-items:flex-start}.ctas .btn{width:auto;min-height:52px;max-width:none;gap:10px;padding:8px 15px 8px 8px;font-size:14px;transition:background-color .2s,border-color .2s,transform .2s}
+  .ctas .btn .txt{opacity:1;transform:none}
+  .ctas .download-mark{width:34px;height:34px}.ctas .download-mark svg{width:18px;height:18px}
+  .download-arrow{font-size:17px;line-height:1;margin-left:2px}
+  .ctas .btn:hover .download-mark,.ctas .btn:focus-visible .download-mark{transform:scale(1.08);background:rgba(255,0,0,.12)}
+  .ctas .btn:hover .download-mark svg,.ctas .btn:focus-visible .download-mark svg{transform:scale(1.13)}
+  .sound-toggle{display:inline-flex;align-items:center;gap:9px;min-height:42px;padding:0 13px;border:1px solid var(--line);background:transparent;color:var(--dim);font:700 10px "Space Grotesk",sans-serif;letter-spacing:.13em;cursor:pointer;transition:color .2s,border-color .2s,background .2s}
+  .sound-toggle:hover,.sound-toggle[aria-pressed="true"]{color:var(--acid);border-color:var(--acid)}.sound-toggle[aria-pressed="true"]{background:rgba(255,0,0,.06)}
+  .sound-toggle svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .sound-preview{position:absolute;z-index:4;top:12px;right:12px;display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:0 11px;border:1px solid rgba(255,255,255,.42);background:rgba(8,8,8,.84);color:#fff;font:700 9px "Space Grotesk",sans-serif;letter-spacing:.12em;opacity:0;transform:translateY(-4px);transition:opacity .18s,transform .18s,border-color .18s,color .18s;cursor:pointer;backdrop-filter:blur(8px)}
+  .sound-preview svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .card:hover .sound-preview,.card:focus-within .sound-preview,.sound-preview:focus-visible{opacity:1;transform:translateY(0)}.sound-preview:hover{color:var(--acid);border-color:var(--acid)}
+  .sound-status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
   /* hero */
   .hero{position:relative;padding:84px 0 60px;overflow:hidden}
@@ -97,7 +112,7 @@
   /* new in this update */
   .news .grid{grid-template-columns:repeat(3,1fr);gap:16px}
   .news .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:6px}
-  .news .item.new{border-color:rgba(225,6,0,.55);box-shadow:0 20px 50px -30px var(--glow)}
+  .news .item.new{grid-column:1/-1;border-color:rgba(225,6,0,.55);box-shadow:0 20px 50px -30px var(--glow)}
   .news .tagline{font-size:11.5px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim)}
   .news .item.new .tagline{color:var(--red2)}
   .news h4{font-family:"Bebas Neue",Impact,sans-serif;font-weight:400;font-size:28px;letter-spacing:1px;line-height:1}
@@ -151,41 +166,198 @@
     nav .links{display:none}
   }
   @media (max-width:520px){ .btn{width:100%;justify-content:center} .shot .tag{right:6px} }
+
+  /* 2026 visual direction — a club-light palette around SKAZI's hardware aesthetic */
+  :root{--bg:#07080d;--bg2:#0c0e16;--card:rgba(20,23,35,.78);--line:rgba(255,255,255,.11);--text:#f7f7fb;--dim:#a1a7b8;--red:#f1265d;--red2:#ff7a9a;--acid:#ff0000;--violet:#8c5bff;--glow:rgba(241,38,93,.5)}
+  body{font-family:"Space Grotesk",Inter,system-ui,sans-serif;background:var(--bg);background-image:radial-gradient(circle at 80% -10%,rgba(140,91,255,.18),transparent 28rem),radial-gradient(circle at -8% 32%,rgba(255,0,0,.09),transparent 25rem);}
+  body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.16;background-image:linear-gradient(rgba(255,255,255,.13) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.13) 1px,transparent 1px);background-size:64px 64px;mask-image:linear-gradient(to bottom,black,transparent 58%)}
+  ::selection{background:var(--acid);color:#080a0d}
+  .skip-link{position:fixed;left:16px;top:-100px;z-index:200;padding:12px 16px;background:var(--acid);color:#050607;border-radius:8px;font-weight:800}.skip-link:focus{top:16px}
+  .progress{position:fixed;z-index:120;inset:0 auto auto 0;height:3px;width:var(--scroll,0%);background:linear-gradient(90deg,var(--acid),var(--red2),var(--violet));box-shadow:0 0 18px var(--red2)}
+  nav{background:rgba(7,8,13,.68);border-bottom-color:rgba(255,255,255,.08)}
+  nav .wrap{height:70px}.logo img{height:58px;filter:drop-shadow(0 0 12px rgba(255,255,255,.16))}
+  nav .links{gap:22px;font-size:12px;letter-spacing:.08em;text-transform:uppercase}.nav-live{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:800;color:var(--acid);letter-spacing:.12em}.nav-live i{width:7px;height:7px;border-radius:50%;background:var(--acid);box-shadow:0 0 12px var(--acid);animation:blink 1.8s infinite}
+  .btn{border-radius:7px;letter-spacing:.01em}.btn-red{color:#fff;background:linear-gradient(135deg,#ee174f,#ff527c);box-shadow:0 12px 34px -14px rgba(241,38,93,.8)}.btn-red:hover{background:linear-gradient(135deg,#ff527c,#ee174f)}.btn-dark{background:rgba(255,255,255,.05);backdrop-filter:blur(12px)}
+  .hero{padding:104px 0 80px;isolation:isolate}.hero:after{content:"";position:absolute;z-index:-1;right:4%;bottom:-22%;width:min(56vw,720px);aspect-ratio:1;border:1px solid rgba(255,0,0,.16);border-radius:50%;box-shadow:0 0 0 70px rgba(255,0,0,.025),0 0 0 140px rgba(255,0,0,.02),0 0 100px 35px rgba(241,38,93,.14)}
+  .hero:before{background:radial-gradient(ellipse at 75% 46%,rgba(241,38,93,.33),transparent 48%),radial-gradient(ellipse at 20% 15%,rgba(140,91,255,.2),transparent 38%)}
+  .hero .wrap{grid-template-columns:1fr 1.02fr;gap:64px}.kicker{color:var(--acid);border-color:rgba(255,0,0,.35);background:rgba(255,0,0,.07);letter-spacing:.14em}.kicker i{background:var(--acid);box-shadow:0 0 12px var(--acid)}
+  h1{font-size:clamp(76px,10.4vw,142px);letter-spacing:.015em;line-height:.78;text-wrap:balance;text-shadow:0 12px 30px rgba(0,0,0,.38)}h1 span{background:linear-gradient(90deg,#fff 8%,#ff6188 52%,#a870ff);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none}
+  .lead{color:#c7cbd7;max-width:500px;font-size:17px;line-height:1.7}.meta{line-height:1.65}.shot{padding:7px;border-radius:18px;background:linear-gradient(135deg,rgba(255,0,0,.75),rgba(255,255,255,.8) 22%,rgba(241,38,93,.8) 66%,rgba(140,91,255,.8));transform:rotate(1.4deg);box-shadow:0 45px 110px -45px #000,0 0 70px -20px rgba(241,38,93,.65)}.shot img{border-radius:12px}.shot:before{content:"SOUND SYSTEM / 01";position:absolute;top:20px;left:-38px;z-index:3;writing-mode:vertical-rl;padding:8px 7px;background:var(--acid);color:#080a0d;font-size:10px;font-weight:800;letter-spacing:.15em}.shot .tag{border-color:rgba(255,255,255,.2);background:rgba(8,10,13,.88);border-radius:6px}.shot .tag b{color:var(--acid)!important}
+  .stats{background:rgba(12,14,22,.84);backdrop-filter:blur(14px);border-color:rgba(255,255,255,.09)}.stat{padding:31px 10px}.stat b{font-size:48px}.stat:first-child b{color:var(--acid)}.stat:nth-child(3) b{font-size:34px;padding-top:7px}
+  section{padding:112px 0}.head h2{font-size:clamp(48px,7vw,76px);letter-spacing:.02em}.head p{line-height:1.7}.head h2:after{content:"";display:block;width:48px;height:3px;margin:17px auto 0;background:var(--acid);box-shadow:0 0 14px var(--acid)}
+  .news{position:relative}.news:before{content:"LATEST SIGNAL";position:absolute;left:2vw;top:50%;font-size:11px;color:rgba(255,255,255,.22);letter-spacing:.18em;writing-mode:vertical-rl}.news .grid{gap:13px}.news .item{position:relative;overflow:hidden;border-radius:10px;background:linear-gradient(145deg,rgba(30,33,48,.88),rgba(13,15,23,.88));transition:transform .25s,border-color .25s}.news .item:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--violet);opacity:.6}.news .item:hover{transform:translateY(-4px);border-color:rgba(255,0,0,.35)}.news .item.new{background:linear-gradient(125deg,rgba(241,38,93,.2),rgba(140,91,255,.14));border-color:rgba(241,38,93,.6)}.news .item.new:before{width:5px;background:var(--acid)}.news .item.new .tagline{color:var(--acid)}
+  .card{border-radius:12px;background:linear-gradient(155deg,rgba(29,32,45,.88),rgba(14,16,24,.88));box-shadow:none}.card:hover{border-color:rgba(255,0,0,.45);box-shadow:0 32px 65px -44px rgba(140,91,255,.7)}.card .pic{aspect-ratio:16/9}.card .pic:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(130deg,rgba(255,0,0,.12),transparent 34%,rgba(241,38,93,.1));mix-blend-mode:screen;pointer-events:none}.badge{z-index:2;border-radius:5px;font-size:10px;letter-spacing:.1em}.badge.inst{color:var(--acid)}.badge.fx{color:#8fe6ff}.card h3{font-size:39px}.card h3 em{color:var(--red2)}.chips{gap:7px}.chip{border-radius:999px;background:rgba(255,255,255,.05)}.chip.hot{color:#080a0d;background:var(--acid);border-color:var(--acid)}
+  .install{background:linear-gradient(135deg,rgba(140,91,255,.12),rgba(12,14,22,.95) 42%,rgba(241,38,93,.1));}.tabs{gap:4px;padding:4px;border:1px solid var(--line);border-radius:999px;width:max-content;margin-left:auto;margin-right:auto}.tab{border:0;background:transparent}.tab.on{background:var(--acid);color:#080a0d}.step,.box{background:rgba(20,23,35,.72);border-radius:12px}.step .n{color:var(--acid)}.two{gap:18px}.specs li{padding-bottom:12px}summary:after{color:var(--acid)}
+  .final{background:radial-gradient(ellipse at 50% 115%,rgba(241,38,93,.42),transparent 59%)}.final:before{background:radial-gradient(ellipse at 50% 130%,rgba(140,91,255,.38),transparent 63%)}footer{background:rgba(0,0,0,.22)}footer a:hover{color:var(--acid)}
+  .lb{backdrop-filter:blur(18px)}.lb img{border:1px solid rgba(255,255,255,.22)}
+  @keyframes blink{50%{opacity:.32;transform:scale(.8)}}
+  @media (prefers-reduced-motion:no-preference){.hero .shot{animation:float 6s ease-in-out infinite}.card{animation:rise .45s both}.card:nth-child(2n){animation-delay:.08s}@keyframes float{50%{transform:rotate(-.4deg) translateY(-9px)}}@keyframes rise{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}}
+  @media (prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+  @media(max-width:900px){.hero .wrap{grid-template-columns:1fr;gap:46px}.hero .shot{width:100%;min-width:0}.hero .shot img{width:100%;height:auto}.nav-live{display:none}.news:before{display:none}}@media(max-width:600px){nav .wrap{height:62px}.logo img{height:51px}.hero{padding-top:75px}.shot{transform:none}.shot:before{display:none}.hero .wrap{gap:35px}.ctas{margin-top:25px}.stats .wrap{grid-template-columns:repeat(2,1fr)}section{padding:76px 0}.news .item.new{grid-column:auto}}
+
+  /* Minimal artist direction: black stage, chrome typography, one acid signal. */
+  :root{--bg:#090909;--bg2:#101010;--card:#121212;--line:rgba(255,255,255,.12);--text:#f4f4f0;--dim:#999993;--acid:#ff0000;--red:#ff0000;--red2:#ff0000;--violet:#ff0000}
+  body{background:#090909;background-image:none}body:before{opacity:.035;background-image:radial-gradient(#fff .7px,transparent .7px);background-size:5px 5px;mask-image:none}
+  nav{background:rgba(9,9,9,.92)}.nav-live{color:var(--acid)}.nav-live i{background:var(--acid);box-shadow:0 0 10px var(--acid)}nav .links a:hover,footer a:hover{color:var(--acid)}
+  .btn{border-radius:2px}.btn-red{color:#080808;background:var(--acid);box-shadow:none}.btn-red:hover{color:#080808;background:#ff3333;box-shadow:none}.btn-dark{border-color:rgba(255,255,255,.2);background:transparent}.btn-dark:hover{border-color:#fff}.btn-dark .download-mark{border-color:rgba(255,255,255,.6)}
+  .progress{background:var(--acid);box-shadow:none}.hero{min-height:680px;padding:68px 0;display:flex;align-items:center}.hero:before,.hero:after{display:none}.hero .wrap{grid-template-columns:minmax(0,.9fr) minmax(360px,.65fr);gap:clamp(36px,7vw,120px);align-items:center}.kicker{color:var(--acid);border:0;border-left:2px solid var(--acid);border-radius:0;background:transparent;padding:3px 0 3px 12px;letter-spacing:.17em}.kicker i{display:none}h1{font-size:clamp(90px,13vw,178px);line-height:.72;letter-spacing:-.035em;margin:23px 0 30px}h1 span{background:none;color:var(--acid);-webkit-text-fill-color:var(--acid)}.lead{max-width:480px;font-size:16px;line-height:1.75}.ctas{margin:32px 0 18px}.meta{font-size:12px;max-width:530px}.meta + .meta{display:none}
+  .artist-shot{position:relative;width:min(100%,460px);justify-self:end;height:min(66vh,660px);min-height:530px;overflow:hidden;background:#151515;border-bottom:1px solid rgba(255,255,255,.42)}.artist-shot:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,#090909 0%,transparent 24%,transparent 72%,rgba(9,9,9,.35)),linear-gradient(0deg,#090909 0%,transparent 28%);pointer-events:none}.artist-shot:after{content:"SKAZI / 2026";position:absolute;z-index:2;top:18px;right:18px;color:#fff;font-size:10px;letter-spacing:.16em}.artist-shot img{width:100%;height:100%;object-fit:cover;object-position:50% 16%;filter:grayscale(100%) contrast(1.1)}.artist-shot .tag{position:absolute;z-index:2;left:0;bottom:18px;right:auto;background:var(--acid);border:0;border-radius:0;color:#090909;padding:7px 11px;font:700 10px/1 "Space Grotesk",sans-serif;letter-spacing:.12em;box-shadow:none}.artist-shot .tag b{color:#090909!important}
+  .stats{background:#0d0d0d;border-color:var(--line)}.stat:first-child b,.stat b[style]{color:var(--text)!important}.stat{padding:24px 10px}.stat b{font-size:41px}.stat span{font-size:10px;letter-spacing:.12em}.head h2:after{height:2px;width:32px;background:var(--acid);box-shadow:none}.head h2{font-size:clamp(46px,6vw,68px)}section{padding:98px 0}
+  .news:before{display:none}.news .item,.news .item.new,.card,.step,.box{background:#121212;border-color:var(--line);box-shadow:none;border-radius:2px}.news .item:before,.news .item.new:before{background:var(--acid);width:2px}.news .item.new .tagline,.news .item.new .tagline{color:var(--acid)}.news .item:hover,.card:hover{border-color:rgba(255,0,0,.65);box-shadow:none;transform:translateY(-2px)}.card .pic:before{background:linear-gradient(120deg,rgba(255,0,0,.1),transparent 50%)}.badge.inst{color:var(--acid)}.card h3 em{color:var(--acid)}.chip.hot,.tab.on{background:var(--acid);border-color:var(--acid);color:#090909}.install{background:#0e0e0e}.final,.final:before{background:#0b0b0b}.final .head h2 span{color:var(--acid)!important}
+  @media(max-width:900px){.hero{min-height:0;padding:60px 0 0}.hero .wrap{grid-template-columns:1fr;gap:42px}.artist-shot{width:100%;max-width:540px;justify-self:start;height:560px;min-height:0}.artist-shot img{object-position:50% 13%}}@media(max-width:600px){.hero{padding-top:52px}.hero .wrap{gap:36px}h1{font-size:clamp(82px,28vw,125px);margin:20px 0 25px}.artist-shot{height:470px}.artist-shot:before{background:linear-gradient(0deg,#090909 0%,transparent 26%)}.ctas{margin-top:26px}.meta{font-size:11px}}
+  :focus-visible{outline:2px solid var(--acid);outline-offset:4px}
+  .menu-toggle{display:none;min-width:44px;min-height:44px;border:1px solid var(--line);border-radius:2px;background:transparent;color:var(--text);font:700 11px "Space Grotesk",sans-serif;letter-spacing:.12em;cursor:pointer}
+  .lb{cursor:default}.lb-close{position:absolute;top:18px;right:18px;min-width:44px;min-height:44px;border:1px solid rgba(255,255,255,.28);background:#111;color:#fff;font:700 12px "Space Grotesk",sans-serif;letter-spacing:.08em;cursor:pointer}.lb img{cursor:default}
+  .signal-wave{position:absolute;z-index:2;left:0;right:0;bottom:25%;height:48px;opacity:.72;pointer-events:none;overflow:hidden}.signal-wave svg{width:100%;height:100%;overflow:visible}.signal-wave path{fill:none;stroke:var(--acid);stroke-width:1.5;stroke-dasharray:2 11 3 8;animation:wave-drift 8s linear infinite;vector-effect:non-scaling-stroke}
+  .back-top{position:fixed;right:22px;bottom:22px;z-index:60;display:grid;place-items:center;width:50px;height:50px;border:1px solid rgba(255,0,0,.65);background:#101010;color:var(--acid);opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .22s,visibility .22s,transform .22s;cursor:pointer}
+  .back-top.visible{opacity:1;visibility:visible;transform:translateY(0)}.back-top:hover{background:var(--acid);color:#090909}.back-top svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .final{padding:72px 0 44px!important}.final .head{margin-bottom:22px}.final .head h2:after{display:none}.back-top-link{display:inline-flex;align-items:center;gap:12px;min-height:48px;padding:0 18px;border:1px solid rgba(255,0,0,.55);color:var(--acid);font-size:11px;font-weight:700;letter-spacing:.13em;transition:background .2s,color .2s}.back-top-link:hover{background:var(--acid);color:#090909}.back-top-link svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  @keyframes wave-drift{to{stroke-dashoffset:-192}}
+  /* Plugin wall: image-led cards, a restrained light sweep, and scroll-in motion. */
+  #plugins{position:relative;isolation:isolate;background:radial-gradient(ellipse at 50% 0%,rgba(255,0,0,.045),transparent 52%),#090909}
+  #plugins .head{position:relative;margin-bottom:54px}
+  #plugins .head h2{letter-spacing:.055em}
+  #plugins .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:stretch}
+  #plugins .card{position:relative;isolation:isolate;overflow:hidden;border:1px solid rgba(255,255,255,.12);border-radius:5px;background:linear-gradient(155deg,#151515,#0d0d0d 72%);box-shadow:0 18px 44px rgba(0,0,0,.2);transform:translateZ(0);transition:transform .42s cubic-bezier(.2,.75,.2,1),border-color .3s,box-shadow .42s}
+  #plugins .card::after{content:"";position:absolute;inset:0;z-index:3;border:1px solid rgba(255,0,0,.55);opacity:0;pointer-events:none;transition:opacity .3s}
+  #plugins .card:hover,#plugins .card:focus-within{z-index:2;transform:translateY(-8px) scale(1.012);border-color:rgba(255,0,0,.62);box-shadow:0 26px 65px -30px rgba(255,0,0,.2),0 16px 34px rgba(0,0,0,.6)}
+  #plugins .card:hover::after,#plugins .card:focus-within::after{opacity:1}
+  #plugins .card .pic{aspect-ratio:16/10;background:#080808}
+  #plugins .card .pic img{filter:contrast(1.04) saturate(.88);transform:scale(1.001);transition:transform .8s cubic-bezier(.2,.75,.2,1),filter .5s}
+  #plugins .card:hover .pic img,#plugins .card:focus-within .pic img{filter:contrast(1.08) saturate(1.12);transform:scale(1.065)}
+  #plugins .card .pic:before{z-index:1;inset:0;background:linear-gradient(112deg,transparent 34%,rgba(255,0,0,.13) 48%,rgba(255,255,255,.16) 51%,rgba(140,91,255,.12) 55%,transparent 69%);mix-blend-mode:screen;transform:translateX(-125%) skewX(-13deg);transition:transform .85s cubic-bezier(.2,.65,.2,1)}
+  #plugins .card:hover .pic:before,#plugins .card:focus-within .pic:before{transform:translateX(125%) skewX(-13deg)}
+  #plugins .card .pic:after{height:48%;background:linear-gradient(transparent,rgba(0,0,0,.58))}
+  #plugins .badge{left:12px;top:12px;border:1px solid rgba(255,255,255,.2);border-radius:2px;background:rgba(7,7,7,.78);backdrop-filter:blur(10px)}
+  #plugins .card .body{padding:19px 19px 21px;gap:11px}
+  #plugins .card h3{font-size:clamp(32px,3vw,42px);letter-spacing:.045em}
+  #plugins .card .sub{font-size:10px;letter-spacing:.14em;line-height:1.5}
+  #plugins .card p{color:#b7b7b2;font-size:13px;line-height:1.7}
+  #plugins .chips{gap:6px;padding-top:9px}
+  #plugins .chip{border-radius:2px;padding:5px 8px;font-size:10px;letter-spacing:.025em}
+  #plugins .chip.hot{box-shadow:0 0 16px rgba(255,0,0,.12)}
+  #plugins .card.gallery-reveal{animation:none;opacity:0;transform:translateY(24px) scale(.985);transition:opacity .58s ease var(--reveal-delay,0ms),transform .68s cubic-bezier(.2,.75,.2,1) var(--reveal-delay,0ms)}
+  #plugins .card.gallery-reveal.gallery-visible{opacity:1;transform:translateY(0) scale(1)}
+  @media(max-width:1000px){#plugins .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}#plugins .card .body{padding:17px}}
+  @media(max-width:620px){#plugins .grid{grid-template-columns:minmax(0,1fr);gap:16px}#plugins .head{margin-bottom:36px}#plugins .card .pic{aspect-ratio:16/9}#plugins .card .body{padding:18px}#plugins .card:hover,#plugins .card:focus-within{transform:translateY(-3px)}#plugins .card .sub{font-size:9px}}
+  @media(prefers-reduced-motion:reduce){.signal-wave path{animation:none}#plugins .card.gallery-reveal{opacity:1;transform:none;transition:none}#plugins .card:hover,#plugins .card:focus-within{transform:none}}
+  @media(max-width:900px){nav .wrap{position:relative;gap:12px}.menu-toggle{display:inline-flex;align-items:center;justify-content:center;margin-left:auto}nav .links{display:none;position:absolute;top:calc(100% + 1px);left:0;right:0;margin:0;padding:10px 16px 16px;background:rgba(9,9,9,.98);border:1px solid var(--line);border-top:0;flex-direction:column;gap:0;z-index:5}nav .links.open{display:flex}nav .links a{display:flex;align-items:center;min-height:48px;border-bottom:1px solid var(--line)}nav .links a:last-child{border-bottom:0}nav .btn-sm{min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:9px 12px;font-size:11px}}
+  @media(hover:none),(pointer:coarse){.ctas .btn{width:auto;max-width:none;justify-content:flex-start}.ctas .btn .txt{opacity:1;transform:none}}
+  @media(hover:none),(pointer:coarse){.sound-preview{opacity:1;transform:none}}
+  @media(prefers-reduced-motion:reduce){.ctas .btn,.ctas .btn .txt,.download-mark,.download-mark svg{transition:none!important}}
+  @media(max-width:420px){nav .wrap{gap:8px}.logo img{height:46px}nav .btn-sm{font-size:10px;padding-inline:9px}.menu-toggle{min-width:42px}}
+  /* Artist identity switcher and compact support guide */
+  .meta{display:none}
+  .daw-compat{display:flex;align-items:center;gap:13px;margin-top:22px;color:var(--dim)}.daw-label{font-size:9px;font-weight:700;letter-spacing:.16em;white-space:nowrap}.daw-icons{display:flex;align-items:center;gap:10px;list-style:none}.daw-icons li{position:relative;display:grid;place-items:center;width:30px;height:30px;color:#e8e8e2;opacity:.72;transition:opacity .16s,color .16s,transform .16s}.daw-icons li:hover{opacity:1;color:var(--acid);transform:translateY(-2px)}.daw-icons li:focus-within{opacity:1}.daw-icons li::after{content:attr(aria-label);position:absolute;left:50%;top:calc(100% + 8px);z-index:5;transform:translateX(-50%);padding:4px 7px;background:#111;color:#fff;border:1px solid var(--line);font-size:10px;white-space:nowrap;opacity:0;pointer-events:none}.daw-icons li:hover::after{opacity:1}.daw-mark{display:grid;place-items:center;width:26px;height:26px;font:800 19px/1 "Space Grotesk",sans-serif;letter-spacing:-.08em}.daw-mark.cubase{border-left:3px solid #e8e8e2;justify-content:start;padding-left:3px}.daw-mark.ableton{display:grid;grid-template-columns:repeat(3,5px);grid-auto-rows:4px;gap:2px;transform:skewY(-22deg)}.daw-mark.ableton i{background:currentColor}.daw-mark.ableton i:nth-child(3n+1){opacity:.42}.daw-mark.ableton i:nth-child(3n+2){opacity:.72}.daw-mark.fl{font-size:14px;letter-spacing:-.09em}.daw-mark.logic{display:flex;align-items:center;justify-content:center;gap:2px}.daw-mark.logic i{width:2px;height:8px;background:currentColor}.daw-mark.logic i:nth-child(2),.daw-mark.logic i:nth-child(6){height:15px}.daw-mark.logic i:nth-child(3),.daw-mark.logic i:nth-child(5){height:21px}.daw-mark.logic i:nth-child(4){height:12px}.daw-mark.bitwig{font-size:23px}.daw-mark.studio-one{width:23px;height:23px;border:1px solid currentColor;border-radius:50%;font-size:11px;letter-spacing:-.06em}.daw-mark.reaper{font-size:22px;font-style:italic}
+  .hero-info-trigger{display:inline-flex;align-items:center;gap:10px;min-height:40px;margin-top:17px;padding:0;border:0;border-bottom:1px solid rgba(255,0,0,.5);background:transparent;color:var(--text);font:700 10px "Space Grotesk",sans-serif;letter-spacing:.12em;cursor:pointer;transition:color .16s,border-color .16s}.hero-info-trigger:hover{color:var(--acid);border-color:var(--acid)}.hero-info-trigger:active,.info-tab:active{transform:scale(.98)}
+  .hero-info-panel[hidden],.music-dock[hidden],.info-panel[hidden]{display:none}.hero-info-panel{position:relative;z-index:10;padding:0 0 26px;background:#090909;scroll-margin-top:82px}.info-shell{border:1px solid rgba(255,255,255,.14);background:#111;box-shadow:0 22px 70px rgba(0,0,0,.35)}.info-topline{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line);color:var(--acid);font:700 10px "Space Grotesk",sans-serif;letter-spacing:.15em}.info-close{min-width:44px;min-height:36px;border:1px solid var(--line);background:transparent;color:var(--dim);font:700 10px "Space Grotesk",sans-serif;cursor:pointer}.info-close:hover{color:#fff;border-color:#777}.info-tabs{display:flex;gap:4px;overflow-x:auto;padding:13px 18px 0;border-bottom:1px solid var(--line)}.info-tab{min-height:42px;padding:0 14px;border:0;border-bottom:2px solid transparent;background:transparent;color:var(--dim);font:600 12px "Space Grotesk",sans-serif;white-space:nowrap;cursor:pointer;transition:color .15s,border-color .15s}.info-tab:hover,.info-tab.is-active{color:#fff}.info-tab.is-active{border-color:var(--acid)}.info-panel{padding:22px 18px 24px}.info-panel>h3{margin-bottom:18px;font-size:19px}.info-panel .tabs{margin-bottom:22px}.info-panel .steps{gap:12px}.info-panel .step{padding:19px}.info-panel .step .n{font-size:40px}.info-panel .specs{max-width:760px}.info-panel details:last-child{border-bottom:0}.free-label{color:var(--acid)}
+  .artist-shot{isolation:isolate;cursor:default}.artist-shot:after{display:none}.artist-shot .artist-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 16%;transition:filter .42s cubic-bezier(.2,0,0,1),transform .8s cubic-bezier(.2,0,0,1);will-change:filter}.artist-shot .artist-image-mono{z-index:0;clip-path:inset(0 50% 0 0);filter:grayscale(1) contrast(1.12)}.artist-shot .artist-image-color{z-index:0;clip-path:inset(0 0 0 50%);filter:saturate(1.08) contrast(1.05)}.artist-shot:before{z-index:1;background:linear-gradient(0deg,rgba(0,0,0,.82),transparent 34%),linear-gradient(90deg,rgba(0,0,0,.1),transparent 34%,rgba(0,0,0,.08))}.persona-divider{position:absolute;z-index:2;top:8%;bottom:8%;left:50%;width:1px;background:linear-gradient(transparent,rgba(255,255,255,.75),transparent);pointer-events:none}.persona-zone{position:absolute;z-index:4;top:0;bottom:0;width:50%;display:flex;align-items:flex-end;padding:22px 16px 27px;border:0;background:transparent;color:#fff;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}.persona-zone-skazi{left:0;justify-content:flex-start}.persona-zone-asher{right:0;justify-content:flex-end;text-align:right}.persona-zone:before{content:"";position:absolute;inset:0;opacity:0;transition:opacity .18s;background:linear-gradient(0deg,rgba(0,0,0,.78),transparent 70%);pointer-events:none}.persona-zone:hover:before,.persona-zone:focus-visible:before,.artist-shot[data-active="skazi"] .persona-zone-skazi:before,.artist-shot[data-active="asher"] .persona-zone-asher:before{opacity:.86}.persona-zone:focus-visible{outline:2px solid var(--acid);outline-offset:-5px}.persona-caption{position:relative;z-index:2;display:flex;flex-direction:column;gap:4px;max-width:100%;transition:transform .2s}.persona-zone:hover .persona-caption,.persona-zone:focus-visible .persona-caption{transform:translateY(-3px)}.persona-caption b{font:400 clamp(23px,3vw,38px)/.95 "Bebas Neue",Impact,sans-serif;letter-spacing:.04em}.persona-zone-asher .persona-caption b{font-size:clamp(18px,2.25vw,30px)}.persona-caption small{font:700 8px "Space Grotesk",sans-serif;letter-spacing:.13em;color:rgba(255,255,255,.82)}.persona-caption em{margin-top:7px;color:var(--acid);font:700 8px "Space Grotesk",sans-serif;letter-spacing:.11em;font-style:normal;opacity:.82}.artist-shot-index{position:absolute;z-index:5;top:18px;left:50%;transform:translateX(-50%);padding:5px 7px;background:rgba(8,8,8,.74);color:rgba(255,255,255,.74);font:700 8px "Space Grotesk",sans-serif;letter-spacing:.13em;white-space:nowrap;pointer-events:none}.signal-bars{position:absolute;z-index:3;top:50%;left:8%;right:8%;height:35px;display:flex;align-items:center;justify-content:center;gap:3px;opacity:.42;pointer-events:none;mix-blend-mode:screen}.signal-bars i{width:2px;height:var(--bar,10px);background:var(--acid);transform:scaleY(.38);transform-origin:center;animation:signal-beat .78s ease-in-out var(--delay,0s) infinite alternate}.signal-bars i:nth-child(4n+1){--bar:23px;--delay:-.22s}.signal-bars i:nth-child(4n+2){--bar:14px;--delay:-.51s}.signal-bars i:nth-child(4n+3){--bar:29px;--delay:-.35s}.signal-bars i:nth-child(4n){--bar:18px;--delay:-.08s}.artist-shot.is-playing .signal-bars{opacity:.9}.artist-shot.is-playing .signal-bars i{animation-duration:.36s}.artist-shot.is-playing .artist-image{transform:scale(1.025)}@keyframes signal-beat{to{transform:scaleY(1)}}
+  .music-dock{position:fixed;right:18px;bottom:18px;z-index:90;width:min(360px,calc(100vw - 36px));padding:10px;background:#101010;border:1px solid rgba(255,255,255,.18);box-shadow:0 18px 60px rgba(0,0,0,.72);animation:dock-in .22s cubic-bezier(.2,0,0,1)}.music-dock-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 2px 9px}.music-dock-head>div{display:flex;flex-direction:column;gap:2px}.music-dock-eyebrow{color:var(--acid);font:700 8px "Space Grotesk",sans-serif;letter-spacing:.17em}.music-dock-head strong{font:400 21px "Bebas Neue",Impact,sans-serif;letter-spacing:.06em}.music-dock-close{width:36px;height:36px;border:1px solid var(--line);background:transparent;color:#fff;font-size:23px;cursor:pointer}.music-dock iframe{display:block;width:100%;height:200px;border:0;background:#000}.music-dock>a{display:block;padding:9px 2px 1px;color:var(--dim);font:700 9px "Space Grotesk",sans-serif;letter-spacing:.1em}.music-dock>a:hover{color:var(--acid)}@keyframes dock-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  @media(hover:none),(pointer:coarse){.persona-caption em{opacity:1}.daw-icons{gap:7px}.daw-icons li{opacity:.95}}
+  @media(max-width:600px){.daw-compat{gap:9px;flex-wrap:wrap}.daw-label{width:100%}.daw-icons{gap:13px}.daw-icons li{width:28px;height:28px}.hero-info-trigger{font-size:9px}.info-tabs{padding-inline:9px}.info-tab{padding-inline:10px;font-size:11px}.info-panel{padding:18px 12px}.info-panel .steps.on{grid-template-columns:1fr}.persona-caption b{font-size:26px}.persona-zone-asher .persona-caption b{font-size:19px}.persona-zone{padding:15px 10px 22px}.persona-caption small{font-size:7px}.persona-caption em{font-size:7px}.artist-shot-index{top:14px;font-size:7px}.signal-bars{left:3%;right:3%}.music-dock{right:10px;bottom:10px;width:min(360px,calc(100vw - 20px))}}
+  @media(prefers-reduced-motion:reduce){.artist-shot .artist-image,.persona-caption,.persona-zone:before,.daw-icons li,.info-tab,.hero-info-trigger{transition:none!important}.signal-bars i{animation:none;transform:scaleY(.4)}.artist-shot.is-playing .artist-image{transform:none}.music-dock{animation:none}}</style>
+<style>
+  .music-dock audio{display:block;width:100%;height:42px;accent-color:var(--acid)}
+  .music-dock>a{display:block;padding:9px 2px 1px;color:var(--dim);font:700 9px "Space Grotesk",sans-serif;letter-spacing:.1em}
+  .music-dock>a:hover{color:var(--acid)}
+  .daw-compat{display:flex;width:max-content;max-width:100%;align-items:center;gap:10px;margin-top:19px}
+  .daw-label{display:flex;align-items:center;gap:8px;color:#c6c6c0;font-size:9px;letter-spacing:.16em}
+  .daw-label::after{content:"";width:17px;height:1px;background:var(--acid);opacity:.72}
+  .daw-icons{display:flex;align-items:center;gap:7px;margin:0;padding:0;list-style:none}
+  .daw-icons li{display:grid;flex:0 0 32px;place-items:center;width:32px;height:32px;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.025);color:#f1f1ed;opacity:.82;transition:opacity .18s,color .18s,border-color .18s,background .18s,transform .18s}
+  .daw-icons li:hover{border-color:rgba(255,0,0,.65);background:rgba(255,0,0,.07);box-shadow:0 0 18px rgba(255,0,0,.12)}
+  .daw-mark{width:22px;height:22px}
+  .daw-mark.cubase{width:20px;height:21px;border-left-width:2px}
+  .daw-mark.ableton i{display:block;width:5px;height:4px;background:currentColor}
+  .daw-mark.bitwig{font-size:21px}
+  .daw-mark.studio-one{width:22px;height:22px}
+  .daw-mark.reaper{font-size:20px}
+  @media(max-width:600px){.daw-compat{width:100%;gap:8px}.daw-icons{gap:6px}.daw-icons li{flex-basis:29px;width:29px;height:29px}}
+  .visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 </style>
+<link rel="stylesheet" href="film-gallery.css">
+<link rel="stylesheet" href="site-experience.css">
+<script>
+  try { if (!localStorage.getItem('skazi-intro-seen-v1')) document.documentElement.classList.add('intro-pending'); }
+  catch { try { if (!sessionStorage.getItem('skazi-intro-seen-v1')) document.documentElement.classList.add('intro-pending'); } catch {} }
+  setTimeout(() => document.documentElement.classList.remove('intro-pending'), 5000);
+</script>
 </head>
 <body>
+<div id="site-intro" aria-label="SKAZI introduction" hidden>
+  <div class="intro-halo" aria-hidden="true"></div>
+  <div class="intro-mark logo-art"><img src="img/skazi-hero-logo.png" alt="SKAZI"></div>
+  <div class="intro-equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <button class="intro-skip" type="button">SKIP INTRO</button>
+</div>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="progress" aria-hidden="true"></div>
 
-<nav>
-  <div class="wrap">
-    <a class="logo" href="#top"><img src="img/skazi-logo.png?v=2" alt="SKAZI" width="245" height="160"></a>
-    <div class="links"><a href="#plugins">Plugins</a><a href="#install">Install</a><a href="#specs">Specs</a><a href="#faq">FAQ</a></div>
-    <a class="btn btn-red btn-sm" href="#download">FREE DOWNLOAD</a>
-  </div>
-</nav>
 
+
+<main id="main">
 <header class="hero" id="top">
   <div class="wrap">
     <div>
-      <span class="kicker"><i></i> 100% FREE DOWNLOAD · NEW: KUBE + QUAZI</span>
-      <h1>SKAZI<br><span>BUNDLE</span></h1>
-      <p class="lead">15 synths and effects in one installer: three wavetable synths, a kick synth, an acid bass line synth, a MIDI pattern generator, bass machine, risers, glitch chops and multi-FX, 4-band fuzz, sidechain, tape delay and saturation. Built for psytrance, techno, house and everything in between.</p>
+      <h1 class="hero-logo"><span class="visually-hidden">SKAZI</span><span class="logo-art"><img src="img/skazi-hero-logo.png" alt="" fetchpriority="high"></span></h1>
+      <h2 class="hero-statement">FROM THE STAGE<br>INTO YOUR DAW</h2>
+      <p class="lead">The sound of the dancefloor, built for your studio. Free synths and effects. All the energy. Yours to create.</p>
       <div class="ctas" id="download">
-        <a class="btn btn-red" href="https://github.com/slazoasher/skazi-bundle/releases/latest/download/SKAZI.Bundle.Setup.exe">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.1 10.4 4v7.1H3zm0 13.8 7.4 1.1v-7H3zm8.3 1.2L21 21.5V13h-9.7zm0-16.2v7.2H21V2.5z"/></svg>
-          <span class="txt">FREE Download for Windows<small>VST3 + standalone · 91 MB</small></span></a>
-        <a class="btn btn-dark" href="https://github.com/slazoasher/skazi-bundle/releases/latest/download/SKAZI.Bundle.pkg">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.8 1.2 1.8 2.6 3.1 2.6 1.3-.1 1.7-.8 3.3-.8 1.5 0 1.9.8 3.3.8 1.4 0 2.2-1.2 3-2.5.9-1.4 1.3-2.8 1.4-2.9-.1 0-2.6-1-2.6-4.1zM13.9 4.9c.7-.8 1.2-2 1-3.1-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3 1.1.1 2.2-.6 2.9-1.4z"/></svg>
-          <span class="txt">FREE Download for Mac<small>AU + VST3 + apps · Apple Silicon & Intel</small></span></a>
+        <a class="btn btn-red" aria-label="Download SKAZI Bundle for Windows" href="https://github.com/slazoasher/skazi-bundle/releases/latest/download/SKAZI.Bundle.Setup.exe">
+          <span class="download-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 5.2 10.2 4v7.4H2zm9.5-1.4L22 2v9.4h-10.5zM2 12.9h8.2v7.4L2 19.1zm9.5 0H22v9.4l-10.5-1.8z"/></svg></span>
+          <span class="txt">Windows</span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="btn btn-dark" aria-label="Download SKAZI Bundle for Mac" href="https://github.com/slazoasher/skazi-bundle/releases/latest/download/SKAZI.Bundle.pkg">
+          <span class="download-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 12.8c0-2.4 2-3.6 2.1-3.7-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.8-3.7.8-.7 0-1.9-.8-3.2-.8-1.6 0-3.1 1-4 2.5-1.7 3-.5 7.3 1.2 9.7.8 1.1 1.7 2.4 2.9 2.4s1.6-.8 3.1-.8 1.8.8 3.1.8 2.1-1.1 2.8-2.3c.8-1.3 1.2-2.6 1.3-2.7-.1 0-2.1-.8-2.1-4zM14.2 5.9c.7-.8 1.1-1.8 1-2.9-.9 0-2 .6-2.7 1.4-.6.7-1.1 1.7-1 2.8 1 .1 2-.5 2.7-1.3z"/></svg></span>
+          <span class="txt">Mac</span><span class="download-arrow" aria-hidden="true">↓</span></a>
       </div>
-      <p class="meta"><b>Free</b> · Windows 10/11 & macOS 10.13+ · Works in Cubase, Ableton, FL Studio, Logic, Bitwig, Studio One, Reaper</p>
-      <p class="meta"><b style="color:#ff2bd6">Updated 27 Oct 2026:</b> new <b>KUBE</b> psytrance wavetable synth, new <b>QUAZI</b> 4-band fuzz and new <b>MIDI GOD</b> pattern generator with audio to MIDI. <b>SKAZI 1.3</b>: Virus-style supersaw, PERFORM page, your own wavetables and 3,650 presets. <b>TAHINI 1.1</b>: 7 delay types, echo filter, drive and pitch. <b>BAMBA 1.1</b>: your Splice risers, quantized rolls and up to 24 bars. Plus BULLY SHARP 24, TBON 303 hard acid and SALAT RISE. Already installed? Just download and install again: your projects keep their sounds.</p>
+      <div class="daw-compat" aria-label="Works with Cubase, Ableton Live, FL Studio, Logic Pro, Bitwig Studio, Studio One and Reaper">
+        <span class="daw-label">WORKS WITH</span>
+        <ul class="daw-icons">
+          <li title="Cubase" aria-label="Cubase" tabindex="0"><img class="daw-icon" src="img/daw-cubase.svg" alt="" width="24" height="24"></li>
+          <li title="Ableton Live" aria-label="Ableton Live" tabindex="0"><img class="daw-icon" src="img/daw-ableton.png" alt="" width="24" height="24"></li>
+          <li title="FL Studio" aria-label="FL Studio" tabindex="0"><img class="daw-icon" src="img/daw-fl-studio.ico" alt="" width="24" height="24"></li>
+          <li title="Logic Pro" aria-label="Logic Pro" tabindex="0"><img class="daw-icon" src="img/daw-logic-pro.png" alt="" width="24" height="24"></li>
+          <li title="Bitwig Studio" aria-label="Bitwig Studio" tabindex="0"><img class="daw-icon" src="img/daw-bitwig.png" alt="" width="24" height="24"></li>
+          <li title="Studio One" aria-label="Studio One" tabindex="0"><img class="daw-icon" src="img/daw-studio-one.webp" alt="" width="24" height="24"></li>
+          <li title="Reaper" aria-label="Reaper" tabindex="0"><img class="daw-icon" src="img/daw-reaper.png" alt="" width="24" height="24"></li>
+        </ul>
+      </div>
+      <button class="hero-info-trigger" type="button" aria-controls="hero-info-panel" aria-expanded="false" data-open-guide>INSTALL · SYSTEM REQUIREMENTS · FAQ</button>
     </div>
-    <div class="shot">
-      <img src="img/bully.png?v=3" alt="BULLY wavetable synth" class="zoom">
-      <div class="tag"><b style="color:#ff2bd6">NEW</b> · BULLY synth · <b>FREE</b> · 8,100+ presets</div>
+    <div class="artist-shot" id="artist-shot" data-active="" role="group" aria-label="Choose a musical identity">
+      <img src="img/skazi-artist.png" alt="" class="artist-image artist-image-mono" aria-hidden="true">
+      <img src="img/skazi-artist.png" alt="" class="artist-image artist-image-color" aria-hidden="true">
+      <div class="persona-divider" aria-hidden="true"></div>
+      <div class="signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <button class="persona-zone persona-zone-skazi" type="button" data-persona="skazi" aria-label="SKAZI, Psychedelic Trance and Full-On. Preview the track."><span class="persona-caption"><b>SKAZI</b><small>PSYCHEDELIC TRANCE · FULL-ON</small></span></button>
+      <button class="persona-zone persona-zone-asher" type="button" data-persona="asher" aria-label="Asher Swissa, Melodic Techno and Progressive House. Preview the track."><span class="persona-caption"><b>ASHER SWISSA</b><small>MELODIC TECHNO · PROGRESSIVE HOUSE</small></span></button>
     </div>
   </div>
 </header>
+
+<section class="hero-info-panel" id="hero-info-panel" aria-label="Installation and support" hidden>
+  <div class="wrap">
+    <div class="info-shell">
+      <div class="info-topline"><span>QUICK GUIDE</span><button class="info-close" type="button" aria-label="Close guide"><span>CLOSE</span><span class="close-symbol" aria-hidden="true">×</span></button></div>
+      <div class="info-tabs" role="tablist" aria-label="Installation and support topics">
+        <button class="info-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="guide-install" id="tab-guide-install" data-guide-tab="install">Installation</button>
+        <button class="info-tab" type="button" role="tab" aria-selected="false" aria-controls="guide-specs" id="tab-guide-specs" data-guide-tab="specs">System requirements</button>
+        <button class="info-tab" type="button" role="tab" aria-selected="false" aria-controls="guide-faq" id="tab-guide-faq" data-guide-tab="faq">FAQ</button>
+      </div>
+      <div class="info-panel is-active" id="guide-install" role="tabpanel" aria-labelledby="tab-guide-install" data-guide-panel="install">
+        <div class="tabs" role="tablist" aria-label="Choose your operating system"><button class="tab on" type="button" data-t="win" aria-controls="win" aria-pressed="true">Windows</button><button class="tab" type="button" data-t="mac" aria-controls="mac" aria-pressed="false">Mac</button></div>
+        <div class="steps on" id="win"><div class="step"><div class="n">01</div><h4>Download &amp; close your DAW</h4><p>Get the installer above and close Cubase, Ableton or your DAW.</p></div><div class="step"><div class="n">02</div><h4>Run the installer</h4><p>If Windows shows <b>“Windows protected your PC”</b>, click <b>More info → Run anyway</b>. Choose your plugins and install.</p></div><div class="step"><div class="n">03</div><h4>Rescan &amp; play</h4><p>Rescan plugins in your DAW. VST3 files go to <code>Common Files\VST3\SKAZI</code>.</p></div></div>
+        <div class="steps" id="mac"><div class="step"><div class="n">01</div><h4>Download &amp; close your DAW</h4><p>Get the Mac installer above and quit Logic, Ableton or your DAW.</p></div><div class="step"><div class="n">02</div><h4>Open the installer</h4><p>Right-click the <b>.pkg</b>, choose <b>Open</b>, then confirm to continue.</p></div><div class="step"><div class="n">03</div><h4>Rescan &amp; play</h4><p>Rescan plugins in your DAW. AU and VST3 versions are installed for compatible hosts.</p></div></div>
+      </div>
+      <div class="info-panel" id="guide-specs" role="tabpanel" aria-labelledby="tab-guide-specs" data-guide-panel="specs" hidden>
+        <h3>System requirements</h3><ul class="specs"><li><span>Windows</span>10 / 11, 64-bit</li><li><span>Mac</span>macOS 10.13+, Apple Silicon &amp; Intel</li><li><span>Formats</span>VST3 · AU (Mac) · Standalone apps</li><li><span>Hosts</span>Cubase, Ableton Live, FL Studio, Logic, Bitwig, Studio One, Reaper</li><li><span>Download</span>91 MB Windows · 165 MB Mac</li><li><span>Price</span><b class="free-label">FREE</b></li></ul>
+      </div>
+      <div class="info-panel" id="guide-faq" role="tabpanel" aria-labelledby="tab-guide-faq" data-guide-panel="faq" hidden>
+        <h3>Frequently asked questions</h3><details><summary>Windows says “Windows protected your PC”</summary><p>The installer isn’t code-signed yet. Choose <b>More info → Run anyway</b> to continue.</p></details><details><summary>Where do I find the plugins in my DAW?</summary><p>Look for <b>SKAZI</b> in your plugin browser. In Cubase, use Studio → VST Plug-in Manager → Rescan.</p></details><details><summary>Do my old projects still load?</summary><p>Yes. Existing plugin IDs remain compatible between versions.</p></details><details><summary>How do I uninstall?</summary><p>Windows: Settings → Apps → SKAZI Bundle. Mac: open Applications → SKAZI and run Uninstall SKAZI Bundle.</p></details>
+      </div>
+    </div>
+  </div>
+</section>
 
 <div class="stats">
   <div class="wrap">
@@ -196,95 +368,83 @@
   </div>
 </div>
 
-<section class="news" id="new">
-  <div class="wrap">
-    <div class="head"><h2>NEW IN THIS UPDATE</h2><p>Three new plugins and big updates across the bundle. Already installed? Download and install again: your projects keep their sounds.</p></div>
-    <div class="grid">
-      <div class="item new"><span class="tagline">New VST</span><h4>KUBE</h4><p>Psytrance wavetable synth: 24 KUBE-only tables (growl, yoy and more), drag in your own Serum .wav wavetables, 2 warp slots per oscillator, 16-voice unison, 106 presets.</p></div>
-      <div class="item new"><span class="tagline">New VST</span><h4>QUAZI</h4><p>4-band fuzz: soft, hard, fuzz or tube drive per band, stereo width with mono bass, and a 3-band EQ after the distortion. 104 presets.</p></div>
-      <div class="item new"><span class="tagline">New VST</span><h4>MIDI GOD</h4><p>MIDI pattern generator: bass, acid, leads, arps, chords and drums in 10 genres, drag the loop into your DAW, and audio to MIDI.</p></div>
-      <div class="item"><span class="tagline">Updated</span><h4>SKAZI 1.3</h4><p>Virus-style supersaw, PERFORM page with macros and A/B morph, your own wavetables, RANDOM that rolls every section, 3,650 presets, and a Cubase crash fix.</p></div>
-      <div class="item"><span class="tagline">Updated</span><h4>TAHINI 1.1</h4><p>7 delay types, resonant low and high cut plus drive inside the echoes, pitch on the repeats up to 24 semitones, 250 presets.</p></div>
-      <div class="item"><span class="tagline">Updated</span><h4>BAMBA 1.1</h4><p>Layer your own Splice risers, rolls quantized from 1/2 to 1/128 with a RATE knob, pitch up to 6 octaves, 1 to 24 bars, 260 presets.</p></div>
-      <div class="item"><span class="tagline">Updated</span><h4>BULLY</h4><p>New SHARP 24 filter: a strong resonant ladder whose cutoff sits right where the knob says.</p></div>
-      <div class="item"><span class="tagline">Updated</span><h4>TBON 303</h4><p>Harder filter with screaming resonance, 32 HARD ACID presets (544 in total), and a fix for a Cubase freeze when changing presets.</p></div>
-      <div class="item"><span class="tagline">Updated</span><h4>SALAT</h4><p>RISE: pitch build-ups over 2 to 16 bars, up to 4 octaves, starting and ending on your bar lines.</p></div>
-    </div>
-  </div>
-</section>
 
 <section id="plugins">
   <div class="wrap">
     <div class="head">
       <h2>WHAT'S INSIDE</h2>
-      <p>Every plugin in the same brushed-metal SKAZI style, with presets, RANDOM, A/B compare and undo.</p>
+      <p>15 instruments &amp; effects. Find your sound.</p>
+      <div class="gallery-view" role="group" aria-label="Gallery layout"><button type="button" data-gallery-view="grid" aria-pressed="true">GRID</button><button type="button" data-gallery-view="reel" aria-pressed="false">REEL</button></div>
+      <span class="sound-status" id="sound-status" aria-live="polite"></span>
     </div>
-    <div class="grid">
+    <div class="film-gallery" aria-label="SKAZI plugin collection">
+    <div class="film-viewport">
+    <div class="grid" id="plugin-reel">
 
-      <article class="card"><div class="pic"><span class="badge inst">New · Instrument</span><img src="img/bully.png?v=3" alt="BULLY" class="zoom" loading="lazy"></div>
+      <article class="card" data-preview="wide"><div class="pic"><span class="badge inst">New · Instrument</span><img src="img/bully.png?v=3" alt="BULLY" class="zoom" loading="lazy"></div>
         <div class="body"><h3>BUL<em>LY</em></h3><div class="sub">Analog-character wavetable monster</div>
-          <p>Its own sound: saturated ladder filter, analog drift, boost and voice spread, in the spirit of the classic virtual-analog beasts. Three wavetable oscillators with dual warp (sync, bend, PWM, mirror, FM, ring), noise, two filters with 14 types including the new SHARP 24, comb and formant, 4 envelopes, 10 LFOs, 2 chaos generators and 4 macros. Drag any source onto any knob. FX rack with hyper, OTT, frequency shifter and a 3-band splitter, plus an arpeggiator.</p>
-          <div class="chips"><span class="chip hot">462 presets</span><span class="chip">SHARP 24 filter</span><span class="chip">FULL RANDOM</span><span class="chip">Drag &amp; drop mod</span><span class="chip">Chaos LFOs</span><span class="chip">Psy · Afro · Growl</span></div></div></article>
+          <p>Three wavetable oscillators, analog drift and a saturated ladder filter. Shape your sound with drag-and-drop modulation, chaos generators and a full FX rack.</p>
+          <div class="chips"><span class="chip hot">462 presets</span><span class="chip">SHARP 24 filter</span><span class="chip">FULL RANDOM</span><span class="chip">Drag &amp; drop mod</span><span class="chip">Chaos LFOs</span><span class="chip">Psy · Afro · Growl</span></div><details class="card-changelog"><summary>Changelog</summary><p>New SHARP 24 filter: a strong resonant ladder whose cutoff sits right where the knob says.</p></details></div></article>
 
-      <article class="card"><div class="pic"><span class="badge inst">New · Instrument</span><img src="img/kickass.png?v=1" alt="KICKASS" class="zoom" loading="lazy"></div>
+      <article class="card" data-preview="psy"><div class="pic"><span class="badge inst">Instrument</span><img src="img/skazi.png?v=5" alt="SKAZI" class="zoom" loading="lazy"></div>
+        <div class="body"><h3>SKA<em>ZI</em></h3><div class="sub">Psy / acid / VA synth</div>
+          <p>Supersaw unison, custom wavetables and a powerful sequencer. Perform with four macros, A/B morph and kick ducking, or roll a completely new sound.</p>
+          <div class="chips"><span class="chip hot">3,650 presets</span><span class="chip">Supersaw</span><span class="chip">PERFORM page</span><span class="chip">Your own wavetables</span><span class="chip">Arp + sequencer</span></div><details class="card-changelog"><summary>Changelog</summary><p>Virus-style supersaw, PERFORM page with macros and A/B morph, your own wavetables, RANDOM that rolls every section, 3,650 presets, and a Cubase crash fix.</p></details></div></article>
+
+      <article class="card" data-preview="riser"><div class="pic"><span class="badge inst">Instrument</span><img src="img/bamba.png?v=4" alt="BAMBA" class="zoom" loading="lazy"></div>
+        <div class="body"><h3>BAM<em>BA</em></h3><div class="sub">Riser & uplift maker</div>
+          <p>Create uplifters, snare rolls, impacts and sub drops across 1–24 bars. Layer your samples, automate the roll rate and build the tension.</p>
+          <div class="chips"><span class="chip hot">260 presets</span><span class="chip">Your Splice risers</span><span class="chip">Quantized rolls</span><span class="chip">Up to 24 bars</span><span class="chip">+6 octaves</span></div><details class="card-changelog"><summary>Changelog</summary><p>Layer your own Splice risers, rolls quantized from 1/2 to 1/128 with a RATE knob, pitch up to 6 octaves, 1 to 24 bars, 260 presets.</p></details></div></article>
+
+      <article class="card" data-preview="echo"><div class="pic"><span class="badge fx">Effect</span><img src="img/tahini.png?v=4" alt="TAHINI" class="zoom" loading="lazy"></div>
+        <div class="body"><h3>TAH<em>INI</em></h3><div class="sub">Space delay + reverb</div>
+          <p>Seven delay characters with filtered, driven and pitch-shifted repeats. Add shimmer, reverse, freeze and a spacious ducking reverb.</p>
+          <div class="chips"><span class="chip hot">250 presets</span><span class="chip">7 delay types</span><span class="chip">Echo filter + drive</span><span class="chip">Pitch on repeats</span><span class="chip">Freeze</span></div><details class="card-changelog"><summary>Changelog</summary><p>7 delay types, resonant low and high cut plus drive inside the echoes, pitch on the repeats up to 24 semitones, 250 presets.</p></details></div></article>
+
+      <article class="card" data-preview="acid"><div class="pic"><span class="badge inst">New · Instrument</span><img src="img/tbon303.png?v=1" alt="TBON 303" class="zoom" loading="lazy"></div>
+        <div class="body"><h3>TBON <em>303</em></h3><div class="sub">Acid bass line synth · by Asher Swissa</div>
+          <p>Classic acid movement with accent, slide and a powerful resonant filter. Build patterns in the sequencer and push fourteen drive flavours.</p>
+          <div class="chips"><span class="chip hot">544 presets</span><span class="chip">Hard acid</span><span class="chip">Accent + slide</span><span class="chip">14 drive types</span><span class="chip">Acid sequencer</span><span class="chip">Win + Mac · VST3 / AU</span></div><details class="card-changelog"><summary>Changelog</summary><p>Harder filter with screaming resonance, 32 HARD ACID presets (544 in total), and a fix for a Cubase freeze when changing presets.</p></details></div></article>
+
+      <article class="card" data-preview="stutter"><div class="pic"><span class="badge fx">New · Effect</span><img src="img/salat.png?v=2" alt="SALAT" class="zoom" loading="lazy"></div>
+        <div class="body"><h3>SA<em>LAT</em></h3><div class="sub">Glitch multi-FX + RISE</div>
+          <p>Rearrange your groove with synced chops, stutters and tape stops. Add a full FX chain and use RISE for long, tempo-locked pitch builds.</p>
+          <div class="chips"><span class="chip hot">104 presets</span><span class="chip">MAKE A SALAT</span><span class="chip">RISE up to 4 octaves</span><span class="chip">Chop · drive · crush</span><span class="chip">Delay · reverb</span></div><details class="card-changelog"><summary>Changelog</summary><p>RISE: pitch build-ups over 2 to 16 bars, up to 4 octaves, starting and ending on your bar lines.</p></details></div></article>
+
+      <article class="card" data-preview="arp"><div class="pic"><span class="badge inst">New · MIDI</span><img src="img/midigod.png?v=1" alt="MIDI GOD" class="zoom" loading="lazy"></div>
+        <div class="body"><h3>MIDI <em>GOD</em></h3><div class="sub">MIDI pattern generator + audio to MIDI</div>
+          <p>Generate basslines, melodies, arps, chords and drums in your key. Explore ten genres, drag MIDI into your DAW or turn audio into MIDI.</p>
+          <div class="chips"><span class="chip hot">106 presets</span><span class="chip">10 genres x 9 roles</span><span class="chip">Drag MIDI to the DAW</span><span class="chip">Audio to MIDI</span></div><details class="card-changelog"><summary>Changelog</summary><p>MIDI pattern generator: bass, acid, leads, arps, chords and drums in 10 genres, drag the loop into your DAW, and audio to MIDI.</p></details></div></article>
+
+      <article class="card" data-preview="kick"><div class="pic"><span class="badge inst">New · Instrument</span><img src="img/kickass.png?v=1" alt="KICKASS" class="zoom" loading="lazy"></div>
         <div class="body"><h3>KICK<em>ASS</em></h3><div class="sub">Kick drum synth · by Asher Swissa</div>
-          <p>Kicks that hit like the real thing: a two-stage pitch envelope (a hard snap, then the body sweep down to your root note), hold and decay so the tail stops clean before the bassline, a 3-band EQ, and drive that is fully clean at zero. Layer a sample on top: KICKASS browses the kicks you've downloaded from Splice, so press &lt; &gt; to audition them, or keep a sample's punch over the KICKASS sub. KEY TRACK plays it like an instrument.</p>
+          <p>Build punchy kicks with a two-stage pitch envelope, precise decay, three-band EQ and clean-to-driven tone. Layer your own samples for extra character.</p>
           <div class="chips"><span class="chip hot">50 presets</span><span class="chip">Snap + sweep pitch</span><span class="chip">3-band EQ</span><span class="chip">Splice kick browser</span><span class="chip">Key track</span></div></div></article>
 
-      <article class="card"><div class="pic"><span class="badge inst">Instrument</span><img src="img/skazi.png?v=5" alt="SKAZI" class="zoom" loading="lazy"></div>
-        <div class="body"><h3>SKA<em>ZI</em></h3><div class="sub">Psy / acid / VA synth</div>
-          <p>Supersaw unison with analog drift, wavetables (load your own WAV), FOLD / PWM / ASYM shaping, an arpeggiator and a step sequencer with per-step locks, 10 distortion types and a full FX rack. The PERFORM page gives you 4 macros, A/B morph and kick duck, and RANDOM rolls every section at once.</p>
-          <div class="chips"><span class="chip hot">3,650 presets</span><span class="chip">Supersaw</span><span class="chip">PERFORM page</span><span class="chip">Your own wavetables</span><span class="chip">Arp + sequencer</span></div></div></article>
-
-      <article class="card"><div class="pic"><span class="badge inst">Instrument</span><img src="img/subich.png?v=3" alt="SUBICH" class="zoom" loading="lazy"></div>
+      <article class="card" data-preview="sub"><div class="pic"><span class="badge inst">Instrument</span><img src="img/subich.png?v=3" alt="SUBICH" class="zoom" loading="lazy"></div>
         <div class="body"><h3>SUB<em>ICH</em></h3><div class="sub">Bass + sub bass synth</div>
-          <p>A synth made only for basslines: 2 oscillators, a dedicated sub, 2 filters, 2 LFOs, mono / legato / poly with glide, plus pitch and mod wheels.</p>
+          <p>Two oscillators and a dedicated sub, built for focused basslines. Shape the groove with dual filters, modulation, legato and glide.</p>
           <div class="chips"><span class="chip hot">1,000 bass presets</span><span class="chip">Psytrance</span><span class="chip">Techno</span><span class="chip">House</span><span class="chip">Indie dance</span></div></div></article>
 
-      <article class="card"><div class="pic"><span class="badge inst">Instrument</span><img src="img/bamba.png?v=4" alt="BAMBA" class="zoom" loading="lazy"></div>
-        <div class="body"><h3>BAM<em>BA</em></h3><div class="sub">Riser & uplift maker</div>
-          <p>Uplifters, downlifters, snare rolls, impacts and sub drops from the piano roll, 1 to 24 bars. Layer your own Splice risers (short or long, stretched to the bars), quantize rolls from 1/2 to 1/128 with an automatable RATE, pitch up to +6 octaves with its own curve, and a mixer with FX sends.</p>
-          <div class="chips"><span class="chip hot">260 presets</span><span class="chip">Your Splice risers</span><span class="chip">Quantized rolls</span><span class="chip">Up to 24 bars</span><span class="chip">+6 octaves</span></div></div></article>
-
-      <article class="card"><div class="pic"><span class="badge fx">Effect</span><img src="img/shaksuka.png?v=3" alt="SHAKSUKA" class="zoom" loading="lazy"></div>
+      <article class="card" data-preview="glitch"><div class="pic"><span class="badge fx">Effect</span><img src="img/shaksuka.png?v=3" alt="SHAKSUKA" class="zoom" loading="lazy"></div>
         <div class="body"><h3>SHAK<em>SUKA</em></h3><div class="sub">Random chop & glitch FX</div>
-          <p>Slices your audio on the grid and fires stutters, reverses, tape stops, pitch, crush, ring, gates and filters at random, with swing, shuffle and drunk grooves.</p>
+          <p>Turn audio into rhythmic chops, stutters and reverses. Add tape stops, pitch shifts, gates and filters with swing and evolving grooves.</p>
           <div class="chips"><span class="chip hot">509 presets</span><span class="chip">11 effects</span><span class="chip">Groove quantize</span><span class="chip">Evolving patterns</span></div></div></article>
 
-      <article class="card"><div class="pic"><span class="badge fx">Effect</span><img src="img/pitapump.png?v=3" alt="PITA PUMP" class="zoom" loading="lazy"></div>
+      <article class="card" data-preview="pump"><div class="pic"><span class="badge fx">Effect</span><img src="img/pitapump.png?v=3" alt="PITA PUMP" class="zoom" loading="lazy"></div>
         <div class="body"><h3>PITA<em>PUMP</em></h3><div class="sub">Sidechain LFO tool</div>
-          <p>Ten pump shapes or draw your own, synced to the song, triggered by MIDI or by your kick. Pre-amp with auto gain lifts quiet signals before they pump.</p>
+          <p>Shape the pulse with ten pump curves or draw your own. Sync to the song, trigger from MIDI or follow your kick.</p>
           <div class="chips"><span class="chip hot">105 presets</span><span class="chip">Draw mode</span><span class="chip">Audio sidechain</span><span class="chip">Auto pre-amp</span></div></div></article>
 
-      <article class="card"><div class="pic"><span class="badge fx">Effect</span><img src="img/tahini.png?v=4" alt="TAHINI" class="zoom" loading="lazy"></div>
-        <div class="body"><h3>TAH<em>INI</em></h3><div class="sub">Space delay + reverb</div>
-          <p>Seven delay types (ping-pong, stereo, tape, digital, BBD, multi-tap, dual) with a resonant low and high cut and tape / tube / fuzz / crush drive inside the echoes, pitch on the repeats up to ±24 semitones with a shimmer blend, reverse and tape stops, into a reverb with freeze and ducking.</p>
-          <div class="chips"><span class="chip hot">250 presets</span><span class="chip">7 delay types</span><span class="chip">Echo filter + drive</span><span class="chip">Pitch on repeats</span><span class="chip">Freeze</span></div></div></article>
-
-      <article class="card"><div class="pic"><span class="badge fx">Effect</span><img src="img/zhug.png?v=3" alt="ZHUG" class="zoom" loading="lazy"></div>
+      <article class="card" data-preview="drive"><div class="pic"><span class="badge fx">Effect</span><img src="img/zhug.png?v=3" alt="ZHUG" class="zoom" loading="lazy"></div>
         <div class="body"><h3>ZH<em>UG</em></h3><div class="sub">Saturator + widener</div>
-          <p>Eight drive types from tube to bit crush, 4x oversampled, with multiband drive, auto gain, tilt tone, stereo width, bass mono and Haas.</p>
+          <p>Eight drive types, from warm tube colour to bitcrushed edges. Dial in multiband saturation, stereo width and a focused mono low end.</p>
           <div class="chips"><span class="chip hot">118 presets</span><span class="chip">4x oversampled</span><span class="chip">Multiband</span><span class="chip">Bass mono</span></div></div></article>
 
-      <article class="card"><div class="pic"><span class="badge fx">Effect</span><img src="img/filterfish.png?v=3" alt="The FilterFish" class="zoom" loading="lazy"></div>
+      <article class="card" data-preview="filter"><div class="pic"><span class="badge fx">Effect</span><img src="img/filterfish.png?v=3" alt="The FilterFish" class="zoom" loading="lazy"></div>
         <div class="body"><h3>THE <em>FILTERFISH</em></h3><div class="sub">Filter FX</div>
-          <p>A creative filter with LFO and envelope, plus glitch, distortion, chorus, flanger, delay, reverb and inflate. RANDOM rolls every effect at once.</p>
+          <p>Animate your sound with creative filters, LFOs and envelopes. Layer chorus, flanger, glitch, delay and reverb, or randomize the whole chain.</p>
           <div class="chips"><span class="chip hot">800 presets</span><span class="chip">Many filter types</span><span class="chip">Glitch</span><span class="chip">Full FX chain</span></div></div></article>
-
-      <article class="card"><div class="pic"><span class="badge inst">New · Instrument</span><img src="img/tbon303.png?v=1" alt="TBON 303" class="zoom" loading="lazy"></div>
-        <div class="body"><h3>TBON <em>303</em></h3><div class="sub">Acid bass line synth · by Asher Swissa</div>
-          <p>The acid sound with more power: a 303-style diode ladder filter with accent and slide, a sub oscillator, 14 drive types before and after the filter, circuit mods, chorus, tempo-synced delay, reverb and a 16-step acid sequencer with a pattern generator. Push the resonance to the top and it screams. RANDOM rolls a new sound.</p>
-          <div class="chips"><span class="chip hot">544 presets</span><span class="chip">Hard acid</span><span class="chip">Accent + slide</span><span class="chip">14 drive types</span><span class="chip">Acid sequencer</span><span class="chip">Win + Mac · VST3 / AU</span></div></div></article>
-
-      <article class="card"><div class="pic"><span class="badge fx">New · Effect</span><img src="img/salat.png?v=2" alt="SALAT" class="zoom" loading="lazy"></div>
-        <div class="body"><h3>SA<em>LAT</em></h3><div class="sub">Glitch multi-FX + RISE</div>
-          <p>A tempo-synced chopper (stutter, reverse, gate, tape stop, hold) that sits first, middle or last in the chain, with drive, bitcrush, a resonant filter with synced LFO, ring mod, flanger, chorus, ping-pong delay and reverb. RISE builds long pitch rises over 2 to 16 bars, up to 4 octaves, starting and ending on your bar lines. MAKE A SALAT throws a random mix together.</p>
-          <div class="chips"><span class="chip hot">104 presets</span><span class="chip">MAKE A SALAT</span><span class="chip">RISE up to 4 octaves</span><span class="chip">Chop · drive · crush</span><span class="chip">Delay · reverb</span></div></div></article>
-
-      <article class="card"><div class="pic"><span class="badge inst">New · MIDI</span><img src="img/midigod.png?v=1" alt="MIDI GOD" class="zoom" loading="lazy"></div>
-        <div class="body"><h3>MIDI <em>GOD</em></h3><div class="sub">MIDI pattern generator + audio to MIDI</div>
-          <p>Writes basslines, acid lines, leads, plucks, arps, chords, pads and drums in 10 genres from full-on psy to hard techno, in your key and groove. GOD MODE rolls a new variation, then drag the loop straight onto a track in your DAW. Drop in audio and it turns melody, bass, drums or chords into MIDI.</p>
-          <div class="chips"><span class="chip hot">106 presets</span><span class="chip">10 genres x 9 roles</span><span class="chip">Drag MIDI to the DAW</span><span class="chip">Audio to MIDI</span></div></div></article>
 
       <article class="card"><div class="pic"><span class="badge inst">New · Instrument</span><img src="img/kube.png?v=1" alt="KUBE" class="zoom" loading="lazy"></div>
         <div class="body"><h3>KU<em>BE</em></h3><div class="sub">Psytrance wavetable synth</div>
@@ -298,84 +458,104 @@
 
     </div>
   </div>
-</section>
+    <div class="film-meta" hidden>
+      <div class="film-caption">
+        <span class="film-count" aria-hidden="true">01 <span>/ 15</span></span>
+        <div class="film-label"><h3 class="film-title">BULLY</h3><p class="film-subtitle">Analog-character wavetable monster</p></div>
+        <div class="film-navigation">
+          <button class="film-prev" type="button" aria-label="Previous plugin" aria-controls="plugin-reel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
+          <button class="film-next" type="button" aria-label="Next plugin" aria-controls="plugin-reel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button>
+        </div>
+      </div>
+      <details class="film-details"><summary>Plugin details</summary><div class="film-description"></div></details>
 
-<section class="install" id="install">
-  <div class="wrap">
-    <div class="head"><h2>INSTALL IN 1 MINUTE</h2><p>One installer puts all 15 plugins in place. They show up under <b>SKAZI</b> in your DAW.</p></div>
-    <div class="tabs"><button class="tab on" data-t="win">Windows</button><button class="tab" data-t="mac">Mac</button></div>
-    <div class="steps on" id="win">
-      <div class="step"><div class="n">01</div><h4>Download & close your DAW</h4><p>Get <code>SKAZI.Bundle.Setup.exe</code> above and close Cubase, Ableton or whatever you use.</p></div>
-      <div class="step"><div class="n">02</div><h4>Run the installer</h4><p>If Windows shows <b>"Windows protected your PC"</b>, click <b>More info → Run anyway</b>. Pick your plugins and click <b>INSTALL</b>.</p></div>
-      <div class="step"><div class="n">03</div><h4>Rescan & play</h4><p>Open your DAW and rescan plugins. Files go to <code>Common Files\VST3\SKAZI</code>; apps are in the Start Menu under SKAZI.</p></div>
+      <span class="visually-hidden film-announcement" aria-live="polite" aria-atomic="true"></span>
     </div>
-    <div class="steps" id="mac">
-      <div class="step"><div class="n">01</div><h4>Download & close your DAW</h4><p>Get <code>SKAZI.Bundle.pkg</code> above and quit Logic, Ableton or whatever you use.</p></div>
-      <div class="step"><div class="n">02</div><h4>Open the installer</h4><p>The first time, <b>right-click the .pkg → Open → Open</b> (or System Settings → Privacy &amp; Security → Open Anyway). Then continue.</p></div>
-      <div class="step"><div class="n">03</div><h4>Rescan & play</h4><p>AU goes to <code>Plug-Ins/Components</code>, VST3 to <code>Plug-Ins/VST3/SKAZI</code>, apps to <code>Applications/SKAZI</code>.</p></div>
     </div>
+
   </div>
 </section>
 
-<section id="specs">
-  <div class="wrap two">
-    <div class="box">
-      <h3>System requirements</h3>
-      <ul class="specs">
-        <li><span>Windows</span>10 / 11, 64-bit</li>
-        <li><span>Mac</span>macOS 10.13+, Apple Silicon & Intel</li>
-        <li><span>Formats</span>VST3 · AU (Mac) · Standalone apps</li>
-        <li><span>Hosts</span>Cubase, Ableton Live, FL Studio, Logic, Bitwig, Studio One, Reaper and more</li>
-        <li><span>Size</span>91 MB (Windows) · 165 MB (Mac)</li>
-        <li><span>Price</span><b style="color:var(--red2)">FREE</b></li>
-      </ul>
-    </div>
-    <div class="box" id="faq">
-      <h3>FAQ</h3>
-      <details><summary>Windows says "Windows protected your PC"</summary><p>The installer isn't code-signed yet, so SmartScreen doesn't know it. Click <b>More info → Run anyway</b>. It's safe.</p></details>
-      <details><summary>Where do I find the plugins in my DAW?</summary><p>Under the vendor <b>SKAZI</b>. In Cubase, if they don't show, use Studio → VST Plug-in Manager → Rescan.</p></details>
-      <details><summary>Do my old projects still load?</summary><p>Yes. The plugin IDs stay the same between versions, so sessions keep loading them.</p></details>
-      <details><summary>How do I uninstall?</summary><p>Windows: Settings → Apps → <b>SKAZI Bundle</b>. Mac: run <b>Uninstall SKAZI Bundle</b> in Applications → SKAZI.</p></details>
-    </div>
-  </div>
-</section>
-
-<section class="final">
-  <div class="wrap">
-    <div class="head"><h2>GET THE <span style="color:var(--red)">SKAZI</span> SOUND</h2><p>15 plugins. 8,168 presets. <b style="color:#fff">100% free download</b>, no account, no catch.</p></div>
-    <div class="ctas">
-      <a class="btn btn-red" href="https://github.com/slazoasher/skazi-bundle/releases/latest/download/SKAZI.Bundle.Setup.exe">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.1 10.4 4v7.1H3zm0 13.8 7.4 1.1v-7H3zm8.3 1.2L21 21.5V13h-9.7zm0-16.2v7.2H21V2.5z"/></svg>
-        <span class="txt">FREE Download for Windows<small>91 MB</small></span></a>
-      <a class="btn btn-dark" href="https://github.com/slazoasher/skazi-bundle/releases/latest/download/SKAZI.Bundle.pkg">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.8 1.2 1.8 2.6 3.1 2.6 1.3-.1 1.7-.8 3.3-.8 1.5 0 1.9.8 3.3.8 1.4 0 2.2-1.2 3-2.5.9-1.4 1.3-2.8 1.4-2.9-.1 0-2.6-1-2.6-4.1zM13.9 4.9c.7-.8 1.2-2 1-3.1-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3 1.1.1 2.2-.6 2.9-1.4z"/></svg>
-        <span class="txt">FREE Download for Mac<small>Apple Silicon & Intel</small></span></a>
-    </div>
-  </div>
-</section>
 
 <footer>
   <div class="wrap">
-    <span>© 2026 SKAZI · Plugins by Asher Swissa</span>
+    <span>© 2026 SKAZI · Official plugin collection</span>
     <span><a href="https://github.com/slazoasher/skazi-bundle/releases">All releases</a></span>
   </div>
 </footer>
+</main>
 
-<div class="lb" id="lb"><img alt=""></div>
+<button class="back-top" type="button" aria-label="Back to top" title="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m0 0-6 6m6-6 6 6"/></svg></button>
 
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Image preview" aria-hidden="true"><button class="lb-close" type="button" aria-label="Close image preview"><span>CLOSE</span><span class="close-symbol" aria-hidden="true">×</span></button><img alt=""></div>
+<audio id="site-audio" preload="none" hidden></audio>
+<button class="audio-unlock" type="button" hidden>ENABLE SOUND</button>
+<span class="visually-hidden" id="artist-audio-status" aria-live="polite"></span>
+
+<script src="film-gallery.js"></script>
+<script src="site-experience.js"></script>
 <script>
   // Windows / Mac install tabs
   document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
     document.querySelectorAll(".tab").forEach(x => x.classList.toggle("on", x === t));
+    document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-pressed", String(x === t)));
     document.querySelectorAll(".steps").forEach(s => s.classList.toggle("on", s.id === t.dataset.t));
   }));
-  // Mac visitors see the Mac steps first
+  // The install, requirements and FAQ guide opens directly below the hero.
+  const heroInfoPanel=document.getElementById('hero-info-panel'), guideTriggers=[...document.querySelectorAll('[data-open-guide]')];
+  function closeGuide(restoreFocus=true){
+    if(!heroInfoPanel||heroInfoPanel.hidden)return;
+    heroInfoPanel.hidden=true;guideTriggers.forEach(trigger=>trigger.setAttribute('aria-expanded','false'));
+    if(restoreFocus)guideTriggers.find(trigger=>trigger instanceof HTMLButtonElement)?.focus();
+  }
+  guideTriggers.forEach(trigger=>trigger.addEventListener('click',event=>{
+    event.preventDefault();heroInfoPanel.hidden=false;guideTriggers.forEach(item=>item.setAttribute('aria-expanded','true'));
+    heroInfoPanel.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+  }));
+  document.querySelector('.info-close')?.addEventListener('click',()=>closeGuide());
+  const guideTabs=[...document.querySelectorAll('[data-guide-tab]')],guidePanels=[...document.querySelectorAll('[data-guide-panel]')];
+  function selectGuideTab(name,focus=false){
+    guideTabs.forEach(tab=>{const selected=tab.dataset.guideTab===name;tab.classList.toggle('is-active',selected);tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1;if(selected&&focus)tab.focus()});
+    guidePanels.forEach(panel=>{const selected=panel.dataset.guidePanel===name;panel.classList.toggle('is-active',selected);panel.hidden=!selected});
+  }
+  guideTabs.forEach((tab,index)=>{
+    tab.addEventListener('click',()=>selectGuideTab(tab.dataset.guideTab));
+    tab.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();const next=event.key==='Home'?0:event.key==='End'?guideTabs.length-1:(index+(event.key==='ArrowRight'?1:-1)+guideTabs.length)%guideTabs.length;selectGuideTab(guideTabs[next].dataset.guideTab,true)});
+  });
+  selectGuideTab('install');
+  // Mac visitors see the Mac steps first.
   if (/Mac/i.test(navigator.platform || navigator.userAgent)) document.querySelector('.tab[data-t="mac"]').click();
-  // click a screenshot to see it full size
-  const lb = document.getElementById("lb"), lbImg = lb.querySelector("img");
-  document.querySelectorAll("img.zoom").forEach(i => i.addEventListener("click", () => { lbImg.src = i.src; lb.classList.add("on"); }));
-  lb.addEventListener("click", () => lb.classList.remove("on"));
-  document.addEventListener("keydown", e => { if (e.key === "Escape") lb.classList.remove("on"); });
+  // Image preview supports keyboard, a clear close control and focus restoration.
+  const lb = document.getElementById("lb"), lbImg = lb.querySelector("img"), lbClose = lb.querySelector('.lb-close');
+  let lastImageTrigger = null;
+  const openPreview = image => { lastImageTrigger = image; lbImg.src = image.currentSrc || image.src; lbImg.alt = image.alt; lb.classList.add('on'); lb.setAttribute('aria-hidden','false'); document.body.style.overflow = 'hidden'; lbClose.focus(); };
+  const closePreview = () => { lb.classList.remove('on'); lb.setAttribute('aria-hidden','true'); document.body.style.overflow = ''; lbImg.removeAttribute('src'); lastImageTrigger?.focus(); };
+  document.querySelectorAll("img.zoom").forEach(image => {
+    image.tabIndex = 0; image.setAttribute('role','button'); image.setAttribute('aria-label',`View ${image.alt} image larger`);
+    image.addEventListener('click', () => openPreview(image));
+    image.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openPreview(image); } });
+  });
+  lbClose.addEventListener('click', closePreview);
+  lb.addEventListener('click', event => { if (event.target === lb) closePreview(); });
+  document.addEventListener('keydown', event => {
+    if (!lb.classList.contains('on')) { if (event.key === 'Escape') { closeGuide(false); } return; }
+    if (event.key === 'Escape') closePreview();
+    if (event.key === 'Tab') { event.preventDefault(); lbClose.focus(); }
+  });
+  // Lightweight scroll feedback, disabled automatically for reduced-motion users.
+  const progress = document.querySelector('.progress');
+  const updateProgress = () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    progress.style.setProperty('--scroll', `${max > 0 ? (scrollY / max) * 100 : 0}%`);
+  };
+  addEventListener('scroll', updateProgress, { passive: true }); updateProgress();
+  // Keep a compact return-to-top control available after the user has scrolled.
+  const backTop = document.querySelector('.back-top');
+  const updateBackTop = () => backTop.classList.toggle('visible', scrollY > 500);
+  addEventListener('scroll', updateBackTop, { passive: true }); updateBackTop();
+  backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+  const experience=window.initSiteExperience();
+  window.initPluginFilmGallery?.(document.querySelector('.film-gallery'),experience.stop);
 </script>
 </body>
 </html>
