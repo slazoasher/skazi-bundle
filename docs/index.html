@@ -104,6 +104,12 @@
   .chip{font-size:12px;font-weight:600;color:#d6d6dc;background:#1c1c23;border:1px solid #2a2a33;border-radius:6px;padding:4px 9px}
   .chip.hot{color:#fff;background:rgba(225,6,0,.16);border-color:rgba(225,6,0,.4)}
 
+  /* promo video */
+  .promo{padding:70px 0 0}
+  .promo .head{margin-bottom:30px}
+  .promo .frame{max-width:1000px;margin:0 auto;border-radius:14px;padding:6px;background:var(--metal);box-shadow:0 40px 90px -30px rgba(225,6,0,.55),0 30px 60px -20px #000}
+  .promo video{display:block;width:100%;height:auto;aspect-ratio:16/9;border-radius:9px;background:#000}
+
   /* new in this update */
   .news .grid{grid-template-columns:repeat(3,1fr);gap:16px}
   .news .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:6px}
@@ -188,7 +194,7 @@
 <nav>
   <div class="wrap">
     <a class="logo" href="#top"><img src="img/skazi-logo.png?v=3" alt="SKAZI" width="474" height="256"></a>
-    <div class="links"><a href="#plugins">Plugins</a><a href="#install">Install</a><a href="#specs">Specs</a><a href="#faq">FAQ</a></div>
+    <div class="links"><a href="#watch">Watch</a><a href="#plugins">Plugins</a><a href="#install">Install</a><a href="#specs">Specs</a><a href="#faq">FAQ</a></div>
     <a class="btn btn-red btn-sm" href="#download">FREE DOWNLOAD</a>
   </div>
 </nav>
@@ -225,6 +231,13 @@
     <div class="stat"><b style="color:var(--red2)">FREE</b><span>DOWNLOAD · WIN &amp; MAC</span></div>
   </div>
 </div>
+
+<section class="promo" id="watch">
+  <div class="wrap">
+    <div class="head"><h2>WATCH: <span style="color:var(--red)">19 PLUGINS</span> IN 25 SECONDS</h2><p>Every plugin in the bundle, cut to "We Rise" by REBRN x Asher Swissa. Sound on.</p></div>
+    <div class="frame"><video src="video/skazi-bundle-promo.mp4" poster="img/promo-poster.jpg" controls playsinline preload="metadata" width="1920" height="1080"></video></div>
+  </div>
+</section>
 
 <section class="news" id="new">
   <div class="wrap">
