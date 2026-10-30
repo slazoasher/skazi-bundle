@@ -73,7 +73,7 @@
 
   /* stats */
   .stats{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg2)}
-  .stats .wrap{display:grid;grid-template-columns:repeat(4,1fr)}
+  .stats .wrap{display:grid;grid-template-columns:repeat(3,1fr)}
   .stat{padding:26px 10px;text-align:center;border-right:1px solid var(--line)}
   .stat:last-child{border-right:none}
   .stat b{display:block;font-family:"Bebas Neue",Impact,sans-serif;font-size:44px;font-weight:400;letter-spacing:1px;line-height:1}
@@ -162,8 +162,9 @@
     .hero .wrap{grid-template-columns:1fr}
     .grid,.two{grid-template-columns:1fr}
     .steps.on{grid-template-columns:1fr}
-    .stats .wrap{grid-template-columns:repeat(2,1fr)}
-    .stat:nth-child(2){border-right:none}
+    .stat{padding:20px 6px}
+    .stat b{font-size:30px}
+    .stat span{font-size:11px;display:block;line-height:1.3;margin-top:4px}
     nav .links{display:none}
   }
   @media (max-width:520px){ .btn{width:100%;justify-content:center} .shot .tag{right:6px} }
@@ -218,7 +219,7 @@
     </div>
     <div class="shot">
       <img src="img/bully.png?v=3" alt="BULLY wavetable synth" class="zoom">
-      <div class="tag"><b style="color:#ff2bd6">NEW</b> · BULLY synth · <b>FREE</b> · 8,600+ presets</div>
+      <div class="tag"><b style="color:#ff2bd6">NEW</b> · BULLY synth · <b>FREE</b></div>
     </div>
   </div>
 </header>
@@ -226,7 +227,6 @@
 <div class="stats">
   <div class="wrap">
     <div class="stat"><b>19</b><span>PLUGINS</span></div>
-    <div class="stat"><b>8,812</b><span>PRESETS</span></div>
     <div class="stat"><b>VST3 · AU</b><span>FORMATS</span></div>
     <div class="stat"><b style="color:var(--red2)">FREE</b><span>DOWNLOAD · WIN &amp; MAC</span></div>
   </div>
@@ -413,7 +413,7 @@
 
 <section class="final">
   <div class="wrap">
-    <div class="head"><h2>GET THE <span style="color:var(--red)">SKAZI</span> SOUND</h2><p>19 plugins. 8,812 presets. <b style="color:#fff">100% free download</b>, no account, no catch.</p></div>
+    <div class="head"><h2>GET THE <span style="color:var(--red)">SKAZI</span> SOUND</h2><p>19 plugins. <b style="color:#fff">100% free download</b>, no account, no catch.</p></div>
     <div class="ctas">
       <a class="btn btn-red" href="https://github.com/slazoasher/skazi-bundle/releases/latest/download/SKAZI.Bundle.Setup.exe">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.1 10.4 4v7.1H3zm0 13.8 7.4 1.1v-7H3zm8.3 1.2L21 21.5V13h-9.7zm0-16.2v7.2H21V2.5z"/></svg>
