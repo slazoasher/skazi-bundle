@@ -1,87 +1,109 @@
+<div align="center">
+
+![SKAZI Logo](Resources/skazi_logo.png)
+
 # SKAZI Bundle
 
-All SKAZI plugins by Asher Swissa in one place, and one installer for all of them.
+**All SKAZI plugins by Asher Swissa in one place — one installer for everything.**
+
 Every plugin uses the vendor name **SKAZI**, so DAWs list them together.
 
-| Folder | Plugin | Type |
-|---|---|---|
-| `SKAZI-Synth` | SKAZI | Psy / acid / VA synth: Virus-style supersaw unison and analog drift, wavetables (load your own WAV), FOLD/PWM/ASYM shaping, arpeggiator, step sequencer with per-step locks, 10 distortion types, full FX rack with FX filter and bass-mono width, PERFORM page (4 macros, A/B morph, kick duck, voice cards), RANDOM that rolls every section, BULLY skin, 3,650 presets |
-| `Shaksuka` | SHAKSUKA | Random chop & glitch FX |
-| `PitaPump` | PITA PUMP | Sidechain LFO tool |
-| `FilterFish` | The FilterFish | Filter FX |
-| `Subich` | SUBICH | Bass + sub bass synth: 2 osc, sub, 2 filters, 2 LFOs, wheels, 1000 presets |
-| `Bamba` | BAMBA | Riser & uplift maker: synth risers plus a Splice layer that finds your own riser/uplift samples (short/long, stretch to the bars), snare rolls and gated uplifts quantized 1/2 to 1/128 with an automatable RATE knob, mixer with FX sends, pitch up to +6 octaves with its own curve, 1 to 24 bars, 260 presets with impacts and FX in their own section |
-| `Tahini` | TAHINI | Space delay + reverb: 7 delay types (ping-pong, stereo, tape, digital, BBD, multi-tap, dual), resonant low/high cut and tape/tube/fuzz/crush drive inside the echo loop, pitch on the repeats (+-24 st, shimmer blend), reverse, tape stops, reverb with duck and freeze, 250 presets |
-| `Zhug` | ZHUG | Saturator + widener, 4x oversampled, multiband |
-| `Bully` | BULLY | Wavetable synth: 3 osc with dual warp, 2 filters, 10 LFOs, chaos, mod matrix, FX rack, arp, analog character (drift, saturation, boost, spread), SHARP 24 zero-delay-feedback ladder filter, 462 presets |
-| `Kickass` | KICKASS | Kick drum synth: two-stage pitch (snap + sweep), hold/decay, 3-band EQ, sample layer with a browser for your own Splice kicks, key track, 50 presets |
-| `TBON303` | SKAZI 303 (TBON 303) | Acid bass line synth: 303-style diode ladder filter with accent and slide, sub oscillator, 14 drive types, circuit mods, chorus/delay/reverb/widener, 16-step sequencer with pattern generator, screaming resonance (self-oscillates at the top of the knob), 544 presets incl. 32 HARD ACID |
-| `Salat` | SALAT | Glitch multi-FX: tempo-synced chopper (stutter, reverse, gate, tape stop, hold), drive, crush, resonant filter with synced LFO, ring mod, flanger/chorus, ping-pong delay, reverb, MAKE A SALAT randomizer, 104 presets |
-| `MidiGod` | MIDI GOD | MIDI pattern generator (instrument + MIDI out): 10 genres (full-on, prog psy, psy-tech, tech/deep/bass house, melodic/hard techno, trance, EDM) x 9 roles (bass, acid, lead, pluck, arp, chords, pad, counter, drums), key/scale/groove controls, ROLL BASS rolling-bass engine (styles, syncopation, kick avoid, octave jump, pitch dip, glide, groove, variation, evolve, mutate), drag the loop into the DAW as MIDI, audio to MIDI (melody, bass, drums, chords) that follows glides, resizable window, 126 presets |
-| `Kube` | KUBE | Psytrance wavetable synth: 24 KUBE-only tables (growl, yoy and more), Serum .wav wavetable import (drag and drop), 2 warp slots per oscillator (sync, bend, PWM, asym, mirror, flip, quantize, FM/AM/RM), 16-voice unison with blend, lime-on-black skin, 106 presets |
-| `Quazi` | QUAZI | 4-band distortion: Linkwitz-Riley crossover with draggable splits, SOFT/HARD/FUZZ/TUBE drive and level per band at 4x oversampling, phase-matched dry/wet mix, stereo width with MONO BASS, 3-band post EQ (low shelf, bell, high shelf), 104 presets |
-| `Skacid` | SKACID | Acid bassline synth (Special Shigaon Edition): 303-style voice with 24/18/12 dB and band filters, accent and slide, 16-step sequencer with chance, MUTATE, ratchet, swing and drift, SEQ/ARP/MIDI play modes, CRUNCH/FUZZ/FOLD/RECTIFY/CRUSH distortion, OTT, ping-pong delay and reverb, 129 presets |
-| `Skilter` | SKILTER | Morphing multimode filter: LP to BP to HP to notch morph, 12-48 dB slopes, analog-style resonance that self-oscillates, LFO, envelope follower and 16-step BPM-synced sequencer, tube/tape/hard drive pre or post, macro knob, 1x/2x/4x oversampling, Stereo/Mid-Side/Dual L-R, live spectrum and scope, RANDOM, 150 presets |
-| `Skwide` | SKWIDE | Phase-safe stereo imager: width 0-200% that never cancels in mono (everything goes into the side), 10-stage allpass MONO SPREAD for mono sources, PHASE wheel with drift, psychoacoustic DEPTH (near/far), LR4 LOW BYPASS and MONO BASS, Haas SUPER WIDE with 0-30 ms per side and a MONO SAFE mode, wet/dry MIX, frequency imager, Lissajous/polar scope with correlation and mono-sum readout, RANDOM, 70 presets |
-| `Skverb` | SKAZI REVERB | Mega reverb machine: 10 algorithms (hall, plate, room, chamber, cathedral, spring, shimmer, reverse, gated, blackhole) on an 8-line FDN, pre-delay with echo FEEDBACK and tempo SYNC, FREEZE, DUCK, DRIVE, shimmer pitch loop in any mode, REVERSE layer, resonant TAIL FILTER (LP/BP/HP with envelope sweep), width, rack-style panel with amber display, RANDOM, 75 presets |
+[![Windows](https://img.shields.io/badge/Windows-Setup.exe-red?logo=windows)](https://github.com/slazoasher/skazi-bundle/releases/latest)
+[![macOS](https://img.shields.io/badge/macOS-PKG-red?logo=apple)](https://github.com/slazoasher/skazi-bundle/releases/latest)
+[![Plugins](https://img.shields.io/badge/Plugins-19-blueviolet)](https://github.com/slazoasher/skazi-bundle)
+[![Presets](https://img.shields.io/badge/Presets-8%2C812-orange)](https://github.com/slazoasher/skazi-bundle)
+[![License](https://img.shields.io/badge/License-Free-green)](https://github.com/slazoasher/skazi-bundle)
+
+</div>
+
+---
+
+## 🎛️ Plugins
+
+| # | Folder | Plugin | Category | Presets |
+|---|--------|--------|----------|---------|
+| 1 | `SKAZI-Synth` | **SKAZI** | Psy / acid / VA synth | 3,650 |
+| 2 | `Bully` | **BULLY** | Wavetable synth | 462 |
+| 3 | `TBON303` | **SKAZI 303** | Acid bass line synth | 544 |
+| 4 | `Bamba` | **BAMBA** | Riser & uplift maker | 260 |
+| 5 | `Tahini` | **TAHINI** | Space delay + reverb | 250 |
+| 6 | `Subich` | **SUBICH** | Bass + sub bass synth | 1,000 |
+| 7 | `Zhug` | **ZHUG** | Saturator + widener | — |
+| 8 | `Salat` | **SALAT** | Glitch multi-FX | 104 |
+| 9 | `Kickass` | **KICKASS** | Kick drum synth | 50 |
+| 10 | `MidiGod` | **MIDI GOD** | MIDI pattern generator + audio to MIDI | 126 |
+| 11 | `Kube` | **KUBE** | Psytrance wavetable synth | 306 |
+| 12 | `Quazi` | **QUAZI** | 4-band distortion | 104 |
+| 13 | `Shaksuka` | **SHAKSUKA** | Random chop & glitch FX | 509 |
+| 14 | `PitaPump` | **PITA PUMP** | Sidechain LFO tool | 105 |
+| 15 | `FilterFish` | **The FilterFish** | Filter FX | 800 |
+| 16 | `Skacid` | **SKACID** | Acid bassline synth (Special Shigaon Edition) | 129 |
+| 17 | `Skilter` | **SKILTER** | Morphing multimode filter | 150 |
+| 18 | `Skwide` | **SKWIDE** | Phase-safe stereo imager | 70 |
+| 19 | `Skverb` | **SKAZI REVERB** | Mega reverb machine | 75 |
 
 `Common` holds the shared metal skin, knobs, preset bar and A/B code used by SUBICH, BAMBA, TAHINI, ZHUG, SALAT, MIDI GOD and QUAZI.
 
-Plugin IDs (manufacturer + plugin codes) are unchanged, so existing DAW projects keep loading them.
+> Plugin IDs (manufacturer + plugin codes) are unchanged, so existing DAW projects keep loading them.
 
-## Adding a new plugin (one click for everyone)
+---
 
-1. Put the plugin folder here with bundle-style CMake (JUCE 8.0.4, vendor "SKAZI", AU on Mac).
-2. Add it to `build_bundle.ps1`, `mac/build_mac.sh`, `mac/welcome.html`, `mac/Uninstall SKAZI Bundle.command`,
-   `BundleInstaller/SetupMain.cpp` and a row at the end of the table above.
-3. On the download page (`docs/index.html`), add its card **at the bottom of the list** (the newest plugin is always last;
-   BULLY stays first) and update the plugin and preset counts.
-4. Push to `main`. CI builds both installers and publishes them as the next release (v1.3, v1.4, ...).
-   The page's download buttons link to `releases/latest`, so they serve the new installer as soon as the release is up.
+## 📦 Adding a New Plugin
 
-## Build the installer (Windows)
+1. Put the plugin folder here with bundle-style CMake (JUCE 8.0.4, vendor **SKAZI**, AU on Mac).
+2. Add it to `build_bundle.ps1`, `mac/build_mac.sh`, `mac/welcome.html`, `mac/Uninstall SKAZI Bundle.command`, `BundleInstaller/SetupMain.cpp` and a row at the end of the table above.
+3. On the download page (`docs/index.html`), add its card **at the top of the list** (the newest plugin shows first) and update the plugin and preset counts.
+4. Push to `main`. CI builds both installers and publishes them as the next release (v1.3, v1.4, …). The page's download buttons link to `releases/latest`, so they serve the new installer as soon as the release is up.
+
+---
+
+## 🪟 Windows — Build the Installer
 
 Needs Visual Studio 2022 (C++ workload), CMake and Git.
 
-```
+```powershell
 powershell -ExecutionPolicy Bypass -File build_bundle.ps1
 ```
 
-Output: `dist\SKAZI Bundle Setup.exe`, plus every plugin's VST3 and app in `dist\Plugins`.
-JUCE is downloaded automatically (8.0.4 and 8.0.15, the versions each plugin was built with).
+**Output:** `dist\SKAZI Bundle Setup.exe`, plus every plugin's VST3 and app in `dist\Plugins`.  
+JUCE is downloaded automatically (8.0.4 and 8.0.15).  
 `-PluginsOnly` builds just the plugins, `-InstallerOnly` re-packs the last built plugins.
 
-## What the installer does
+### What the Installer Does
 
-- Lets you tick which plugins to install
-- VST3s go to `C:\Program Files\Common Files\VST3\SKAZI\`
-- Standalone apps go to `C:\Program Files\SKAZI\` with a SKAZI Start Menu folder (desktop shortcuts optional)
-- Removes older separate installs of the same plugins (SKAZI 1.2, SHAKSUKA, The FilterFish) so nothing shows up twice
-- Shows up as "SKAZI Bundle" in Windows "Add or remove programs"; the same exe uninstalls (`/uninstall`)
-- `/silent` installs everything without a window
+| Step | Description |
+|------|-------------|
+| 1 | Lets you tick which plugins to install |
+| 2 | VST3s go to `C:\Program Files\Common Files\VST3\SKAZI\` |
+| 3 | Standalone apps go to `C:\Program Files\SKAZI\` with a SKAZI Start Menu folder |
+| 4 | Removes older separate installs (SKAZI 1.2, SHAKSUKA, The FilterFish) so nothing shows up twice |
+| 5 | Shows up as **SKAZI Bundle** in "Add or remove programs"; the same exe uninstalls (`/uninstall`) |
+| 6 | `/silent` installs everything without a window |
 
-The installer is not code-signed, so Windows SmartScreen shows "Windows protected your PC":
-click **More info, then Run anyway**.
+> ⚠️ **SmartScreen:** The installer is not code-signed. Windows shows "Windows protected your PC" — click **More info → Run anyway**.
 
-## Logo
+---
 
-Save the SKAZI logo as `Resources\skazi_logo.png` (and in each plugin's `Resources` folder) and rebuild;
-until then a drawn stand-in is used.
-
-## Mac (OS X / macOS)
+## 🍎 Mac (OS X / macOS)
 
 `mac/build_mac.sh` builds all plugins for Apple Silicon + Intel and makes **`dist/SKAZI Bundle.pkg`**:
 
-- VST3 to `/Library/Audio/Plug-Ins/VST3/SKAZI/`
-- Audio Units to `/Library/Audio/Plug-Ins/Components/` (Logic, GarageBand, Ableton)
-- Apps to `/Applications/SKAZI/`, with **Uninstall SKAZI Bundle.command**
+| Target | Destination |
+|--------|-------------|
+| VST3 | `/Library/Audio/Plug-Ins/VST3/SKAZI/` |
+| Audio Units | `/Library/Audio/Plug-Ins/Components/` (Logic, GarageBand, Ableton) |
+| Apps | `/Applications/SKAZI/` (with **Uninstall SKAZI Bundle.command**) |
 
-It must run on a Mac (`bash mac/build_mac.sh`). Without a Mac, push this folder to GitHub:
-`.github/workflows/build-bundle.yml` builds the Mac `.pkg` and the Windows `.exe` on GitHub's
-machines; download them from the run's **Artifacts**.
+Run on a Mac: `bash mac/build_mac.sh`. Without a Mac, push to GitHub — `.github/workflows/build-bundle.yml` builds the Mac `.pkg` and Windows `.exe` on GitHub's machines; download from the run's **Artifacts**.
 
-The Mac installer is not signed with an Apple Developer ID, so the first time macOS blocks it:
-right-click the `.pkg`, choose **Open**, then **Open** again (or System Settings > Privacy & Security > Open Anyway).
+> ⚠️ **Gatekeeper:** The Mac installer is not signed with an Apple Developer ID. First time macOS blocks it — right-click the `.pkg` → **Open** → **Open** again (or System Settings → Privacy & Security → Open Anyway).
 
-Before pushing to GitHub, remove the `SKAZI-Synth/.git` folder from this copy (the full history stays
-in `Documents\ACIDANCE\ACIDANCE`), otherwise GitHub treats it as an empty sub-project.
+> 💡 Before pushing to GitHub, remove the `SKAZI-Synth/.git` folder from this copy (full history stays in `Documents\ACIDANCE\ACIDANCE`), otherwise GitHub treats it as an empty sub-project.
+
+---
+
+<div align="center">
+
+*Built with JUCE 8 · VST3 / AU · Windows & macOS*
+
+</div>
