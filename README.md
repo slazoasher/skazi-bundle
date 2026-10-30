@@ -8,7 +8,7 @@ Every plugin uses the vendor name **SKAZI**, so DAWs list them together.
 | `SKAZI-Synth` | SKAZI | Psy / acid / VA synth: Virus-style supersaw unison and analog drift, wavetables (load your own WAV), FOLD/PWM/ASYM shaping, arpeggiator, step sequencer with per-step locks, 10 distortion types, full FX rack with FX filter and bass-mono width, PERFORM page (4 macros, A/B morph, kick duck, voice cards), RANDOM that rolls every section, BULLY skin, 3,650 presets |
 | `Shaksuka` | SHAKSUKA | Random chop & glitch FX |
 | `PitaPump` | PITA PUMP | Sidechain LFO tool |
-| `FilterFish` | The FilterFish | Filter FX |
+| `FilterFish` | The FilterFish | Filter FX: morphing filter with LFO and envelope, distortion, glitch, chorus, flanger, tempo-synced delay, reverb with 11 types (CLASSIC plus the SKAZI REVERB hall, plate, room, chamber, cathedral, spring, shimmer, reverse, gated, blackhole) with decay and pre-delay, inflator, ON/OFF switch, 800 presets |
 | `Subich` | SUBICH | Bass + sub bass synth: 2 osc, sub, 2 filters, 2 LFOs, wheels, 1000 presets |
 | `Bamba` | BAMBA | Riser & uplift maker: synth risers plus a Splice layer that finds your own riser/uplift samples (short/long, stretch to the bars), snare rolls and gated uplifts quantized 1/2 to 1/128 with an automatable RATE knob, mixer with FX sends, pitch up to +6 octaves with its own curve, 1 to 24 bars, 260 presets with impacts and FX in their own section |
 | `Tahini` | TAHINI | Space delay + reverb: 7 delay types (ping-pong, stereo, tape, digital, BBD, multi-tap, dual), resonant low/high cut and tape/tube/fuzz/crush drive inside the echo loop, pitch on the repeats (+-24 st, shimmer blend), reverse, tape stops, reverb with duck and freeze, 250 presets |
