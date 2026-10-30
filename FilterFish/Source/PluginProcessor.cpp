@@ -23,7 +23,10 @@ void GlitchMagmaProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
     chorus.prepare (spec);
     flanger.prepare (spec);
     reverb.prepare (spec);
+    spaces.prepare (sampleRate);
     dryBuffer.setSize ((int) numCh, samplesPerBlock);
+    for (auto* b : { &classicBuffer, &spaceWet, &bypassDry })
+        b->setSize (2, samplesPerBlock);
     resetDsp();
 
     auto value = [this] (const char* id) { return apvts.getRawParameterValue (id)->load(); };
@@ -33,6 +36,11 @@ void GlitchMagmaProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
     outGainSm.setCurrentAndTargetValue (juce::Decibels::decibelsToGain (value (ids::outGain)));
     mixSm.setCurrentAndTargetValue (value (ids::mix));
     filterMixSm.setCurrentAndTargetValue (value (ids::filterMix));
+    classicBlend.reset (sampleRate, 0.03);
+    classicBlend.setCurrentAndTargetValue (value (ids::reverbType) < 0.5f ? 1.0f : 0.0f);
+    bypassBlend.reset (sampleRate, 0.02);
+    bypassBlend.setCurrentAndTargetValue (value (ids::bypass) > 0.5f ? 1.0f : 0.0f);
+    fullyBypassed = bypassBlend.getCurrentValue() >= 1.0f;
     cutoffSm.reset (sampleRate, 0.03);
     cutoffSm.setCurrentAndTargetValue (value (ids::cutoff));
 
@@ -50,6 +58,8 @@ void GlitchMagmaProcessor::resetDsp()
     chorus.reset();
     flanger.reset();
     reverb.reset();
+    spaces.reset();
+    spacesIdle = true;
     env = 0.0f;
 }
 
@@ -74,6 +84,24 @@ void GlitchMagmaProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
 
     float* L = buffer.getWritePointer (0);
     float* R = numCh > 1 ? buffer.getWritePointer (1) : nullptr;
+
+    // ---- ON/OFF: a short crossfade to the untouched input; fully off skips all the processing
+    for (auto* b : { &classicBuffer, &spaceWet, &bypassDry })
+        if (b->getNumSamples() < numSamples)
+            b->setSize (2, numSamples, false, false, true);
+    bypassBlend.setTargetValue (apvts.getRawParameterValue (ids::bypass)->load() > 0.5f ? 1.0f : 0.0f);
+    if (bypassBlend.getCurrentValue() >= 1.0f && bypassBlend.getTargetValue() >= 1.0f)
+    {
+        fullyBypassed = true;
+        return;   // the buffer already holds the input
+    }
+    if (fullyBypassed)
+    {
+        resetDsp();   // coming back on: no stale echoes or tails from before it was switched off
+        fullyBypassed = false;
+    }
+    for (int ch = 0; ch < numCh; ++ch)
+        bypassDry.copyFrom (ch, 0, buffer, ch, 0, numSamples);
 
     auto param = [this] (const char* id) { return apvts.getRawParameterValue (id)->load(); };
     auto on    = [&] (const char* id) { return param (id) > 0.5f; };
@@ -199,16 +227,9 @@ void GlitchMagmaProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
     }
 
     if (on (ids::reverbOn))
-    {
-        juce::Reverb::Parameters rp;
-        rp.roomSize = param (ids::reverbSize);
-        rp.damping  = param (ids::reverbDamp);
-        rp.wetLevel = param (ids::reverbMix);
-        rp.dryLevel = 1.0f - rp.wetLevel;
-        rp.width    = 1.0f;
-        reverb.setParameters (rp);
-        reverb.process (context);
-    }
+        processReverb (buffer, numCh, numSamples);
+    else
+        classicBlend.setCurrentAndTargetValue (index (ids::reverbType) == 0 ? 1.0f : 0.0f);
 
     // ---- Inflator
     if (on (ids::inflateOn))
@@ -253,6 +274,84 @@ void GlitchMagmaProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
         resetDsp();
     }
     fader.process (buffer, getSampleRate());
+
+    // ---- ON/OFF crossfade
+    if (bypassBlend.isSmoothing() || bypassBlend.getCurrentValue() > 0.0f)
+        for (int i = 0; i < numSamples; ++i)
+        {
+            const float b = bypassBlend.getNextValue();
+            for (int ch = 0; ch < numCh; ++ch)
+            {
+                auto* out = buffer.getWritePointer (ch);
+                out[i] += (bypassDry.getSample (ch, i) - out[i]) * b;
+            }
+        }
+}
+
+// CLASSIC is JUCE's reverb (the original FilterFish sound); the other types run the SKAZI REVERB engine.
+// Switching type crossfades between the two over 30 ms.
+void GlitchMagmaProcessor::processReverb (juce::AudioBuffer<float>& buffer, int numCh, int numSamples)
+{
+    auto param = [this] (const char* id) { return apvts.getRawParameterValue (id)->load(); };
+    const int type = juce::jlimit (0, reverbTypeNames().size() - 1, (int) param (ids::reverbType));
+    const float mix = param (ids::reverbMix);
+    classicBlend.setTargetValue (type == 0 ? 1.0f : 0.0f);
+    const bool runClassic = type == 0 || classicBlend.getCurrentValue() > 0.0f;
+    const bool runSpaces  = type != 0 || classicBlend.getCurrentValue() < 1.0f;
+
+    float* L = buffer.getWritePointer (0);
+    float* R = numCh > 1 ? buffer.getWritePointer (1) : L;
+
+    if (runClassic)
+    {
+        for (int ch = 0; ch < numCh; ++ch)
+            classicBuffer.copyFrom (ch, 0, buffer, ch, 0, numSamples);
+        juce::Reverb::Parameters rp;
+        rp.roomSize = param (ids::reverbSize);
+        rp.damping  = param (ids::reverbDamp);
+        rp.wetLevel = mix;
+        rp.dryLevel = 1.0f - mix;
+        rp.width    = 1.0f;
+        reverb.setParameters (rp);
+        auto block = juce::dsp::AudioBlock<float> (classicBuffer).getSubsetChannelBlock (0, (size_t) numCh).getSubBlock (0, (size_t) numSamples);
+        juce::dsp::ProcessContextReplacing<float> context (block);
+        reverb.process (context);
+    }
+
+    if (runSpaces)
+    {
+        if (spacesIdle)
+        {
+            spaces.reset();
+            spacesIdle = false;
+        }
+        verb::Settings s;
+        s.mode       = type == 0 ? verb::hall : type - 1;
+        s.decay      = param (ids::reverbDecay);
+        s.preDelayMs = param (ids::reverbPreDelay);
+        s.size       = param (ids::reverbSize);
+        s.damping    = param (ids::reverbDamp);
+        s.lowCut     = 60.0f;
+        s.highCut    = 16000.0f;
+        spaces.process (L, R, spaceWet.getWritePointer (0), spaceWet.getWritePointer (1), numSamples, s);
+    }
+    else
+        spacesIdle = true;
+
+    const float* wetL = spaceWet.getReadPointer (0);
+    const float* wetR = spaceWet.getReadPointer (1);
+    for (int i = 0; i < numSamples; ++i)
+    {
+        const float c = classicBlend.getNextValue();
+        for (int ch = 0; ch < numCh; ++ch)
+        {
+            float* out = buffer.getWritePointer (ch);
+            // x2.5 puts the SKAZI REVERB tails at about the CLASSIC level for the same MIX
+            const float space = runSpaces ? out[i] * (1.0f - mix) + (ch == 0 ? wetL[i] : wetR[i]) * mix * 2.5f : 0.0f;
+            const float classic = runClassic ? classicBuffer.getSample (ch, i) : 0.0f;
+            out[i] = classic * c + space * (1.0f - c);
+        }
+    }
 }
 
 int GlitchMagmaProcessor::getNumPrograms() { return presets::numPrograms; }

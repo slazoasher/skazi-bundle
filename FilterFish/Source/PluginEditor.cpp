@@ -376,10 +376,17 @@ ModulePanel::ModulePanel (APVTS& s, String t, Colour a, const char* powerParam)
     }
 }
 
-void ModulePanel::add (std::unique_ptr<Component> comp, int w, int h)
+void ModulePanel::add (std::unique_ptr<Component> comp, int w, int h, const String& id)
 {
     addAndMakeVisible (*comp);
-    items.push_back ({ std::move (comp), w, h });
+    items.push_back ({ std::move (comp), w, h, id });
+}
+
+void ModulePanel::setDimmed (const char* paramId, bool dimmed)
+{
+    for (auto& it : items)
+        if (it.id == paramId)
+            it.comp->setAlpha (dimmed ? 0.35f : 1.0f);
 }
 
 ModulePanel& ModulePanel::big (const char* id, const String& text)
@@ -391,19 +398,19 @@ ModulePanel& ModulePanel::big (const char* id, const String& text)
 
 ModulePanel& ModulePanel::knob (const char* id, const String& text)
 {
-    add (std::make_unique<Knob> (state, id, text, accent, false), 64, 80);
+    add (std::make_unique<Knob> (state, id, text, accent, false), 64, 80, id);
     return *this;
 }
 
 ModulePanel& ModulePanel::choice (const char* id, const String& text)
 {
-    add (std::make_unique<ChoiceItem> (state, id, text), 96, 44);
+    add (std::make_unique<ChoiceItem> (state, id, text), 96, 44, id);
     return *this;
 }
 
 ModulePanel& ModulePanel::toggle (const char* id, const String& text)
 {
-    add (std::make_unique<ToggleItem> (state, id, text, accent), 108, 34);
+    add (std::make_unique<ToggleItem> (state, id, text, accent), 108, 34, id);
     return *this;
 }
 
@@ -578,7 +585,8 @@ GlitchMagmaEditor::GlitchMagmaEditor (GlitchMagmaProcessor& p)
     flangerPanel.knob (ids::flangerRate, "RATE").knob (ids::flangerDepth, "DEPTH").knob (ids::flangerFeedback, "FEEDBACK").knob (ids::flangerMix, "MIX");
     delayPanel.toggle (ids::delaySync, "SYNC").choice (ids::delayDiv, "DIVISION").knob (ids::delayTime, "TIME")
               .knob (ids::delayFeedback, "FEEDBACK").toggle (ids::delayPingPong, "PING PONG").knob (ids::delayMix, "MIX");
-    reverbPanel.knob (ids::reverbSize, "SIZE").knob (ids::reverbDamp, "DAMP").knob (ids::reverbMix, "MIX");
+    reverbPanel.choice (ids::reverbType, "TYPE").knob (ids::reverbSize, "SIZE").knob (ids::reverbDecay, "DECAY")
+               .knob (ids::reverbPreDelay, "PRE-DELAY").knob (ids::reverbDamp, "DAMP").knob (ids::reverbMix, "MIX");
     inflatePanel.knob (ids::inflateAmount, "EFFECT").knob (ids::inflateCurve, "CURVE");
 
     for (auto* panel : { &lfoPanel, &filterPanel, &masterPanel, &distPanel, &glitchPanel, &chorusPanel,
@@ -608,6 +616,15 @@ GlitchMagmaEditor::GlitchMagmaEditor (GlitchMagmaProcessor& p)
     for (auto* b : { &prevButton, &nextButton })
         b->setColour (TextButton::buttonColourId, Colour (0xff6a7078));
     randomButton.onClick = [this] { proc.randomize(); refreshPresetBox(); };
+
+    // ON/OFF: lit means the plugin is on. The parameter underneath is the host's bypass, so it's inverted here.
+    powerButton.setColour (ToggleButton::tickColourId, Colour (0xff4cff7a));
+    powerButton.setTooltip ("Switch The FilterFish on or off (the same as your DAW's bypass)");
+    powerAttachment = std::make_unique<ParameterAttachment> (*p.apvts.getParameter (ids::bypass),
+        [this] (float bypassed) { powerButton.setToggleState (bypassed < 0.5f, dontSendNotification); });
+    powerButton.onClick = [this] { powerAttachment->setValueAsCompleteGesture (powerButton.getToggleState() ? 0.0f : 1.0f); };
+    powerAttachment->sendInitialUpdate();
+    addAndMakeVisible (powerButton);
     for (auto* c : std::initializer_list<Component*> { &presetBox, &prevButton, &nextButton, &randomButton })
         addAndMakeVisible (c);
 
@@ -650,6 +667,15 @@ void GlitchMagmaEditor::timerCallback()
         cutoffKnob->slider.repaint();
     }
     lfoDisplay.repaint();
+
+    // Grey out what the current settings ignore
+    auto value = [this] (const char* id) { return proc.apvts.getRawParameterValue (id)->load(); };
+    const bool delaySynced = value (ids::delaySync) > 0.5f;
+    delayPanel.setDimmed (ids::delayTime, delaySynced);
+    delayPanel.setDimmed (ids::delayDiv, ! delaySynced);
+    const bool classic = value (ids::reverbType) < 0.5f;
+    reverbPanel.setDimmed (ids::reverbDecay, classic);
+    reverbPanel.setDimmed (ids::reverbPreDelay, classic);
 
     if (proc.presetVersion.load() != lastPresetVersion)
         refreshPresetBox();
@@ -710,6 +736,8 @@ void GlitchMagmaEditor::resized()
     nextButton.setBounds (header.removeFromRight (46).reduced (2, 6));
     presetBox.setBounds (header.removeFromRight (jmin (460, header.getWidth() - 50)).reduced (2, 9));
     prevButton.setBounds (header.removeFromRight (46).reduced (2, 6));
+    header.removeFromRight (10);
+    powerButton.setBounds (header.removeFromRight (64).reduced (2, 9));
     r.removeFromTop (gap);
 
     auto top = r.removeFromTop (roundToInt ((float) r.getHeight() * 0.47f));
@@ -742,5 +770,5 @@ void GlitchMagmaEditor::resized()
     auto row1 = r.removeFromTop ((r.getHeight() - gap) / 2);
     r.removeFromTop (gap);
     layoutRow (row1, { { &distPanel, 0.21f }, { &glitchPanel, 0.37f }, { &chorusPanel, 0.19f }, { &flangerPanel, 0.23f } });
-    layoutRow (r, { { &delayPanel, 0.45f }, { &reverbPanel, 0.27f }, { &inflatePanel, 0.28f } });
+    layoutRow (r, { { &delayPanel, 0.43f }, { &reverbPanel, 0.39f }, { &inflatePanel, 0.18f } });
 }

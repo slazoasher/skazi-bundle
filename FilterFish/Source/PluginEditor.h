@@ -89,14 +89,16 @@ public:
     ModulePanel& choice (const char* id, const juce::String& text);
     ModulePanel& toggle (const char* id, const juce::String& text);
     void setExtra (juce::Component* comp, int height);
+    // Greys out a control that does nothing in the current setting (it stays usable).
+    void setDimmed (const char* paramId, bool dimmed);
     Knob* getBig() const noexcept { return bigKnob.get(); }
 
     void paint (juce::Graphics&) override;
     void resized() override;
 
 private:
-    struct Item { std::unique_ptr<juce::Component> comp; int w, h; };
-    void add (std::unique_ptr<juce::Component> comp, int w, int h);
+    struct Item { std::unique_ptr<juce::Component> comp; int w, h; juce::String id; };
+    void add (std::unique_ptr<juce::Component> comp, int w, int h, const juce::String& id);
 
     APVTS& state;
     juce::String title;
@@ -139,6 +141,8 @@ private:
 
     juce::ComboBox presetBox;
     juce::TextButton prevButton { "<" }, nextButton { ">" }, randomButton { "RANDOM" };
+    juce::ToggleButton powerButton;                       // lit = plugin ON; drives the bypass parameter
+    std::unique_ptr<juce::ParameterAttachment> powerAttachment;
     juce::Rectangle<int> titleArea;
     juce::Image hullTexture;
 

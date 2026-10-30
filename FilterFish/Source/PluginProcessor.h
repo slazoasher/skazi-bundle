@@ -7,6 +7,7 @@
 #include "DSP/Lfo.h"
 #include "DSP/Glitch.h"
 #include "DSP/Effects.h"
+#include "DSP/ReverbDSP.h"
 
 class GlitchMagmaProcessor : public juce::AudioProcessor
 {
@@ -25,7 +26,8 @@ public:
     bool acceptsMidi() const override { return false; }
     bool producesMidi() const override { return false; }
     bool isMidiEffect() const override { return false; }
-    double getTailLengthSeconds() const override { return 8.0; }
+    double getTailLengthSeconds() const override { return 20.0; }
+    juce::AudioProcessorParameter* getBypassParameter() const override { return apvts.getParameter (ids::bypass); }
 
     int getNumPrograms() override;
     int getCurrentProgram() override { return currentProgram; }
@@ -60,6 +62,12 @@ private:
     fx::StereoDelay delay;
     juce::dsp::Chorus<float> chorus, flanger;
     juce::dsp::Reverb reverb;
+    verb::Engine spaces;                         // the SKAZI REVERB algorithms
+    juce::AudioBuffer<float> classicBuffer, spaceWet, bypassDry;
+    juce::SmoothedValue<float> classicBlend, bypassBlend;
+    bool spacesIdle = true, fullyBypassed = false;
+
+    void processReverb (juce::AudioBuffer<float>&, int numCh, int numSamples);
 
     juce::AudioBuffer<float> dryBuffer;
     juce::SmoothedValue<float> inGainSm, outGainSm, mixSm, filterMixSm;
