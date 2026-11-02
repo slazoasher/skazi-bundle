@@ -1,0 +1,55 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Compact studio regression QA</title>
+<style>body{font:14px system-ui;background:#111;color:#eee;margin:0}header{padding:16px;display:flex;gap:16px}button{padding:12px;font:inherit}pre{white-space:pre-wrap;padding:16px}iframe{width:100%;height:900px;border:0}</style>
+<header><button id="run">Check compact studio</button><span id="status">Ready</span></header><pre id="results"></pre><iframe id="site" title="Studio under test"></iframe>
+<script>
+document.querySelector('#run').onclick=async()=>{
+ const button=document.querySelector('#run'),frame=document.querySelector('#site'),status=document.querySelector('#status'),results=[];button.disabled=true;status.textContent='Running';
+ const check=(name,value)=>{results.push({name,pass:Boolean(value)});if(!value)throw Error(name);};
+ try{
+  sessionStorage.removeItem('skazi-studio-workspace-v1');
+  const loaded=new Promise(resolve=>frame.addEventListener('load',resolve,{once:true}));frame.src='../../?qa=39&intro=0';await loaded;
+  const doc=frame.contentDocument,win=frame.contentWindow,$=s=>doc.querySelector(s),wait=ms=>new Promise(r=>setTimeout(r,ms));await doc.fonts.ready;
+  const input=(selector,value)=>{const element=$(selector);element.dispatchEvent(new win.Event('focus'));element.value=String(value);element.dispatchEvent(new win.Event('input',{bubbles:true}));element.dispatchEvent(new win.Event('change',{bubbles:true}));};
+  const music=()=>JSON.stringify([...doc.querySelectorAll('[data-pattern] button,[data-level],[data-layer],[data-solo],[data-shape],#studio-tempo')].map(e=>[e.dataset,e.value,e.getAttribute('aria-pressed'),e.title]));
+  const heightClosed=$('#lab').offsetHeight;
+  check('Advanced is closed on a fresh visit',$('#studio-advanced').hidden&&$('#studio-advanced-toggle').getAttribute('aria-expanded')==='false');
+  check('Master spectrum remains visible outside Advanced',!$('#studio-advanced').contains($('#sound-canvas'))&&$('#sound-canvas').getBoundingClientRect().height>0);
+  const initial=music();$('#studio-advanced-toggle').click();check('Disclosure opens without changing music',!$('#studio-advanced').hidden&&music()===initial);
+  const heightExpanded=$('#lab').offsetHeight;
+  $('#studio-advanced-close').focus();$('#studio-advanced-close').click();check('Collapse returns focus and preserves music',doc.activeElement===$('#studio-advanced-toggle')&&music()===initial);
+  check('Hidden workspace has no rendered controls',[...$('#studio-advanced').querySelectorAll('button,input')].every(e=>!e.getClientRects().length));
+  input('[data-track-level="bass"]',47);check('Compact level updates mixer and dB readout',$('[data-level="bass"]').value==='47'&&$('[data-track-level-output="bass"]').value.includes('-13.1'));
+  await wait(0);check('Modified session is indicated',!$('#studio-edited').hidden);
+  $('[data-clip-track="acid"]').click();check('Clip opens correct Pattern context',!$('#studio-advanced').hidden&&$('#tab-pattern').getAttribute('aria-selected')==='true'&&$('[data-select-track="acid"]').getAttribute('aria-pressed')==='true'&&!$('[data-editor="acid"]').hidden);
+  const beforeClear=music();$('#pattern-clear').click();check('Clear removes selected track notes',[...$('[data-pattern="acid"]').children].every(b=>b.getAttribute('aria-pressed')==='false'));
+  const cleared=music();$('#note-undo').click();check('Undo restores notes',music()===beforeClear);$('#note-redo').click();check('Redo restores cleared pattern',music()===cleared);$('#note-undo').click();
+  $('[data-pattern="acid"] button[data-step="0"]').click();input('#note-velocity',28);check('Selected velocity is editable',$('#note-velocity-value').value==='28%');$('#note-undo').click();check('Slider edit has one undo entry',$('#note-velocity').value!=='28');$('#note-redo').click();check('Slider redo restores exact value',$('#note-velocity').value==='28');
+  $('#note-enabled').focus();$('#note-enabled').dispatchEvent(new win.KeyboardEvent('keydown',{key:'z',ctrlKey:true,bubbles:true,cancelable:true}));check('Scoped keyboard undo works',$('#note-velocity').value!=='28');
+  $('#note-redo').click();input('#note-velocity',31);check('New edit clears redo branch',$('#note-redo').disabled);
+  $('#tab-mixer').click();input('[data-level="bass"]',61);check('Detailed mixer synchronizes compact level',$('[data-track-level="bass"]').value==='61');
+  $('#tab-sound').click();check('Sound shows controls and selected plugin',!$('#panel-sound').hidden&&!$('[data-device="acid"]').hidden&&$('#panel-sound').contains($('[data-shape="drive"]')));
+  input('[data-shape="drive"]',39);input('[data-shape="master"]',42);const edited=music();$('#studio-advanced-close').click();$('#studio-advanced-toggle').click();check('Edits, levels and sound survive collapse',music()===edited);
+  // Capture the real export path and suppress only its download, within this QA frame.
+  const render=win.SkaziStudio.renderLoop,anchorClick=win.HTMLAnchorElement.prototype.click,exports=[];
+  win.HTMLAnchorElement.prototype.click=function(){if(!this.download?.endsWith('.wav'))anchorClick.call(this);};
+  win.SkaziStudio.renderLoop=async snapshot=>{const buffer=await render(snapshot);exports.push({snapshot:JSON.stringify(snapshot),bytes:new Uint8Array(win.SkaziStudio.wav(buffer))});return buffer;};
+  async function save(){const count=exports.length;$('#export-loop').click();const timeout=Date.now()+15000;while($('#export-loop').disabled&&Date.now()<timeout)await wait(25);check('WAV render completes '+(count+1),exports.length===count+1);}
+  await save();$('#studio-advanced-close').click();$('#studio-advanced-toggle').click();await save();
+  check('Actual export snapshot is unchanged by disclosure',exports[0].snapshot===exports[1].snapshot);
+  const pcmA=new DataView(exports[0].bytes.buffer),pcmB=new DataView(exports[1].bytes.buffer);let maxDelta=0,sumDelta=0,count=0;
+  for(let at=44;at<Math.min(pcmA.byteLength,pcmB.byteLength);at+=2){const delta=pcmA.getInt16(at,true)-pcmB.getInt16(at,true);maxDelta=Math.max(maxDelta,Math.abs(delta));sumDelta+=delta*delta;count++;}
+  results.push({renderComparison:{maxDeltaPcm:maxDelta,rmsDeltaPcm:Math.sqrt(sumDelta/count),sameLength:pcmA.byteLength===pcmB.byteLength}});
+  check('Rendered WAV remains equivalent within two PCM quantization steps',pcmA.byteLength===pcmB.byteLength&&maxDelta<=2);
+  win.SkaziStudio.renderLoop=render;win.HTMLAnchorElement.prototype.click=anchorClick;
+  $('#transport').click();await wait(1000);check('Audio starts',$('#transport').getAttribute('aria-label')==='Pause');const position=$('#daw-position').textContent;
+  $('#studio-advanced-close').click();await wait(350);check('Collapse does not pause or rewind transport',$('#transport').getAttribute('aria-label')==='Pause'&&$('#daw-position').textContent!==position);
+  $('#transport').click();await wait(50);const paused=$('#daw-position').textContent;$('#studio-advanced-toggle').click();$('#studio-advanced-close').click();check('Paused position survives disclosure',$('#transport').getAttribute('aria-label')==='Resume'&&$('#daw-position').textContent===paused);$('#reset-session').click();
+  $('#studio-advanced-toggle').click();$('#tab-mixer').click();const reloaded=new Promise(r=>frame.addEventListener('load',r,{once:true}));frame.contentWindow.location.reload();await reloaded;
+  check('Workspace state restores for this visit',!frame.contentDocument.querySelector('#studio-advanced').hidden&&frame.contentDocument.querySelector('#tab-mixer').getAttribute('aria-selected')==='true');
+  frame.contentDocument.querySelector('#studio-advanced-close').click();const reloadClosed=new Promise(r=>frame.addEventListener('load',r,{once:true}));frame.contentWindow.location.reload();await reloadClosed;
+  check('Closed workspace stays closed after reload',frame.contentDocument.querySelector('#studio-advanced').hidden);
+  frame.contentDocument.querySelector('#studio-advanced-toggle').click();check('Last panel is remembered even when restored closed',frame.contentDocument.querySelector('#tab-mixer').getAttribute('aria-selected')==='true');
+  results.push({heightClosed,heightExpanded,percentShorter:Math.round((1-heightClosed/heightExpanded)*100)});status.textContent='Complete';
+ }catch(error){results.push({error:String(error.stack||error)});status.textContent='Failed';}finally{document.querySelector('#results').textContent=JSON.stringify({version:39,results},null,2);button.disabled=false;}
+};
+</script></html>

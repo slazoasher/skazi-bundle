@@ -1,6 +1,6 @@
 # Website handoff — 2 November 2026
 
-The new design is the primary page at `docs/index.html`; `/demo/` uses the same client assets and remains available. This report covers revision 37 of the website. The branch is merged with upstream `main`; its FilterFish changes and promo assets are retained.
+The new design is the primary page at `docs/index.html`; `/demo/` uses the same client assets and remains available. The initial report covers revision 37; revision 38 and 39 follow-ups are recorded below. The branch is merged with upstream `main`; its FilterFish changes and promo assets are retained.
 
 ## What was verified
 
@@ -19,7 +19,7 @@ The new design is the primary page at `docs/index.html`; `/demo/` uses the same 
 
 ## Reproducing the checks
 
-Serve `docs/` with a static HTTP server, then open `/demo/qa/` and run **Run all 24 cases**. Open `/demo/qa/audio.html` for the native audio renders. The included axe distribution retains its MPL 2.0 license in `demo/qa/AXE-LICENSE.txt`.
+Serve `docs/` with a static HTTP server, then open `/demo/qa/` and run **Run all 28 cases**. Open `/demo/qa/audio.html` for the native audio renders. The included axe distribution retains its MPL 2.0 license in `demo/qa/AXE-LICENSE.txt`.
 
 ```powershell
 node docs/demo/tests/audio-lifecycle.cjs
@@ -40,3 +40,16 @@ Tested in the Chromium-based Codex browser on Windows. These results do not cons
 - The mobile menu's old direction.css values used brown-tinted text, background and border colors. Final computed open-state values are neutral: menu text `rgb(255,255,255)`, nav background `rgb(20,20,20)`, links `rgb(238,238,238)`, border `rgb(75,75,75)`. Hover/focus use neutral gray and `#e50914`. [Menu screenshot](mobile-menu-38.png).
 - The ticker now uses two equal measured cycles, including the joining gap. It fills wide viewports, measures again after font load or resize, and preserves progress when resized. Hover no longer pauses it. Intersection pausing, visual motion toggle and reduced motion remain. Copy is ordered: 19 FREE PLUGINS → PUBLIC SOURCE → MAKE YOUR SOUND → SKAZI.
 - `audio-lifecycle.cjs`, `opening-lifecycle.cjs`, `studio-sequence.cjs`, JS syntax and diff whitespace checks passed. Visual QA used the Chromium-based Codex browser at 320 × 700, 390 × 844, 844 × 390 and default desktop size. Physical device rotation, Safari/Firefox and a frame-by-frame capture of a full ticker loop were not tested.
+
+
+## Revision 39 — compact studio and Advanced workspace
+
+- The initial workspace keeps transport, five tracks with synchronized level controls and a compact live master spectrum visible. Detailed Pattern, Mixer and Sound panels are in a closed-by-default **Advanced** disclosure. Only one panel is shown at a time. At the checked desktop size, the initial studio is 685px high versus 1203px with Pattern open (43% shorter). This compares the two new states, not the previous release.
+- Clicking a clip opens Pattern for its track. Beat markers and a side inspector make pitch, velocity and length easier to read; the inspector stacks below the internally scrolling pattern on phones. Acid accent/slide, Clear and Reset remain available. Genuine per-track Redo accompanies Undo, with scoped Ctrl/Cmd+Z, Shift+Ctrl/Cmd+Z and Ctrl+Y shortcuts; typing and slider keys are not intercepted.
+- The Advanced open/closed state and selected panel are remembered for the visit, including reload while closed. Focus returns to the disclosure when a focused advanced control is collapsed. Hidden controls are absent from the rendered interface/tab order. The Edited indicator reflects musical changes, and compact/mixer levels address the same gain and solo routing.
+- Closing Advanced does not reset notes, controls, levels or playback. **29 browser workflow assertions passed**, including actual playback, pause-position preservation, undo/redo branching, mixer synchronization and UI-state restoration. Two actual WAV exports captured the same musical snapshot; output lengths matched with a maximum difference of one 16-bit PCM unit between independent Web Audio renders. The harness allows two units to account for render quantization. [Raw workflow results](qa/compact-workflow-39.json).
+- **28 axe-core 4.14 cases, zero reported violations:** compact, Mixer, Pattern, Sound, plugin dialog, installation/Windows notice and opening at 1440/768/390/320px. This rerun includes the new disclosure and larger inline-slider hit targets. [Raw accessibility results](qa/axe-39.json).
+- No document overflow at 320, 390, 768 or 1440px. The mobile transport has separate 44px playback, save and build controls with no BPM/export overlap. Timeline controls remain visible while scrolling; the landscape arrangement fits at 844×390 (777px container/content). Small-screen spectrum labels use the two readable endpoints. [Responsive measurements](qa/compact-responsive-39.json).
+- Both root and `/demo/` routes load the updated assets and plugin images. No captured warnings/errors in the final root preview. Three existing regression suites, JavaScript syntax and HTML ID/div checks passed. [Compact studio](compact-studio-39.png), [Advanced Pattern](advanced-pattern-39.png), [Mobile](compact-mobile-39.png).
+
+The change preserves the existing browser synthesis and native-audio request in PR 8. Original plugin samples, full draft recovery across reload, and additional mixer routing are later work rather than claims made by this update. The Chromium/physical-device/screen-reader/browser-zoom limits above still apply; these automated results are not WCAG certification.
