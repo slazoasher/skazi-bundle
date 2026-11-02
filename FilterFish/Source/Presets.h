@@ -37,7 +37,8 @@ inline void resetToDefaults (juce::AudioProcessorValueTreeState& state)
 {
     for (auto* p : state.processor.getParameters())
         if (auto* rp = dynamic_cast<juce::RangedAudioParameter*> (p))
-            rp->setValueNotifyingHost (rp->getDefaultValue());
+            if (rp->getParameterID() != ids::bypass)   // a preset never switches the plugin on or off
+                rp->setValueNotifyingHost (rp->getDefaultValue());
 }
 
 inline void generate (int bank, juce::Random& r, juce::AudioProcessorValueTreeState& state)
@@ -351,6 +352,14 @@ inline void randomizeAll (int bank, juce::Random& r, juce::AudioProcessorValueTr
         set (ids::reverbSize, rnd (0.3f, 0.95f));
         set (ids::reverbDamp, rnd (0.2f, 0.8f));
         set (ids::reverbMix, rnd (0.1f, 0.45f));
+        // Two in three get one of the SKAZI REVERB spaces instead of CLASSIC
+        if (r.nextInt (3) > 0)
+        {
+            const int type = 1 + r.nextInt (reverbTypeNames().size() - 1);
+            set (ids::reverbType, (float) type);
+            set (ids::reverbDecay, type == 10 ? logRnd (6.0f, 18.0f) : type == 9 ? rnd (0.25f, 0.8f) : logRnd (0.8f, 6.0f));
+            set (ids::reverbPreDelay, rnd (0.0f, 120.0f));
+        }
     }
     set (ids::inflateOn, on[6] ? 1.0f : 0.0f);
     if (on[6])

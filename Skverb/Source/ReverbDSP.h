@@ -614,6 +614,17 @@ namespace verb
             }
         }
 
+        // Silences every tail and line without reallocating; safe on the audio thread.
+        void reset()
+        {
+            for (auto& p : preDelay) p.clear();
+            for (auto& e : erLines) e.clear();
+            for (auto& t : echoTone) t.state = 0.0f;
+            activeMode = -1;   // the next process() rebuilds the mode and clears the tank
+            gateGain = 0.0f;
+            gateHold = 0;
+        }
+
         int getActiveMode() const noexcept { return activeMode; }
         float getGate() const noexcept { return activeMode == gated ? gateGain : 1.0f; }
 

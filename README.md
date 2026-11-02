@@ -36,11 +36,13 @@ Every plugin uses the vendor name **SKAZI**, so DAWs list them together.
 | 12 | `Quazi` | **QUAZI** | 4-band distortion | 104 |
 | 13 | `Shaksuka` | **SHAKSUKA** | Random chop & glitch FX | 509 |
 | 14 | `PitaPump` | **PITA PUMP** | Sidechain LFO tool | 105 |
-| 15 | `FilterFish` | **The FilterFish** | Filter FX | 800 |
+| 15 | `FilterFish` | **The FilterFish** | Filter FX · ON/OFF · 11 reverb types | 800 |
 | 16 | `Skacid` | **SKACID** | Acid bassline synth (Special Shigaon Edition) | 129 |
 | 17 | `Skilter` | **SKILTER** | Morphing multimode filter | 150 |
 | 18 | `Skwide` | **SKWIDE** | Phase-safe stereo imager | 70 |
 | 19 | `Skverb` | **SKAZI REVERB** | Mega reverb machine | 75 |
+
+**The FilterFish update:** ON/OFF switch, tempo-synced delay, and 11 reverb types: CLASSIC, hall, plate, room, chamber, cathedral, spring, shimmer, reverse, gated and blackhole, with decay and pre-delay.
 
 `Common` holds the shared metal skin, knobs, preset bar and A/B code used by SUBICH, BAMBA, TAHINI, ZHUG, SALAT, MIDI GOD and QUAZI.
 

@@ -64,6 +64,19 @@ if(EXISTS "${LOGO}")
     target_compile_definitions(FilterFish PRIVATE SKAZI_HAS_LOGO=1)
 endif()
 
+if(FILTERFISH_TESTS)
+    # Renders the editor to a PNG: FilterFishShot <out.png> [program]
+    juce_add_console_app(FilterFishShot PRODUCT_NAME "FilterFishShot")
+    target_sources(FilterFishShot PRIVATE tests/Shot.cpp Source/PluginProcessor.cpp Source/PluginEditor.cpp)
+    target_include_directories(FilterFishShot PRIVATE Source)
+    target_compile_definitions(FilterFishShot PRIVATE JucePlugin_Name="The FilterFish" JUCE_MODAL_LOOPS_PERMITTED=1 JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0)
+    target_link_libraries(FilterFishShot PRIVATE juce::juce_audio_utils juce::juce_dsp PUBLIC juce::juce_recommended_config_flags)
+    if(TARGET FilterFishLogo)
+        target_link_libraries(FilterFishShot PRIVATE FilterFishLogo)
+        target_compile_definitions(FilterFishShot PRIVATE SKAZI_HAS_LOGO=1)
+    endif()
+endif()
+
 target_link_libraries(FilterFish
     PRIVATE
         juce::juce_audio_utils

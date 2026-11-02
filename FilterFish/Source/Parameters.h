@@ -8,6 +8,7 @@ namespace ids
     inline constexpr const char* outGain = "outGain";
     inline constexpr const char* mix     = "mix";
     inline constexpr const char* width   = "width";
+    inline constexpr const char* bypass  = "bypass";   // the header ON/OFF switch, also the host's bypass
 
     // Filter
     inline constexpr const char* filterOn    = "filterOn";
@@ -67,6 +68,9 @@ namespace ids
     inline constexpr const char* reverbSize = "reverbSize";
     inline constexpr const char* reverbDamp = "reverbDamp";
     inline constexpr const char* reverbMix  = "reverbMix";
+    inline constexpr const char* reverbType     = "reverbType";
+    inline constexpr const char* reverbDecay    = "reverbDecay";
+    inline constexpr const char* reverbPreDelay = "reverbPreDelay";
 
     // Inflator
     inline constexpr const char* inflateOn     = "inflateOn";
@@ -141,6 +145,14 @@ inline const juce::StringArray& glitchRepeatNames()
 }
 
 inline constexpr int glitchRepeatValues[] = { 1, 2, 4, 8, 16 };
+
+// CLASSIC is the original FilterFish reverb; the rest are SKAZI REVERB algorithms (verb::Mode + 1).
+inline const juce::StringArray& reverbTypeNames()
+{
+    static const juce::StringArray s { "CLASSIC", "HALL", "PLATE", "ROOM", "CHAMBER", "CATHEDRAL",
+                                       "SPRING", "SHIMMER", "REVERSE", "GATED", "BLACKHOLE" };
+    return s;
+}
 
 inline juce::NormalisableRange<float> logRange (float lo, float hi)
 {
@@ -236,6 +248,13 @@ inline juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout
     addBool  (ids::inflateOn,     "Inflator On", false);
     addPct   (ids::inflateAmount, "Inflator Effect", 0.5f);
     addFloat (ids::inflateCurve,  "Inflator Curve", { -50.0f, 50.0f }, 0.0f, [] (float v, int) { return String (roundToInt (v)); });
+
+    // Added later, so they go last: hosts that number parameters keep their old automation.
+    addChoice (ids::reverbType,     "Reverb Type", reverbTypeNames(), 0);
+    addFloat  (ids::reverbDecay,    "Reverb Decay", logRange (0.2f, 20.0f), 2.5f,
+               [] (float v, int) { return String (v, v < 10.0f ? 2 : 1) + " s"; });
+    addFloat  (ids::reverbPreDelay, "Reverb Pre-Delay", { 0.0f, 500.0f }, 20.0f, msText);
+    addBool   (ids::bypass,         "Bypass", false);
 
     return layout;
 }
