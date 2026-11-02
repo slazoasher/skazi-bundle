@@ -1,0 +1,17 @@
+{
+  "kick": {
+    "plugin": "KICKASS", "name": "Website / Tight psy kick",
+    "notes": [33], "velocities": [48, 88, 120], "gateSeconds": 0.28, "tailSeconds": 0.22,
+    "parameters": {"start_hz": 2600, "punch_hz": 165, "end_hz": 65.40639, "key_track": true, "snap_ms": 2.5, "sweep_ms": 25, "hold_ms": 12, "decay_ms": 155, "sample_level": 0.16, "drive": 0.10, "eq_low_db": 0, "eq_mid_db": -1.5, "eq_high_db": 0.5, "level_db": -9}
+  },
+  "bass": {
+    "plugin": "SUBICH", "name": "Website / Rolling foundation",
+    "notes": {"from": 24, "to": 96, "step": 3}, "velocities": [48, 88, 120], "gateSeconds": 0.28, "tailSeconds": 0.16,
+    "parameters": {"osc_1_wave": "SQUARE", "osc_1_octave": 0, "osc_1_shape": 12, "osc_1_level": 72, "osc_2_level_fm_depth_when_fm_is_on": 0, "sub_wave": "SINE", "sub_octave": -1, "sub_level": 22, "noise": 0, "filter_1_type": "LP 24", "filter_1_cutoff_hz": 280, "filter_1_reso": 28, "filter_1_env": 68, "filter_1_drive": 24, "filter_1_key_track": 45, "filter_2_cutoff_hz": 28, "amp_attack_ms": 0.7, "amp_decay_ms": 130, "amp_sustain": 12, "amp_release_ms": 22, "filter_attack_ms": 0, "filter_decay_ms": 85, "filter_sustain": 2, "filter_release_ms": 25, "lfo_1_depth": 0, "lfo_2_depth": 0, "voice_mode": "MONO", "glide_ms": 0, "velocity": 75, "drive": 30, "volume_db": -6}
+  },
+  "acid": {
+    "plugin": "SKACID", "name": "Website / Resonant acid",
+    "notes": {"from": 24, "to": 96, "step": 3}, "velocities": [80, 112], "gateSeconds": 0.40, "tailSeconds": 0.20,
+    "parameters": {"play_mode": "MIDI", "wave": "SAW", "sub_osc": 12, "cutoff_hz": 780, "resonance": 68, "env_mod": 62, "decay_ms": 190, "accent": 65, "filter_drive": 22, "distortion": "CRUNCH", "dist_drive": 23, "dist_tone": 70, "dist_mix": 38, "delay_mix": 0, "reverb_mix": 0, "volume_db": -4, "amp_attack_ms": 2, "amp_decay_ms": 1000, "amp_sustain": 100, "amp_release_ms": 8, "lfo_depth": 0, "drift": 0, "ott_depth": 0}
+  }
+}

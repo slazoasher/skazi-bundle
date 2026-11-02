@@ -27,7 +27,7 @@ node docs/demo/tests/opening-lifecycle.cjs
 node docs/demo/tests/studio-sequence.cjs
 ```
 
-The root retains the existing Content Security Policy and social metadata. The studio is an original browser synthesizer; it does not run the native plugins or claim to reproduce their output. The master has a low-cut, compression, a soft saturation ceiling and output headroom. Processing and rendering use the browser's [Web Audio APIs](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext); gain changes use [scheduled smoothing](https://developer.mozilla.org/en-US/docs/Web/API/AudioParam/setTargetAtTime).
+The root retains the existing Content Security Policy and social metadata. The revision 37 studio used original browser synthesis. Revision 42, documented below, introduces recordings rendered from three native plugins while retaining browser processing for the remaining parts. The master has a low-cut, compression, a soft saturation ceiling and output headroom. Processing and rendering use the browser's [Web Audio APIs](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext); gain changes use [scheduled smoothing](https://developer.mozilla.org/en-US/docs/Web/API/AudioParam/setTargetAtTime).
 
 ## Limits
 
@@ -80,3 +80,19 @@ Reproduce the spacing checks at `/demo/qa/spacing.html` with **Check studio spac
 [Full-width Play](studio-ready-41.png) · [Split playback](studio-playing-41.png) · [Mobile](studio-mobile-41.png).
 
 [Hebrew product evolution plan](DAW-EVOLUTION.md) describes the next stages: durable session recovery, project files and session-wide history; independent bar editing/Piano Roll; original plugin audio and real mixer routing; accessibility and cross-browser usability work. Those future capabilities are explicitly separated from what revision 41 implements. The earlier Chromium/physical-device/native-screen-reader limits still apply.
+
+
+## Revision 42 — original native plugin voices
+
+Kick, Bass and Acid now use 128 recordings rendered from the actual KICKASS, SUBICH and SKACID Windows VST3 binaries in the official v1.15 release (source commit `58dced012df87ad3d977a49cc14685d5a01c1db0`). The installer was extracted as a ZIP payload without executing it or installing plugins system-wide. Its computed SHA256 matches the digest supplied by GitHub's release API. Binary/asset hashes, all native parameter values and per-sample offsets are recorded in [the manifest](../audio/native/manifest.json).
+
+- **128 native renders:** three Kick velocities; Bass MIDI 24–96 every three semitones at three velocities; Acid at the same pitches with native normal/accent recordings. All renders are finite and non-silent. Three stereo 48kHz/24-bit FLAC sprites total **1,974,441 bytes**. Round-trip decoding differs by at most one 24-bit quantization step. [Render report](../audio/native/render-report.json).
+- **Shared playback/export:** the same native-bank selector, velocity crossfades and note index are used live and in OfflineAudioContext. First Play/export loads the bank; concurrent loads share a promise, failed loads can be retried, and Kick/Bass/Acid never silently fall back to the old synthesized voices. The old synthetic implementations for these three channels were removed.
+- **Processing boundaries:** native VST3s run during the offline asset-rendering step, not inside the browser. Website-created patches are documented and are not claimed as factory presets or artist-approved settings. Browser processing handles nearby-note repitching, gate, slides, tone/drive/delay/mix; Space and percussion remain browser synthesis. TAHINI and SALAT are not yet native processors in this website. This is stated in the studio help and review guide. External concept-preview buttons remain concept previews.
+- **Master correction:** an 8Hz high-pass after nonlinear processing removes DC that appeared in the dense maximum-control render. Final output headroom is conservative. Eight actual offline renders cover the three profiles, maximum controls, dense maximum edits, explicit pitch/velocity/length/articulation edits full mute and alternating full-range pitches. All finite, no sample clipping; full mute is digital silence. Tested default peaks are about −3.59/−3.25/−6.22dBFS, with the dense maximum case about −1.32dBFS. [Raw measurements](qa/audio-render-42.json). These are sample peaks, not a true-peak/LUFS certification.
+- A real **stereo 44.1kHz/16-bit WAV export** was downloaded and inspected: 8.261 seconds, four bars plus the effects tail. [Listen to the native-voice sketch](studio-native-preview.wav).
+- The workflow export-equivalence check now bounds both peak error (four 16-bit PCM units) and RMS error (one unit) between independent Web Audio effect graphs. Equal musical snapshots and equal output lengths are still required; the precise comparison is reported rather than claiming bit-identical browser DSP.
+
+[Reproduction, pinned dependencies and musical limits](../tools/native-audio/README.md). The renderer uses the original native binaries; it does not recreate their DSP in Python. No installer, plugin binary or Python runtime is committed. Physical devices, Safari/Firefox and native screen readers remain outside this run's verification scope.
+
+Revision 42 regression results: **90 transport assertions, 72 layout cases, 29 workflow assertions, 28 axe-core cases with zero violations, and four Node suites passed**. The full-pitch stress case checks finite output, clipping and DC; its high-frequency adjacent-sample slope is reported rather than judged against the bass-pattern slope limit. [Studio screenshot](studio-native-42.png).

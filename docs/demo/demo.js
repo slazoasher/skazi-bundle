@@ -37,7 +37,7 @@ function setupAudio(){
  if(!ctx){ctx=new AudioContext();master=ctx.createGain();master.gain.value=studioControls.master/100;analyser=SkaziStudio.mastering(ctx,master,ctx.destination);
   for(const key of Object.keys(layers)){const gain=ctx.createGain();gain.gain.value=layers[key]?channelLevels[key]**2:0;const meter=ctx.createAnalyser();meter.fftSize=256;gain.connect(meter).connect(master);channelGains[key]=gain;channelAnalysers[key]=meter;channelMeterBuffers[key]=new Float32Array(256);meterSmoothing[key]=0;}
   studioEngine=SkaziStudio.create(ctx,channelGains,activeVoices,studioControls);$('#engine-rate').textContent=(ctx.sampleRate/1000).toFixed(1)+' kHz';
- }return ctx.resume();
+ }return Promise.all([ctx.resume(),SkaziStudio.loadVoices(ctx)]);
 }
 function schedule(){
  while(nextTime<ctx.currentTime+.1){
@@ -62,7 +62,7 @@ function setTransport(mode){
 async function startLoop(){
  if(running||starting||pausing)return false;
  const resume=paused;starting=true;const generation=++runGeneration;
- stopPreview();stopCompare();$('#transport').setAttribute('aria-busy','true');
+ stopPreview();stopCompare();$('#transport').setAttribute('aria-busy','true');if(!globalThis.SkaziNativeVoices?.ready()){$('#drop-status').textContent='Loading original plugin voices…';$('#transport .control-label').textContent='Loading…';}
  try{
   await setupAudio();if(generation!==runGeneration||document.hidden)return false;
   master.gain.cancelScheduledValues(ctx.currentTime);master.gain.setValueAtTime(studioControls.master/100,ctx.currentTime);
@@ -70,7 +70,7 @@ async function startLoop(){
   if(!resume){playStart=ctx.currentTime+.05;step=0;nextTime=playStart;}
   document.dispatchEvent(new Event('studio-audio-started'));
   schedule();timer=setInterval(schedule,25);$('#session-state').textContent='PLAYING';$('#lab').classList.add('is-playing');$('#lab').classList.remove('is-paused');
-  setTransport('pause');if(resume)$('#drop-status').textContent='Resumed. Keep shaping your sound.';return true;
+  setTransport('pause');$('#drop-status').textContent=resume?'Resumed. Keep shaping your sound.':'Native KICKASS · SUBICH · SKACID voices ready.';return true;
  }catch{if(generation===runGeneration){setTransport('retry');$('#drop-status').textContent='Audio could not start. Press Retry audio to try again.';}return false;}
  finally{if(generation===runGeneration){starting=false;$('#transport').removeAttribute('aria-busy');}}
 }
@@ -94,7 +94,7 @@ function stopLoop(){
  $$('.step-button').forEach(b=>b.classList.remove('current-step'));$$('[data-meter]').forEach(m=>m.style.setProperty('--meter-level','0%'));
  $('#lab').classList.remove('is-playing','is-paused');$('.rack-playhead').style.setProperty('--playhead','0');
  if(master){master.gain.cancelScheduledValues(ctx.currentTime);master.gain.setValueAtTime(.0001,ctx.currentTime);}
- cells.forEach(c=>c.classList.remove('active'));if(document.activeElement===$('#reset-session'))$('#transport').focus();setTransport('play');document.dispatchEvent(new Event('studio-audio-stopped'));
+ cells.forEach(c=>c.classList.remove('active'));if(document.activeElement===$('#reset-session'))$('#transport').focus({preventScroll:true});setTransport('play');document.dispatchEvent(new Event('studio-audio-stopped'));
 }
 $('#transport').onclick=()=>running?pauseLoop():starting?stopLoop():startLoop();$$('[data-layer]').forEach(b=>b.onclick=()=>{const key=b.dataset.layer;layers[key]=!layers[key];b.setAttribute('aria-pressed',String(layers[key]));b.title=(layers[key]?'Mute ':'Enable ')+key;updateLayers();});
 // A/B effect demonstration using the same source and a browser delay.
@@ -169,7 +169,7 @@ const patterns={kick:Array.from({length:16},(_,s)=>s%4===0),bass:Array.from({len
 $$('[data-pattern]').forEach(row=>{const key=row.dataset.pattern;patterns[key].forEach((on,i)=>{const b=document.createElement('button');b.className='step-button';b.type='button';b.dataset.step=String(i);b.setAttribute('aria-label',key+' step '+(i+1));b.setAttribute('aria-pressed',String(on));b.onclick=()=>{patterns[key][i]=!patterns[key][i];b.setAttribute('aria-pressed',String(patterns[key][i]));};row.append(b);});});
 $$('[data-level]').forEach(input=>input.oninput=()=>{const key=input.dataset.level,value=Number(input.value)/100;channelLevels[key]=value;if(channelGains[key])channelGains[key].gain.setTargetAtTime(layers[key]?value**2:0,ctx.currentTime,.015);document.querySelector('[data-level-output="'+key+'"]').textContent=value>0?(40*Math.log10(value)).toFixed(1)+' dB':'−∞ dB';});
 function updateDAWStep(s){$$('[data-pattern]').forEach(row=>{const key=row.dataset.pattern;[...row.children].forEach((b,i)=>b.classList.toggle('current-step',i===s));});}
-$('#reset-session').onclick=()=>{stopLoop();step=0;};
+$('#reset-session').onclick=()=>{stopLoop();step=0;$('#transport').focus({preventScroll:true});};
 updateLayers();
 function applySession(name,atTime){
  scheduledLayerTime=atTime||0;pendingTempo=null;cancelBuild();for(const key of Object.keys(noteEdits))noteEdits[key].fill(null);currentSession=name;const profile=SkaziStudio.profiles[name];

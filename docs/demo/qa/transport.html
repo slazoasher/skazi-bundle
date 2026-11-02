@@ -44,6 +44,6 @@ document.querySelector('#run').onclick=async()=>{
   }
   status.textContent='Complete';
  }catch(error){results.push({error:String(error.stack||error)});status.textContent='Failed';}
- finally{document.querySelector('#results').textContent=JSON.stringify({version:41,results},null,2);button.disabled=false;}
+ finally{document.querySelector('#results').textContent=JSON.stringify({version:42,results},null,2);button.disabled=false;}
 };
 </script></html>

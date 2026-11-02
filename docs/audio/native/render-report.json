@@ -1,0 +1,35 @@
+[
+  {
+    "track": "kick",
+    "samples": 3,
+    "seconds": 1.536,
+    "bytes": 18902,
+    "rawPeak": 0.3475834131240845,
+    "gain": 1.0,
+    "peakDb": -9.178819130115238,
+    "flacMaxError": 5.960464477539063e-08,
+    "finite": true
+  },
+  {
+    "track": "bass",
+    "samples": 75,
+    "seconds": 33.9,
+    "bytes": 784954,
+    "rawPeak": 0.2513103187084198,
+    "gain": 1.0,
+    "peakDb": -11.995793581421509,
+    "flacMaxError": 5.960464477539063e-08,
+    "finite": true
+  },
+  {
+    "track": "acid",
+    "samples": 50,
+    "seconds": 30.598958333333332,
+    "bytes": 1170585,
+    "rawPeak": 0.3553350269794464,
+    "gain": 1.0,
+    "peakDb": -8.987239600615485,
+    "flacMaxError": 5.960464477539063e-08,
+    "finite": true
+  }
+]
