@@ -208,3 +208,15 @@ const headerLayoutObserver=new ResizeObserver(queueHeaderActions);headerLayoutOb
 
 const winDownload=$('#windows-download'),winNote=$('#windows-note');if(winDownload&&winNote){winDownload.addEventListener('click',()=>{winNote.hidden=false;});winNote.querySelector('button').addEventListener('click',()=>{winNote.hidden=true;winDownload.focus();});}
 
+
+(() => {
+  const lab=document.querySelector('#lab'),hint=document.querySelector('#studio-rotate-hint');
+  if(!lab||!hint)return;
+  let visible=false;
+  let dismissed=sessionStorage.getItem('skazi-rotate-tip-dismissed')==='1';
+  const update=()=>{hint.hidden=dismissed||!visible||!matchMedia('(max-width: 650px) and (orientation: portrait)').matches;};
+  hint.querySelector('button').addEventListener('click',()=>{sessionStorage.setItem('skazi-rotate-tip-dismissed','1');dismissed=true;update();});
+  new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;update();},{threshold:.15}).observe(lab);
+  addEventListener('resize',update,{passive:true});
+})();
+

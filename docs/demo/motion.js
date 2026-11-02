@@ -34,8 +34,24 @@
   for(const id of ['#catalog','#featured']){const mount=document.querySelector(id);if(mount)contentObserver.observe(mount,{childList:true});}
   const ticker=document.querySelector('.ticker');
   const track=document.createElement('div');track.className='ticker-track';
-  const original=ticker.innerHTML;track.innerHTML=original+original;track.setAttribute('aria-hidden','true');
-  ticker.removeAttribute('aria-hidden');ticker.replaceChildren(track);
+  const original=ticker.innerHTML;
+  const cycle=document.createElement('div');cycle.className='ticker-cycle';cycle.innerHTML=original;
+  track.setAttribute('aria-hidden','true');ticker.replaceChildren(track);
+  const resizeTicker=()=>{
+    const previous=track.getAnimations()[0];
+    const progress=previous?.currentTime;
+    const oldDuration=previous?.effect.getComputedTiming().duration;
+    track.replaceChildren();
+    const first=cycle.cloneNode(true);track.append(first);
+    while(first.getBoundingClientRect().width<Math.max(ticker.clientWidth*1.5,900))first.append(...[...cycle.childNodes].map(node=>node.cloneNode(true)));
+    track.append(first.cloneNode(true));
+    track.style.setProperty('--ticker-distance',`${first.getBoundingClientRect().width}px`);
+    track.style.setProperty('--ticker-duration',`${first.getBoundingClientRect().width/65}s`);
+    if(progress!=null)requestAnimationFrame(()=>{const animation=track.getAnimations()[0];if(animation)animation.currentTime=((progress%oldDuration)/oldDuration)*animation.effect.getComputedTiming().duration;});
+  };
+  resizeTicker();
+  new ResizeObserver(resizeTicker).observe(ticker);
+  document.fonts.ready.then(resizeTicker);
   const motionToggle=document.createElement('button');motionToggle.className='motion-toggle';motionToggle.type='button';ticker.append(motionToggle);
   function setMotion(paused){
     motionPaused=paused;document.body.classList.toggle('motion-paused',paused);
