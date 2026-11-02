@@ -53,3 +53,16 @@ Tested in the Chromium-based Codex browser on Windows. These results do not cons
 - Both root and `/demo/` routes load the updated assets and plugin images. No captured warnings/errors in the final root preview. Three existing regression suites, JavaScript syntax and HTML ID/div checks passed. [Compact studio](compact-studio-39.png), [Advanced Pattern](advanced-pattern-39.png), [Mobile](compact-mobile-39.png).
 
 The change preserves the existing browser synthesis and native-audio request in PR 8. Original plugin samples, full draft recovery across reload, and additional mixer routing are later work rather than claims made by this update. The Chromium/physical-device/screen-reader/browser-zoom limits above still apply; these automated results are not WCAG certification.
+
+
+## Revision 40 — spacing and collision sweep
+
+The Mixer selection stripe previously touched the tab strip because both panels shared the same edge. Advanced tabs now have separated 44px buttons; the dock has an inset gutter, and mixer channels are individual bordered cards with 10px gaps. The first mixer card starts 29px below the tabs on desktop and 25px on phones. [Desktop proof](mixer-spacing-40.png) · [320px proof](mixer-mobile-spacing-40.png).
+
+Track rows now leave at least 6px between their power/solo controls and level sliders. Discrete transport, power/solo, articulation and Pattern editing actions have 8px gaps. The narrowest phones place session utility actions on a separate row to preserve readable presets and 44px controls. Advanced remains closed by default.
+
+- **72 layout cases passed:** compact, paused with Stop visible, help, edited acid Pattern, Mixer and Sound at 320×700, 360×780, 390×844, 650×800, 651×800, 768×1024, 900×900, 901×900, 1024×768, 1280×720, 1440×900 and 844×390.
+- The geometry audit checks control/control, text/control and text/text intersections, accounting for intentional internal scrolling and sticky track headers. No intersections above the 1px rounding tolerance and no document overflow were reported. This is a geometric check plus manual visual inspection, not a claim to verify every possible browser/font/hover state. [Raw spacing results](qa/spacing-40.json).
+- **28 accessibility cases passed with zero reported violations**, using the existing axe-core 4.14 suite against the new CSS. [Raw accessibility results](qa/axe-40.json). Arrow-key panel navigation was also checked at 320px; focus and selected panel move together.
+
+Reproduce the spacing checks at `/demo/qa/spacing.html` with **Check studio spacing**. Public audio/editing logic is unchanged; the layout harness starts and pauses playback to exercise the conditional Stop button. Testing remains Chromium on Windows rather than a physical-device or cross-browser certification.
