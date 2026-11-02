@@ -17,6 +17,38 @@ html:has(body.motion-paused){scroll-behavior:auto}
 .studio-shaping button:hover{background:#e50914;border-color:#e50914}
 .studio-shaping button:disabled{cursor:progress;opacity:.65}
 @media(max-width:800px){.studio-shaping{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 22px;padding:14px}.studio-shaping button{grid-column:1/-1}}
+.hero .hero-copy .actions>.button{justify-content:center;gap:12px}
+.hero-copy .actions svg.download-icon,.download-options svg.download-icon{display:block;width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+#download>.download-options .button{min-height:54px;min-width:220px;padding:14px 22px;gap:12px;justify-content:center;align-items:center;font:600 13px/1.3 Manrope,sans-serif}
+.artist-socials a:hover,.artist-socials a:focus-visible,.footer-socials a:hover,.footer-socials a:focus-visible{color:#e50914}
+.getting-started .steps h4 #selected-daw,.getting-started .steps>div>b{color:#e50914!important;transition:none;animation:none}
+.getting-started .steps h4 #selected-daw{font:700 19px/1.35 Manrope,sans-serif}
+.artist-socials a:hover,.artist-socials a:focus-visible{color:#fff}
+.artist-socials a:hover>svg,.artist-socials a:focus-visible>svg{color:#e50914}
+.getting-started .daw-choices [data-daw="Studio One"] img{border-radius:26%}
+.device-channel .device-open{left:auto;right:16px;top:16px;bottom:auto;width:40px;height:40px;opacity:0;pointer-events:none;transform:none;transition:opacity .2s,background .2s,border-color .2s}
+.device-channel:hover .device-open,.device-channel:focus-within .device-open{opacity:1;pointer-events:auto}
+.device-channel .device-open:hover,.device-channel .device-open:focus-visible{transform:none}
+.note-inspector{padding:18px 20px;border-top:1px solid #414141;background:#181818}
+.note-inspector-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}
+.note-inspector-heading b{font:600 13px Manrope,sans-serif;color:#f2f2f2}
+.note-inspector-heading p,.pattern-hint{margin:5px 0 0;font:400 11px/1.6 Manrope,sans-serif;color:#aaa}
+.pattern-tools,.acid-articulation{display:flex;gap:6px}
+.note-inspector button{min-height:40px;padding:0 12px;background:#252525;border:1px solid #555;border-radius:6px;color:#ddd;font:600 11px Manrope,sans-serif}
+.note-inspector button:hover{border-color:#e50914;background:#321719}
+.note-inspector button[aria-pressed=true]{background:#e50914;border-color:#e50914;color:#fff}
+.note-inspector button:disabled{opacity:.45;cursor:default}
+.note-controls{display:grid;grid-template-columns:auto repeat(3,minmax(80px,1fr)) auto;align-items:center;gap:22px}
+.note-controls label{display:grid;grid-template-columns:1fr auto;align-items:center;gap:3px 6px;font:600 11px Manrope,sans-serif;color:#ccc;min-width:0}
+.note-controls output{font-variant-numeric:tabular-nums;color:#eee}
+.note-controls input{grid-column:1/-1;width:100%;height:28px;margin:0;accent-color:#e50914;min-width:0}
+.note-controls [hidden]{display:none}
+.track-pattern .step-button.edit-selected{outline:2px solid #fff;outline-offset:-4px}
+.studio-workstation .step-button[aria-pressed=true]:before{opacity:var(--note-opacity,1)}
+.pattern-hint{margin-top:12px}
+@media(max-width:900px){.note-controls{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.note-inspector-heading{align-items:flex-start;flex-direction:column}.note-controls>button,.acid-articulation{grid-column:1/-1}.note-inspector{padding:16px 12px}}
+@media(max-width:650px){.hero .hero-wordmark{top:24px}.hero .hero-art{top:170px}.hero .hero-copy{padding-top:565px}#download>.download-options .button{min-width:0;width:100%;font-size:12px}.note-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.note-controls label:last-of-type{grid-column:1/-1}}
+@media(hover:none),(pointer:coarse){.device-channel .device-open{opacity:1;pointer-events:auto}}
 #collection .tool h3{display:block;color:var(--text);text-shadow:none;line-height:1.1}
 #collection .tool h3 .plugin-name-base{font:inherit;color:var(--text)}
 .plugin-name-accent{font:inherit;font-style:normal;color:#e50914}

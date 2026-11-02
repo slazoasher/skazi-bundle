@@ -1,0 +1,24 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>SKAZI audio render QA</title>
+<style>body{font:15px system-ui;background:#111;color:#eee}iframe{width:100%;height:300px;border:0}button,a{display:inline-block;padding:14px;color:inherit}pre{white-space:pre-wrap}</style>
+<button id="run">Render and measure the studio</button><span id="status">Ready</span><div id="downloads"></div><pre id="results"></pre><iframe id="site" src="../../?intro=0&amp;qa=36" title="Studio under test"></iframe>
+<script>
+document.querySelector('#run').onclick=async()=>{
+ const button=document.querySelector('#run'),status=document.querySelector('#status'),frame=document.querySelector('#site');button.disabled=true;status.textContent='Running';
+ try{
+  const win=frame.contentWindow,doc=frame.contentDocument;if(!win.SkaziStudio)throw Error('Wait for the studio to load.');
+  const reports=[];
+  function snapshot(session){doc.querySelector('[data-session="'+session+'"]').click();return {session,tempo:Number(doc.querySelector('#studio-tempo').value),layers:Object.fromEntries([...doc.querySelectorAll('[data-layer]')].map(b=>[b.dataset.layer,b.getAttribute('aria-pressed')==='true'])),patterns:Object.fromEntries([...doc.querySelectorAll('[data-pattern]')].map(row=>[row.dataset.pattern,[...row.children].map(b=>b.getAttribute('aria-pressed')==='true')])),levels:Object.fromEntries([...doc.querySelectorAll('[data-level]')].map(i=>[i.dataset.level,Number(i.value)/100])),controls:Object.fromEntries([...doc.querySelectorAll('[data-shape]')].map(i=>[i.dataset.shape,Number(i.value)]))};}
+  function measure(buffer,label){let peak=0,sum=0,dc=0,jump=0,difference=0,nonfinite=0,tail=0;const left=buffer.getChannelData(0),right=buffer.getChannelData(1);for(let i=0;i<left.length;i++){for(const data of [left,right]){const value=data[i];if(!Number.isFinite(value))nonfinite++;peak=Math.max(peak,Math.abs(value));sum+=value*value;dc+=value;if(i)jump=Math.max(jump,Math.abs(value-data[i-1]));if(i>left.length-buffer.sampleRate*.1)tail+=value*value;}difference+=(left[i]-right[i])**2;}const db=x=>20*Math.log10(Math.max(x,1e-12));return {label,seconds:buffer.duration,peakDb:db(peak),rmsDb:db(Math.sqrt(sum/(left.length*2))),mean:dc/(left.length*2),maxSampleJump:jump,stereoDifferenceRms:Math.sqrt(difference/left.length),tailDb:db(Math.sqrt(tail/(buffer.sampleRate*.2))),nonfinite,clipping:peak>=1};}
+  for(const session of ['roll','acid','minimal']){
+   const buffer=await win.SkaziStudio.renderLoop(snapshot(session));reports.push(measure(buffer,session));
+   const link=document.createElement('a');link.textContent='Download '+session+' WAV';link.href=URL.createObjectURL(new Blob([win.SkaziStudio.wav(buffer)],{type:'audio/wav'}));link.download='skazi-studio-'+session+'.wav';document.querySelector('#downloads').append(link);
+  }
+  const stress=snapshot('acid');stress.controls={master:100,drive:100,tone:100,space:100};for(const key of Object.keys(stress.levels))stress.levels[key]=1;reports.push(measure(await win.SkaziStudio.renderLoop(stress),'all controls maximum'));
+  const dense=structuredClone(stress);dense.noteEdits={};for(const key of Object.keys(dense.patterns)){dense.patterns[key].fill(true);dense.noteEdits[key]=Array.from({length:16},()=>({velocity:100,length:175}));}reports.push(measure(await win.SkaziStudio.renderLoop(dense),'dense edits at maximum'));
+  const edited=snapshot('acid');edited.noteEdits={acid:Array(16).fill(null)};edited.noteEdits.acid[3]={note:60};edited.noteEdits.acid[4]={note:72,velocity:28,length:165,accent:true,slide:true};reports.push(measure(await win.SkaziStudio.renderLoop(edited),'edited pitch velocity length and articulation'));
+  for(const key of Object.keys(stress.layers))stress.layers[key]=false;reports.push(measure(await win.SkaziStudio.renderLoop(stress),'all muted'));
+  const errors=reports.filter(r=>r.nonfinite||r.clipping||Math.abs(r.mean)>.003||r.maxSampleJump>.35).map(r=>r.label);if(reports.at(-1).peakDb> -200)errors.push('Muted output must be silent');
+  document.querySelector('#results').textContent=JSON.stringify({reports,errors},null,2);status.textContent=errors.length?'Review':'Complete';
+ }catch(error){document.querySelector('#results').textContent=error.stack;status.textContent='Failed';}finally{button.disabled=false;}
+};
+</script></html>

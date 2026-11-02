@@ -9,7 +9,7 @@ function fixture(){
  let resolveAudio,rejectAudio;const pending=new Promise((resolve,reject)=>{resolveAudio=resolve;rejectAudio=reject;});
  const elements=new Map(),timers=[],intervals=new Set(),events=[];
  const element=()=>({textContent:'',set innerHTML(value){this.textContent=value.replace(/<[^>]*>/g,'');},focus(){},classList:{add(){},remove(){},toggle(){}},style:{setProperty(){}},setAttribute(){},removeAttribute(){}});
- const scope={SkaziStudio:require('../studio-engine.js'),studioEngine:{play(){},reset(){}},studioControls:{master:65},currentSession:'roll',pendingSession:null,pendingTempo:null,buildBusy:false,running:false,starting:false,paused:false,pausing:false,activeVoices:new Set(),runGeneration:0,step:0,nextTime:0,timer:null,beat:60/138,playStart:0,
+ const scope={SkaziStudio:require('../studio-engine.js'),studioEngine:{play(){},reset(){}},studioControls:{master:65},currentSession:'roll',noteEdits:{},pendingSession:null,pendingTempo:null,buildBusy:false,running:false,starting:false,paused:false,pausing:false,activeVoices:new Set(),runGeneration:0,step:0,nextTime:0,timer:null,beat:60/138,playStart:0,
   ctx:{currentTime:1,suspend:()=>Promise.resolve()},master:{gain:{cancelScheduledValues(){},setValueAtTime(){},setTargetAtTime(){}}},
   setupAudio:()=>pending,stopPreview(){},stopCompare(){},cancelBuild(){},
   $:selector=>{if(!elements.has(selector))elements.set(selector,element());return elements.get(selector);},$$:()=>[],

@@ -1,0 +1,13 @@
+const assert=require('node:assert/strict');
+const {plan,midiHz,wav}=require('../studio-engine.js');
+const pattern={acid:Array(16).fill(true)},layers={acid:true};
+const first=plan('acid',0,4,pattern,layers)[0],fourth=plan('acid',3,4,pattern,layers)[0];
+assert.notEqual(first.note,fourth.note,'The last bar must develop the phrase');
+const edits={acid:Array(16).fill(null)};edits.acid[3]={note:60};edits.acid[4]={note:67,velocity:35,length:150,accent:true,slide:true};
+const edited=plan('acid',0,4,pattern,layers,edits)[0];
+assert.equal(edited.note,67);assert.equal(edited.previous,60);assert.equal(edited.velocity,.35);assert.equal(edited.length,1.5);assert.equal(edited.accent,true);assert.equal(edited.slide,true);
+assert.deepEqual(plan('acid',0,4,pattern,{acid:false},edits),[]);
+assert.ok(Math.abs(midiHz(69)-440)<1e-9);
+const bytes=wav({numberOfChannels:2,length:2,sampleRate:44100,getChannelData:()=>new Float32Array([.5,-.5])});
+const view=new DataView(bytes);assert.equal(view.getUint16(22,true),2);assert.equal(view.getUint32(24,true),44100);assert.equal(view.getUint32(40,true),8);assert.equal(view.getInt16(44,true),16384);
+console.log('PASS: phrase development, per-step pitch/velocity/length/articulation, slide source pitch, mute and stereo WAV encoding');

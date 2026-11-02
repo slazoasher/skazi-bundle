@@ -1,0 +1,89 @@
+{
+  "reports": [
+    {
+      "label": "roll",
+      "seconds": 8.260566893424036,
+      "peakDb": -6.018957862672316,
+      "rmsDb": -21.35581732679888,
+      "mean": 0.000008053207441165783,
+      "maxSampleJump": 0.05813950300216675,
+      "stereoDifferenceRms": 0.0004662242398031053,
+      "tailDb": -104.69057174093457,
+      "nonfinite": 0,
+      "clipping": false
+    },
+    {
+      "label": "acid",
+      "seconds": 8.075351473922902,
+      "peakDb": -6.022222079522138,
+      "rmsDb": -21.384977641910172,
+      "mean": 0.00000907911833471816,
+      "maxSampleJump": 0.061551108956336975,
+      "stereoDifferenceRms": 0.0017849747644375015,
+      "tailDb": -107.88737050693156,
+      "nonfinite": 0,
+      "clipping": false
+    },
+    {
+      "label": "minimal",
+      "seconds": 8.772743764172336,
+      "peakDb": -6.991172231336479,
+      "rmsDb": -21.79288898722238,
+      "mean": 0.000005082693896882888,
+      "maxSampleJump": 0.06401312351226807,
+      "stereoDifferenceRms": 0.0017956036051423967,
+      "tailDb": -125.6970356743353,
+      "nonfinite": 0,
+      "clipping": false
+    },
+    {
+      "label": "all controls maximum",
+      "seconds": 8.075351473922902,
+      "peakDb": -1.6235552757571459,
+      "rmsDb": -15.625921044363178,
+      "mean": 0.00008976121280271486,
+      "maxSampleJump": 0.18977107107639313,
+      "stereoDifferenceRms": 0.004853787419245004,
+      "tailDb": -89.38673921698653,
+      "nonfinite": 0,
+      "clipping": false
+    },
+    {
+      "label": "dense edits at maximum",
+      "seconds": 8.075351473922902,
+      "peakDb": -1.3681358716194385,
+      "rmsDb": -10.650273330385163,
+      "mean": 0.0005876830338019229,
+      "maxSampleJump": 0.1790906935930252,
+      "stereoDifferenceRms": 0.01400013507115596,
+      "tailDb": -70.81272327173015,
+      "nonfinite": 0,
+      "clipping": false
+    },
+    {
+      "label": "edited pitch velocity length and articulation",
+      "seconds": 8.075351473922902,
+      "peakDb": -6.02222881113358,
+      "rmsDb": -21.384408451442933,
+      "mean": 0.000008871835934160251,
+      "maxSampleJump": 0.061551012098789215,
+      "stereoDifferenceRms": 0.0017849844859233568,
+      "tailDb": -107.88750243443093,
+      "nonfinite": 0,
+      "clipping": false
+    },
+    {
+      "label": "all muted",
+      "seconds": 8.075351473922902,
+      "peakDb": -240,
+      "rmsDb": -240,
+      "mean": 0,
+      "maxSampleJump": 0,
+      "stereoDifferenceRms": 0,
+      "tailDb": -240,
+      "nonfinite": 0,
+      "clipping": false
+    }
+  ],
+  "errors": []
+}

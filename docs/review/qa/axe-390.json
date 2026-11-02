@@ -1,0 +1,1180 @@
+{
+  "width": 390,
+  "axeVersion": "4.14.0",
+  "reports": [
+    {
+      "state": "mixer",
+      "dialogOpen": false,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-valid-attr-value",
+          "count": 9,
+          "nodes": [
+            {
+              "target": [
+                "button[aria-label=\"Open SUBICH plugin details\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[aria-label=\"Open SKACID plugin details\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[aria-label=\"Open TAHINI plugin details\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"Skverb\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"Bully\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"SKAZI-Synth\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"Bamba\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[aria-label=\"Explore TAHINI plugin\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"TBON303\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            }
+          ]
+        },
+        {
+          "id": "color-contrast",
+          "count": 57,
+          "nodes": [
+            {
+              "target": [
+                ".hero-copy > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                ".ticker-track > span:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".studio-title > span:nth-child(2)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "span:nth-child(2) > b"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "#session-title"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".arranger-ruler > div > span:nth-child(1)"
+              ],
+              "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                ".arranger-ruler > div > span:nth-child(2)"
+              ],
+              "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(1) > span"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(1) > b"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(1) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(1) > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(1)"
+              ],
+              "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(1) > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(2)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(1) > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(1) > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(4)"
+              ],
+              "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+            },
+            {
+              "target": [
+                "output[data-level-output=\"kick\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".channel-selected > span"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".channel-selected > b"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".channel-selected > small"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".channel-selected > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(1)"
+              ],
+              "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                ".channel-selected > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(2)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".channel-selected > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".channel-selected > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(4)"
+              ],
+              "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+            },
+            {
+              "target": [
+                "output[data-level-output=\"bass\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(3) > span"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(3) > b"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(3) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(3) > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(1)"
+              ],
+              "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(3) > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(2)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(3) > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(3) > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(4)"
+              ],
+              "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+            },
+            {
+              "target": [
+                "output[data-level-output=\"acid\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(4) > span"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(4) > b"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(4) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(4) > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(1)"
+              ],
+              "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(4) > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(2)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(4) > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(4) > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(4)"
+              ],
+              "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+            },
+            {
+              "target": [
+                "output[data-level-output=\"space\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(5) > span"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(5) > b"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(5) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(5) > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(1)"
+              ],
+              "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(5) > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(2)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(5) > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".studio-channel:nth-child(5) > .studio-fader > .fader-scale[aria-hidden=\"true\"] > span:nth-child(4)"
+              ],
+              "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+            },
+            {
+              "target": [
+                "output[data-level-output=\"fx\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "#catalog-more > span"
+              ],
+              "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+            },
+            {
+              "target": [
+                ".instagram-poster > strong"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".instagram-poster > span:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".start-heading > .micro"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".start-heading > h3"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".start-heading > p"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".daw-choice-label"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".daw-choice-label > span"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "button[data-daw=\"Ableton Live\"] > i[aria-hidden=\"true\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+            },
+            {
+              "target": [
+                "#install-guide > details > summary"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            }
+          ]
+        }
+      ],
+      "passes": 49
+    },
+    {
+      "state": "pattern",
+      "dialogOpen": false,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-valid-attr-value",
+          "count": 9,
+          "nodes": [
+            {
+              "target": [
+                "button[aria-label=\"Open SUBICH plugin details\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[aria-label=\"Open SKACID plugin details\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[aria-label=\"Open TAHINI plugin details\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"Skverb\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"Bully\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"SKAZI-Synth\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"Bamba\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[aria-label=\"Explore TAHINI plugin\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"TBON303\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            }
+          ]
+        },
+        {
+          "id": "color-contrast",
+          "count": 20,
+          "nodes": [
+            {
+              "target": [
+                ".hero-copy > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                ".ticker-track > span:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".studio-title > span:nth-child(2)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "span:nth-child(2) > b"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "#session-title"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".arranger-ruler > div > span:nth-child(1)"
+              ],
+              "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                ".arranger-ruler > div > span:nth-child(2)"
+              ],
+              "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                "div[data-editor=\"bass\"] > .pattern-key > b"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "div[data-editor=\"bass\"] > .pattern-key > span"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "div[data-editor=\"bass\"] > .pattern-key > small"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "#catalog-more > span"
+              ],
+              "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+            },
+            {
+              "target": [
+                ".instagram-poster > strong"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".instagram-poster > span:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".start-heading > .micro"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".start-heading > h3"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".start-heading > p"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".daw-choice-label"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".daw-choice-label > span"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "button[data-daw=\"Ableton Live\"] > i[aria-hidden=\"true\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+            },
+            {
+              "target": [
+                "#install-guide > details > summary"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            }
+          ]
+        }
+      ],
+      "passes": 48
+    },
+    {
+      "state": "device",
+      "dialogOpen": false,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-valid-attr-value",
+          "count": 10,
+          "nodes": [
+            {
+              "target": [
+                "button[aria-label=\"Open Subich plugin details\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[aria-label=\"Open SUBICH plugin details\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[aria-label=\"Open SKACID plugin details\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[aria-label=\"Open TAHINI plugin details\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"Skverb\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"Bully\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"SKAZI-Synth\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"Bamba\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[aria-label=\"Explore TAHINI plugin\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"TBON303\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            }
+          ]
+        },
+        {
+          "id": "color-contrast",
+          "count": 17,
+          "nodes": [
+            {
+              "target": [
+                ".hero-copy > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                ".ticker-track > span:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".studio-title > span:nth-child(2)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "span:nth-child(2) > b"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "#session-title"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".arranger-ruler > div > span:nth-child(1)"
+              ],
+              "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                ".arranger-ruler > div > span:nth-child(2)"
+              ],
+              "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                "#catalog-more > span"
+              ],
+              "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+            },
+            {
+              "target": [
+                ".instagram-poster > strong"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".instagram-poster > span:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".start-heading > .micro"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".start-heading > h3"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".start-heading > p"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".daw-choice-label"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".daw-choice-label > span"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "button[data-daw=\"Ableton Live\"] > i[aria-hidden=\"true\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+            },
+            {
+              "target": [
+                "#install-guide > details > summary"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            }
+          ]
+        }
+      ],
+      "passes": 48
+    },
+    {
+      "state": "dialog",
+      "dialogOpen": true,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-valid-attr-value",
+          "count": 10,
+          "nodes": [
+            {
+              "target": [
+                "button[aria-label=\"Open Subich plugin details\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[aria-label=\"Open SUBICH plugin details\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[aria-label=\"Open SKACID plugin details\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[aria-label=\"Open TAHINI plugin details\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"Skverb\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"Bully\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"SKAZI-Synth\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"Bamba\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[aria-label=\"Explore TAHINI plugin\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"TBON303\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            }
+          ]
+        },
+        {
+          "id": "color-contrast",
+          "count": 17,
+          "nodes": [
+            {
+              "target": [
+                ".hero-copy > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                ".ticker-track > span:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".studio-title > span:nth-child(2)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "span:nth-child(2) > b"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "#session-title"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".arranger-ruler > div > span:nth-child(1)"
+              ],
+              "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                ".arranger-ruler > div > span:nth-child(2)"
+              ],
+              "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                "#catalog-more > span"
+              ],
+              "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+            },
+            {
+              "target": [
+                ".instagram-poster > strong"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".instagram-poster > span:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".start-heading > .micro"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".start-heading > h3"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".start-heading > p"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".daw-choice-label"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".daw-choice-label > span"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "button[data-daw=\"Ableton Live\"] > i[aria-hidden=\"true\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+            },
+            {
+              "target": [
+                "#install-guide > details > summary"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            }
+          ]
+        }
+      ],
+      "passes": 48
+    },
+    {
+      "state": "install",
+      "dialogOpen": false,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-valid-attr-value",
+          "count": 10,
+          "nodes": [
+            {
+              "target": [
+                "button[aria-label=\"Open Subich plugin details\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[aria-label=\"Open SUBICH plugin details\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[aria-label=\"Open SKACID plugin details\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[aria-label=\"Open TAHINI plugin details\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"Skverb\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"Bully\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"SKAZI-Synth\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"Bamba\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[aria-label=\"Explore TAHINI plugin\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            },
+            {
+              "target": [
+                "button[data-plugin=\"TBON303\"]"
+              ],
+              "summary": "Fix all of the following:\n  Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: aria-controls=\"plugin-dialog\""
+            }
+          ]
+        },
+        {
+          "id": "color-contrast",
+          "count": 20,
+          "nodes": [
+            {
+              "target": [
+                ".hero-copy > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                ".ticker-track > span:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".studio-title > span:nth-child(2)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "span:nth-child(2) > b"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "#session-title"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".arranger-ruler > div > span:nth-child(1)"
+              ],
+              "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                ".arranger-ruler > div > span:nth-child(2)"
+              ],
+              "summary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                "#catalog-more > span"
+              ],
+              "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+            },
+            {
+              "target": [
+                ".instagram-poster > strong"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".instagram-poster > span:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".start-heading > .micro"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".start-heading > h3"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".start-heading > p"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".daw-choice-label"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".daw-choice-label > span"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "button[data-daw=\"Cubase\"] > i[aria-hidden=\"true\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+            },
+            {
+              "target": [
+                "details[open=\"\"] > summary"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "details[open=\"\"] > p"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "details[open=\"\"] > a[rel=\"noopener\"][target=\"_blank\"]:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "a[rel=\"noopener\"][target=\"_blank\"]:nth-child(4)"
+              ],
+              "summary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            }
+          ]
+        }
+      ],
+      "passes": 48
+    }
+  ]
+}

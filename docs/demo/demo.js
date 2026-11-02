@@ -44,7 +44,7 @@ function schedule(){
   const s=step,t=nextTime,generation=runGeneration;
   if(s===0){if(pendingSession){const name=pendingSession;pendingSession=null;applySession(name,t);}if(pendingTempo!==null){applyTempo(pendingTempo,t);pendingTempo=null;}if(buildBusy)advanceBuild(t);}
   const bar=Math.floor(Math.max(0,(t-playStart)/(beat*4))+.00001)%4;
-  for(const event of SkaziStudio.plan(currentSession,bar,s,patterns,layers))studioEngine.play(event,t,beat,s);
+  for(const event of SkaziStudio.plan(currentSession,bar,s,patterns,layers,noteEdits))studioEngine.play(event,t,beat,s);
   const delay=Math.max(0,(t-ctx.currentTime)*1000);setTimeout(()=>{if(running&&generation===runGeneration){cells.forEach((c,i)=>c.classList.toggle('active',i===s));updateDAWStep(s);}},delay);
   step=(step+1)%16;nextTime+=beat/4;
  }
@@ -161,6 +161,7 @@ $$('#main-navigation a').forEach(a=>a.addEventListener('click',()=>{$('#mobile-m
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('header').classList.contains('menu-open'))$('#mobile-menu').focus();$('#mobile-menu').setAttribute('aria-expanded','false');$('header').classList.remove('menu-open');}});
 
 // A familiar channel rack with editable steps and real gain controls.
+const noteEdits=Object.fromEntries(Object.keys(layers).map(key=>[key,Array(16).fill(null)]));let sessionPatternDefaults={};
 const channelLevels={kick:.8,bass:.8,acid:.8,space:.8,fx:.8};
 const patterns={kick:Array.from({length:16},(_,s)=>s%4===0),bass:Array.from({length:16},(_,s)=>s%4!==0),acid:Array.from({length:16},(_,s)=>s%2===0),space:Array.from({length:16},(_,s)=>s%4===0),fx:Array.from({length:16},(_,s)=>s%2===1)};
 $$('[data-pattern]').forEach(row=>{const key=row.dataset.pattern;patterns[key].forEach((on,i)=>{const b=document.createElement('button');b.className='step-button';b.type='button';b.dataset.step=String(i);b.setAttribute('aria-label',key+' step '+(i+1));b.setAttribute('aria-pressed',String(on));b.onclick=()=>{patterns[key][i]=!patterns[key][i];b.setAttribute('aria-pressed',String(patterns[key][i]));};row.append(b);});});
@@ -169,11 +170,11 @@ function updateDAWStep(s){$$('[data-pattern]').forEach(row=>{const key=row.datas
 $('#reset-session').onclick=()=>{stopLoop();step=0;};
 updateLayers();
 function applySession(name,atTime){
- scheduledLayerTime=atTime||0;pendingTempo=null;cancelBuild();currentSession=name;const profile=SkaziStudio.profiles[name];
+ scheduledLayerTime=atTime||0;pendingTempo=null;cancelBuild();for(const key of Object.keys(noteEdits))noteEdits[key].fill(null);currentSession=name;const profile=SkaziStudio.profiles[name];
  const presets={roll:{active:['kick','bass','acid','fx'],steps:{kick:[0,4,8,12],bass:[1,2,3,5,6,7,9,10,11,13,14,15],acid:[0,3,6,8,10,11,14],space:[0,8],fx:[2,4,6,10,12,14]}},acid:{active:['kick','bass','acid','space','fx'],steps:{kick:[0,4,8,12],bass:[2,3,6,7,10,11,14,15],acid:[0,1,3,6,8,10,11,14],space:[0,8],fx:[2,4,6,10,12,14,15]}},minimal:{active:['kick','bass','space','fx'],steps:{kick:[0,4,8,12],bass:[3,6,10,14],acid:[2,6,10,14],space:[0,8],fx:[2,4,6,10,12,14]}}};
  const p=presets[name];$$('[data-session]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.session===name));b.classList.remove('is-queued');});
  for(const key of Object.keys(layers)){setLayer(key,p.active.includes(key));patterns[key]=Array.from({length:16},(_,i)=>p.steps[key].includes(i));const row=document.querySelector('[data-pattern="'+key+'"]');[...row.children].forEach((b,i)=>b.setAttribute('aria-pressed',String(patterns[key][i])));}
- const when=atTime??ctx?.currentTime??0,elapsed=ctx?(when-playStart)/beat:0;beat=60/profile.tempo;if(ctx&&(running||paused))playStart=when-elapsed*beat;
+ sessionPatternDefaults=structuredClone(patterns);const when=atTime??ctx?.currentTime??0,elapsed=ctx?(when-playStart)/beat:0;beat=60/profile.tempo;if(ctx&&(running||paused))playStart=when-elapsed*beat;
  $('#studio-tempo').value=String(profile.tempo);$('#session-title').textContent=profile.title+' / '+profile.key;$('#session-key').textContent=profile.key;
  $('#drop-status').textContent=profile.title+' loaded. Make it yours.';studioEngine?.setBeat(beat,when);document.dispatchEvent(new Event('studio-session-changed'));scheduledLayerTime=0;
 }
@@ -184,7 +185,7 @@ $$('[data-session]').forEach(b=>b.onclick=()=>selectSession(b.dataset.session));
 $$('[data-shape]').forEach(input=>input.oninput=()=>{const key=input.dataset.shape,value=Number(input.value);studioControls[key]=value;input.nextElementSibling.value=value+'%';if(key==='master'&&master)master.gain.setTargetAtTime(value/100,ctx.currentTime,.025);else studioEngine?.set(key,value);});
 $('#export-loop').onclick=async()=>{
  const button=$('#export-loop'),solo=$$('[data-solo][aria-pressed="true"]').map(b=>b.dataset.solo);button.disabled=true;button.setAttribute('aria-busy','true');$('#drop-status').textContent='Rendering your four-bar loop…';
- try{const snapshot={session:currentSession,tempo:Number($('#studio-tempo').value),layers:Object.fromEntries(Object.entries(layers).map(([key,on])=>[key,on&&(!solo.length||solo.includes(key))])),patterns:structuredClone(patterns),levels:{...channelLevels},controls:{...studioControls}};
+ try{const snapshot={session:currentSession,tempo:Math.round(60/beat),noteEdits:structuredClone(noteEdits),layers:Object.fromEntries(Object.entries(layers).map(([key,on])=>[key,on&&(!solo.length||solo.includes(key))])),patterns:structuredClone(patterns),levels:{...channelLevels},controls:{...studioControls}};
  const buffer=await SkaziStudio.renderLoop(snapshot),url=URL.createObjectURL(new Blob([SkaziStudio.wav(buffer)],{type:'audio/wav'})),link=document.createElement('a');link.href=url;link.download='skazi-studio-'+snapshot.session+'-'+snapshot.tempo+'bpm.wav';link.click();setTimeout(()=>URL.revokeObjectURL(url),60000);$('#drop-status').textContent='Loop saved · stereo WAV · 44.1 kHz · effects tail included.';
  }catch{ $('#drop-status').textContent='Loop could not be saved in this browser. Try again in a current browser.';}finally{button.disabled=false;button.removeAttribute('aria-busy');}
 };
