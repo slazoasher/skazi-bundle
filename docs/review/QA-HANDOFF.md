@@ -1,8 +1,10 @@
 # Website handoff — 2 November 2026
 
-The new design is the primary page at `docs/index.html`; `/demo/` uses the same client assets and remains available. This report covers revision 36 of the website. The branch is merged with upstream `main`; its FilterFish changes and promo assets are retained.
+The new design is the primary page at `docs/index.html`; `/demo/` uses the same client assets and remains available. This report covers revision 37 of the website. The branch is merged with upstream `main`; its FilterFish changes and promo assets are retained.
 
 ## What was verified
+
+- **Stable surfaces:** the sticky header is solid and the dark dialog overlay is unblurred. The DAW and software setup panel no longer animate their entire surfaces on entry. Hovered controls use no brightness filters or lift transforms; software cards keep stable selected/idle backgrounds during rapid pointer movement. Build and WAV save are adjacent 44px icon-only actions with accessible labels and tooltips.
 
 - **24 axe-core 4.14 cases:** Mixer, Pattern, Device, plugin dialog, installation/Windows notice and opening at 1440, 768, 390 and 320 CSS pixels. Zero reported violations for WCAG A/AA tags through 2.2 and best practices. Raw results are in [qa/](qa/).
 - **All 19 plugin dialogs:** opened from the new root page; all full-size images loaded. Escape closed them and returned focus. No captured browser warnings, errors or CSP violations.

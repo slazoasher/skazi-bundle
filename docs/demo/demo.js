@@ -108,7 +108,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden){stopPrevie
 // Audio-driven visual stage and one-bar-at-a-time arrangement.
 let buildTimers=[],buildBusy=false;
 function updateLayers(){if(ctx){for(const key of Object.keys(layers)){channelGains[key]?.gain.setTargetAtTime(layers[key]?channelLevels[key]**2:0,Math.max(ctx.currentTime,scheduledLayerTime),.015);}} $('#session-layers').textContent=Object.keys(layers).filter(k=>layers[k]).join(' + ').toUpperCase()||'ALL CHANNELS MUTED';$$('[data-track]').forEach(row=>row.classList.toggle('track-muted',!layers[row.dataset.track])); }
-function setBuildLabel(label){$('#build-drop').innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.6 6.4L21 12l-6.4 2.6L12 21l-2.6-6.4L3 12l6.4-2.6z"/></svg><span>'+label+'</span>';}
+function setBuildLabel(label){const button=$('#build-drop');button.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.6 6.4L21 12l-6.4 2.6L12 21l-2.6-6.4L3 12l6.4-2.6z"/></svg>';button.setAttribute('aria-label',label);button.title=label;if(label==='Building…')button.setAttribute('aria-busy','true');else button.removeAttribute('aria-busy');}
 function cancelBuild(){buildTimers.forEach(clearTimeout);buildTimers=[];buildBusy=false;$('#build-drop').disabled=false;setBuildLabel('Build the drop');$('#drop-status').textContent='Add layers yourself, or let the energy build.';}
 function setLayer(key,on){layers[key]=on;const b=document.querySelector('[data-layer="'+key+'"]');b.setAttribute('aria-pressed',String(on));b.title=(on?'Mute ':'Enable ')+key;updateLayers();}
 let buildStage=-1;

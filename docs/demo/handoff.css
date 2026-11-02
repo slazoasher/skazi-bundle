@@ -49,6 +49,27 @@ html:has(body.motion-paused){scroll-behavior:auto}
 @media(max-width:900px){.note-controls{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.note-inspector-heading{align-items:flex-start;flex-direction:column}.note-controls>button,.acid-articulation{grid-column:1/-1}.note-inspector{padding:16px 12px}}
 @media(max-width:650px){.hero .hero-wordmark{top:24px}.hero .hero-art{top:170px}.hero .hero-copy{padding-top:565px}#download>.download-options .button{min-width:0;width:100%;font-size:12px}.note-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.note-controls label:last-of-type{grid-column:1/-1}}
 @media(hover:none),(pointer:coarse){.device-channel .device-open{opacity:1;pointer-events:auto}}
+/* Opaque, stationary controls avoid glass trails and subpixel colour flicker. */
+header,.page-scrolled header{background:#0c0c0c;backdrop-filter:none;transition:none;box-shadow:none}
+dialog::backdrop{backdrop-filter:none;background:#000e}
+.button:hover,.button:active,.artist-socials a:hover,.artist-socials a:active{transform:none;filter:none;box-shadow:none}
+.button:hover>span{transform:none}
+.studio-workstation button,.studio-workstation button:hover,.studio-workstation button:active{filter:none!important;transform:none;transition:border-color .12s ease,background-color .12s ease,color .12s ease}
+.getting-started .daw-choices button,.getting-started .daw-choices button:hover{transform:none;transition:none;filter:none;box-shadow:none;background:#202020;color:#bdbdbd}
+.getting-started .daw-choices button:hover{border-color:#888}
+.getting-started .daw-choices button[aria-pressed=true],.getting-started .daw-choices button[aria-pressed=true]:hover{background:#321719;border-color:#e50914;color:#fff;box-shadow:inset 0 0 0 1px #e50914}
+.studio-workstation .studio-presets button{transition:none}
+.studio-workstation .studio-presets button[aria-pressed=true]:hover{background:#eee;color:#161616}
+.studio-session-actions{display:flex;align-items:center;gap:8px;flex:none}
+.studio-workstation .studio-session-actions #build-drop,.studio-workstation .studio-session-actions #export-loop{display:inline-flex;align-items:center;justify-content:center;width:44px;min-width:44px;max-width:44px;height:44px;min-height:44px;padding:0;gap:0;border-radius:7px;order:initial}
+.studio-session-actions #export-loop{background:#242424;border:1px solid #555;color:#eee}
+.studio-session-actions #export-loop:hover{background:#303030;border-color:#999}
+.studio-session-actions #export-loop svg{width:18px;height:18px;display:block;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.studio-workstation .studio-session-actions #build-drop svg{width:19px;height:19px}
+.studio-session-actions button:disabled{opacity:.65;cursor:progress}
+.studio-shaping{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:800px){.studio-shaping{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.studio-session-actions{grid-column:1/-1;grid-row:3;justify-self:end}.studio-workstation .studio-session-actions #build-drop{grid-column:auto;grid-row:auto}}
 #collection .tool h3{display:block;color:var(--text);text-shadow:none;line-height:1.1}
 #collection .tool h3 .plugin-name-base{font:inherit;color:var(--text)}
 .plugin-name-accent{font:inherit;font-style:normal;color:#e50914}

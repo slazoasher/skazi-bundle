@@ -4,7 +4,7 @@
   const finePointer=matchMedia('(hover: hover) and (pointer: fine)');
   const ease='cubic-bezier(.22,1,.36,1)';
   const animated=new WeakSet();
-  const selector='.section-heading,.feature,.tool,.story-copy,.video-card,.download>h2,.getting-started';
+  const selector='.section-heading,.feature,.tool,.story-copy,.video-card,.download>h2';
   let motionPaused=reduced.matches,openingDone=false;
   const animateEntrance=(el,delay=0)=>{
     if(motionPaused||reduced.matches)return;
@@ -68,17 +68,12 @@
   function requestScrollUpdate(){if(!scrollFrame)scrollFrame=requestAnimationFrame(updateScroll);}
   addEventListener('scroll',requestScrollUpdate,{passive:true});addEventListener('resize',requestScrollUpdate);
   new ResizeObserver(requestScrollUpdate).observe(document.querySelector('main'));
-  const lab=document.querySelector('#lab');
-  const labObserver=new IntersectionObserver(entries=>{
-    if(!openingDone||!entries[0].isIntersecting)return;
-    labObserver.disconnect();animateEntrance(lab);
-  },{threshold:.08});
   Promise.resolve(window.skaziOpeningReady).then(()=>{
     openingDone=true;
     document.querySelectorAll('.hero-wordmark,.hero-copy>.eyebrow,.hero-copy>h1,.hero-copy>.intro,.hero-copy>.actions,.hero-facts').forEach((el,i)=>{
       if(el.getBoundingClientRect().bottom>0&&el.getBoundingClientRect().top<innerHeight)animateEntrance(el,i*45);
     });
-    observeContent();labObserver.observe(lab);requestScrollUpdate();
+    observeContent();requestScrollUpdate();
   });
   setMotion(motionPaused);
   reduced.addEventListener('change',()=>setMotion(reduced.matches));
