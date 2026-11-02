@@ -1,5 +1,22 @@
 /* Match the original collection's white/red word splits and expand affordance. */
 .hero .hero-art:before{display:none}
+html:has(body.motion-paused){scroll-behavior:auto}
+.sr{inset:0 auto auto 0;margin:-1px;padding:0;border:0;white-space:nowrap}
+/* Selection is red; enabled/muted states are expressed by power and contrast. */
+.studio-workstation .arranger-track{--track-color:#b8b8b8!important}
+.studio-workstation .arranger-track.track-selected{--track-color:#e50914!important}
+.studio-workstation .studio-channel{--track-color:#b8b8b8!important;border-top-color:transparent;border-bottom-color:transparent}
+.studio-workstation .studio-channel.channel-selected{--track-color:#e50914!important;border-top-color:#e50914}
+.studio-workstation .studio-presets .is-queued{box-shadow:inset 0 0 0 1px #e50914}
+.studio-shaping{display:grid;grid-template-columns:repeat(4,minmax(100px,1fr)) auto;gap:22px;align-items:center;padding:17px 20px;background:#171717;border-top:1px solid #383838}
+.studio-shaping label{display:grid;grid-template-columns:1fr auto;gap:3px 8px;align-items:center;color:#ccc;font:600 11px Manrope,sans-serif;min-width:0}
+.studio-shaping output{grid-column:2;grid-row:1;color:#aaa;font-size:10px;font-variant-numeric:tabular-nums}
+.studio-shaping input{grid-column:1/-1;min-width:0;width:100%;height:28px;margin:0;accent-color:#e50914;cursor:pointer}
+.studio-shaping button{display:flex;align-items:center;justify-content:center;gap:9px;min-height:44px;padding:0 15px;border:1px solid #555;border-radius:7px;background:#242424;color:#eee;font:600 12px Manrope,sans-serif;transition:background .2s,border-color .2s}
+.studio-shaping button svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.studio-shaping button:hover{background:#e50914;border-color:#e50914}
+.studio-shaping button:disabled{cursor:progress;opacity:.65}
+@media(max-width:800px){.studio-shaping{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 22px;padding:14px}.studio-shaping button{grid-column:1/-1}}
 #collection .tool h3{display:block;color:var(--text);text-shadow:none;line-height:1.1}
 #collection .tool h3 .plugin-name-base{font:inherit;color:var(--text)}
 .plugin-name-accent{font:inherit;font-style:normal;color:#e50914}

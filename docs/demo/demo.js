@@ -10,7 +10,7 @@ function alignInitialSection(){if(!initialSectionHash||initialSectionHash==='#'|
 function settleInitialSection(){Promise.resolve(document.fonts?.ready).then(()=>requestAnimationFrame(alignInitialSection));}
 let plugins=[],filter='All',activeAudio=null,activeButton=null,showAll=false;
 const dialog=$('#plugin-dialog');
-const mediaIcon=playing=>'<svg class="media-icon" viewBox="0 0 24 24" aria-hidden="true">'+(playing?'<rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/>':'<path d="m8 5 11 7-11 7z"/>')+'</svg>';
+const mediaIcon=playing=>'<svg class="media-icon" viewBox="0 0 24 24" aria-hidden="true">'+(playing?'<rect x="6" y="6" width="12" height="12" rx="1.7"/>':'<path d="m8 5 11 7-11 7z"/>')+'</svg>';
 const expandIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/></svg>';
 function setPreviewButton(button,playing){button.setAttribute('aria-pressed',String(playing));if(button.id==='detail-play')button.innerHTML=mediaIcon(playing)+'<span>'+(playing?'Stop':'Play')+' concept preview</span>';else{const icon=button.querySelector('.listen-bottom b');if(icon)icon.innerHTML=mediaIcon(playing);button.setAttribute('aria-label',(playing?'Stop':'Play')+' '+button.querySelector('.listen-bottom')?.textContent.trim());}}
 
@@ -31,9 +31,24 @@ fetch(new URL('plugins.json',siteAssetBase)).then(r=>{if(!r.ok)throw Error('cata
 // A synchronized, original browser synthesizer sketch. No plugin output claims.
 const channelGains={},channelAnalysers={},channelMeterBuffers={},meterSmoothing={};let playStart=0;let analyser=null;let ctx=null,master=null,timer=null,nextTime=0,step=0,running=false,starting=false,paused=false,pausing=false,runGeneration=0;const activeVoices=new Set();const layers={kick:true,bass:true,acid:false,space:false,fx:false};let beat=60/138;
 const cells=Array.from({length:16},()=>{const x=document.createElement('i');$('.sequencer').append(x);return x;});
-function setupAudio(){if(!ctx){ctx=new AudioContext();master=ctx.createGain();master.gain.value=.65;const comp=ctx.createDynamicsCompressor();comp.threshold.value=-10;comp.ratio.value=4;master.connect(comp);analyser=ctx.createAnalyser();analyser.fftSize=2048;analyser.smoothingTimeConstant=.78;analyser.minDecibels=-84;analyser.maxDecibels=-12;comp.connect(analyser).connect(ctx.destination);for(const key of Object.keys(layers)){const gain=ctx.createGain();gain.gain.value=layers[key]?channelLevels[key]**2:0;const meter=ctx.createAnalyser();meter.fftSize=256;gain.connect(meter).connect(master);channelGains[key]=gain;channelAnalysers[key]=meter;channelMeterBuffers[key]=new Float32Array(256);meterSmoothing[key]=0;}$('#engine-rate').textContent=(ctx.sampleRate/1000).toFixed(1)+' kHz';}return ctx.resume();}
-function tone(time,freq,duration,type,volume,endFreq,channel){if(!channel)return;const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type=type;osc.frequency.setValueAtTime(freq,time);if(endFreq)osc.frequency.exponentialRampToValueAtTime(endFreq,time+duration);gain.gain.setValueAtTime(.0001,time);gain.gain.exponentialRampToValueAtTime(volume,time+.004);gain.gain.exponentialRampToValueAtTime(.0001,time+duration);let filter=null;if(channel==='bass'||channel==='acid'){filter=ctx.createBiquadFilter();filter.type='lowpass';filter.Q.value=channel==='acid'?7:1.4;filter.frequency.setValueAtTime(channel==='acid'?2200:1000,time);filter.frequency.exponentialRampToValueAtTime(channel==='acid'?240:180,time+duration);osc.connect(filter).connect(gain);}else osc.connect(gain);gain.connect(channelGains[channel]);activeVoices.add(osc);osc.start(time);osc.stop(time+duration+.01);osc.onended=()=>{activeVoices.delete(osc);osc.disconnect();gain.disconnect();filter?.disconnect();};}
-function schedule(){while(nextTime<ctx.currentTime+.1){const s=step,t=nextTime,generation=runGeneration;if(layers.kick&&patterns.kick[s])tone(t,145,.23,'sine',.9,45,'kick');if(layers.bass&&patterns.bass[s])tone(t,[55,55,55,65.41,55,55,73.42,55][s%8],.085,'sawtooth',.1,null,'bass');if(layers.acid&&patterns.acid[s])tone(t,[220,261.63,220,329.63,293.66,220,440,196][Math.floor(s/2)],.15,'sawtooth',.07,110,'acid');if(layers.space&&patterns.space[s]){[220,261.63,329.63].forEach(f=>tone(t,f,.7,'sine',.025,null,'space'));tone(t+beat*.75,440,.25,'sine',.025,null,'space');}if(layers.fx&&patterns.fx[s])tone(t,7200,.035,'triangle',.065,3500,'fx');const delay=Math.max(0,(t-ctx.currentTime)*1000);setTimeout(()=>{if(running&&generation===runGeneration){cells.forEach((c,i)=>c.classList.toggle('active',i===s));updateDAWStep(s);}},delay);step=(step+1)%16;nextTime+=beat/4;}}
+let studioEngine=null,currentSession='roll',pendingSession=null,pendingTempo=null,scheduledLayerTime=0;
+const studioControls={drive:28,tone:54,space:32,master:65};
+function setupAudio(){
+ if(!ctx){ctx=new AudioContext();master=ctx.createGain();master.gain.value=studioControls.master/100;analyser=SkaziStudio.mastering(ctx,master,ctx.destination);
+  for(const key of Object.keys(layers)){const gain=ctx.createGain();gain.gain.value=layers[key]?channelLevels[key]**2:0;const meter=ctx.createAnalyser();meter.fftSize=256;gain.connect(meter).connect(master);channelGains[key]=gain;channelAnalysers[key]=meter;channelMeterBuffers[key]=new Float32Array(256);meterSmoothing[key]=0;}
+  studioEngine=SkaziStudio.create(ctx,channelGains,activeVoices,studioControls);$('#engine-rate').textContent=(ctx.sampleRate/1000).toFixed(1)+' kHz';
+ }return ctx.resume();
+}
+function schedule(){
+ while(nextTime<ctx.currentTime+.1){
+  const s=step,t=nextTime,generation=runGeneration;
+  if(s===0){if(pendingSession){const name=pendingSession;pendingSession=null;applySession(name,t);}if(pendingTempo!==null){applyTempo(pendingTempo,t);pendingTempo=null;}if(buildBusy)advanceBuild(t);}
+  const bar=Math.floor(Math.max(0,(t-playStart)/(beat*4))+.00001)%4;
+  for(const event of SkaziStudio.plan(currentSession,bar,s,patterns,layers))studioEngine.play(event,t,beat,s);
+  const delay=Math.max(0,(t-ctx.currentTime)*1000);setTimeout(()=>{if(running&&generation===runGeneration){cells.forEach((c,i)=>c.classList.toggle('active',i===s));updateDAWStep(s);}},delay);
+  step=(step+1)%16;nextTime+=beat/4;
+ }
+}
 function setDAWPosition(bar,positionStep){const a=String(bar).padStart(2,'0'),b=String(positionStep).padStart(2,'0'),value=a+' : '+b;if($('#daw-position').textContent===value)return;$('#daw-position').textContent=value;$('#daw-bar').textContent=a;$('#daw-step').textContent=b;}
 function setTransport(mode){
  const button=$('#transport'),label=mode==='pause'?'Pause':mode==='resume'?'Resume':mode==='retry'?'Retry audio':'Play';
@@ -48,7 +63,7 @@ async function startLoop(){
  stopPreview();stopCompare();$('#transport').setAttribute('aria-busy','true');
  try{
   await setupAudio();if(generation!==runGeneration||document.hidden)return false;
-  master.gain.cancelScheduledValues(ctx.currentTime);master.gain.setValueAtTime(.65,ctx.currentTime);
+  master.gain.cancelScheduledValues(ctx.currentTime);master.gain.setValueAtTime(studioControls.master/100,ctx.currentTime);
   running=true;paused=false;$('#engine-state').textContent='ENGINE RUNNING';
   if(!resume){playStart=ctx.currentTime+.05;step=0;nextTime=playStart;}
   document.dispatchEvent(new Event('studio-audio-started'));
@@ -72,7 +87,7 @@ async function pauseLoop(){
 function stopLoop(){
  ++runGeneration;starting=false;paused=false;pausing=false;$('#transport').disabled=false;$('#transport').removeAttribute('aria-busy');
  running=false;clearInterval(timer);timer=null;$('#engine-state').textContent='ENGINE STANDBY';cancelBuild();
- for(const voice of activeVoices){try{voice.stop();}catch{}}activeVoices.clear();
+ for(const voice of activeVoices){try{voice.stop();}catch{}}activeVoices.clear();studioEngine?.reset();pendingSession=null;pendingTempo=null;$$('[data-session]').forEach(b=>b.classList.remove('is-queued'));
  $('#session-state').textContent='READY TO PLAY';setDAWPosition(1,1);
  $$('.step-button').forEach(b=>b.classList.remove('current-step'));$$('[data-meter]').forEach(m=>m.style.setProperty('--meter-level','0%'));
  $('#lab').classList.remove('is-playing','is-paused');$('.rack-playhead').style.setProperty('--playhead','0');
@@ -92,11 +107,17 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden){stopPrevie
 
 // Audio-driven visual stage and one-bar-at-a-time arrangement.
 let buildTimers=[],buildBusy=false;
-function updateLayers(){if(ctx){for(const key of Object.keys(layers)){channelGains[key]?.gain.setTargetAtTime(layers[key]?channelLevels[key]**2:0,ctx.currentTime,.015);}} $('#session-layers').textContent=Object.keys(layers).filter(k=>layers[k]).join(' + ').toUpperCase()||'ALL CHANNELS MUTED';$$('[data-track]').forEach(row=>row.classList.toggle('track-muted',!layers[row.dataset.track])); }
+function updateLayers(){if(ctx){for(const key of Object.keys(layers)){channelGains[key]?.gain.setTargetAtTime(layers[key]?channelLevels[key]**2:0,Math.max(ctx.currentTime,scheduledLayerTime),.015);}} $('#session-layers').textContent=Object.keys(layers).filter(k=>layers[k]).join(' + ').toUpperCase()||'ALL CHANNELS MUTED';$$('[data-track]').forEach(row=>row.classList.toggle('track-muted',!layers[row.dataset.track])); }
 function setBuildLabel(label){$('#build-drop').innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.6 6.4L21 12l-6.4 2.6L12 21l-2.6-6.4L3 12l6.4-2.6z"/></svg><span>'+label+'</span>';}
 function cancelBuild(){buildTimers.forEach(clearTimeout);buildTimers=[];buildBusy=false;$('#build-drop').disabled=false;setBuildLabel('Build the drop');$('#drop-status').textContent='Add layers yourself, or let the energy build.';}
 function setLayer(key,on){layers[key]=on;const b=document.querySelector('[data-layer="'+key+'"]');b.setAttribute('aria-pressed',String(on));b.title=(on?'Mute ':'Enable ')+key;updateLayers();}
-$('#build-drop').onclick=async()=>{if(buildBusy)return;cancelBuild();if(!running)await startLoop();if(!running)return;buildBusy=true;$('#build-drop').disabled=true;Object.keys(layers).forEach(k=>setLayer(k,k==='kick'));$('#drop-status').textContent='Kick first. Feel the pulse.';setBuildLabel('Building…');const bar=beat*4*1000;[['bass','Bring in the low end.'],['acid','Let the acid through.'],['space','Open up the space.'],['fx','The drop is yours.']].forEach(([key,message],i)=>buildTimers.push(setTimeout(()=>{if(!running)return;setLayer(key,true);$('#drop-status').textContent=message;if(i===3){$('#session-state').textContent='FULL MIX';buildBusy=false;$('#build-drop').disabled=false;setBuildLabel('Build again');}},bar*(i+1))));};
+let buildStage=-1;
+function advanceBuild(time){
+ scheduledLayerTime=time;buildStage++;const keys=['kick','bass','acid','space','fx'];keys.forEach((key,i)=>setLayer(key,i<=buildStage));
+ $('#drop-status').textContent=['Kick first. Feel the pulse.','Bring in the rolling low end.','Let the acid through.','Open up the space.','Full groove. Make it yours.'][buildStage];
+ scheduledLayerTime=0;if(buildStage===4){buildBusy=false;$('#build-drop').disabled=false;setBuildLabel('Build again');$('#session-state').textContent='FULL MIX';}
+}
+$('#build-drop').onclick=async()=>{if(buildBusy)return;cancelBuild();if(!running)await startLoop();if(!running)return;buildBusy=true;buildStage=-1;$('#build-drop').disabled=true;setBuildLabel('Building…');$('#drop-status').textContent='Build queued for the next bar.';};
 const canvas=$('#sound-canvas'),paint=canvas.getContext('2d');let visualFrame=0,scopeVisible=false,lastVisualTime=0;
 const scopeBins=new Uint8Array(1024),masterSamples=new Float32Array(2048);
 const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
@@ -147,9 +168,27 @@ $$('[data-level]').forEach(input=>input.oninput=()=>{const key=input.dataset.lev
 function updateDAWStep(s){$$('[data-pattern]').forEach(row=>{const key=row.dataset.pattern;[...row.children].forEach((b,i)=>b.classList.toggle('current-step',i===s));});}
 $('#reset-session').onclick=()=>{stopLoop();step=0;};
 updateLayers();
-function selectSession(name){cancelBuild();const presets={roll:{active:['kick','bass'],steps:{kick:[0,4,8,12],bass:[1,2,3,5,6,7,9,10,11,13,14,15],acid:[0,2,4,6,8,10,12,14],space:[0,8],fx:[2,6,10,14]}},acid:{active:['kick','bass','acid','fx'],steps:{kick:[0,4,8,12],bass:[2,3,6,7,10,11,14,15],acid:[0,1,3,6,8,10,11,14],space:[0,8],fx:[2,6,10,14]}},minimal:{active:['kick','bass','space','fx'],steps:{kick:[0,4,8,12],bass:[3,6,10,14],acid:[2,6,10,14],space:[0],fx:[2,6,10,14]}}};const p=presets[name];$$('[data-session]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.session===name)));for(const key of Object.keys(layers)){setLayer(key,p.active.includes(key));patterns[key]=Array.from({length:16},(_,i)=>p.steps[key].includes(i));const row=document.querySelector('[data-pattern="'+key+'"]');[...row.children].forEach((b,i)=>b.setAttribute('aria-pressed',String(patterns[key][i])));}const title=document.querySelector('[data-session="'+name+'"] b').textContent;$('#drop-status').textContent=title+' loaded. Make it yours.';};
-
+function applySession(name,atTime){
+ scheduledLayerTime=atTime||0;pendingTempo=null;cancelBuild();currentSession=name;const profile=SkaziStudio.profiles[name];
+ const presets={roll:{active:['kick','bass','acid','fx'],steps:{kick:[0,4,8,12],bass:[1,2,3,5,6,7,9,10,11,13,14,15],acid:[0,3,6,8,10,11,14],space:[0,8],fx:[2,4,6,10,12,14]}},acid:{active:['kick','bass','acid','space','fx'],steps:{kick:[0,4,8,12],bass:[2,3,6,7,10,11,14,15],acid:[0,1,3,6,8,10,11,14],space:[0,8],fx:[2,4,6,10,12,14,15]}},minimal:{active:['kick','bass','space','fx'],steps:{kick:[0,4,8,12],bass:[3,6,10,14],acid:[2,6,10,14],space:[0,8],fx:[2,4,6,10,12,14]}}};
+ const p=presets[name];$$('[data-session]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.session===name));b.classList.remove('is-queued');});
+ for(const key of Object.keys(layers)){setLayer(key,p.active.includes(key));patterns[key]=Array.from({length:16},(_,i)=>p.steps[key].includes(i));const row=document.querySelector('[data-pattern="'+key+'"]');[...row.children].forEach((b,i)=>b.setAttribute('aria-pressed',String(patterns[key][i])));}
+ const when=atTime??ctx?.currentTime??0,elapsed=ctx?(when-playStart)/beat:0;beat=60/profile.tempo;if(ctx&&(running||paused))playStart=when-elapsed*beat;
+ $('#studio-tempo').value=String(profile.tempo);$('#session-title').textContent=profile.title+' / '+profile.key;$('#session-key').textContent=profile.key;
+ $('#drop-status').textContent=profile.title+' loaded. Make it yours.';studioEngine?.setBeat(beat,when);document.dispatchEvent(new Event('studio-session-changed'));scheduledLayerTime=0;
+}
+function applyTempo(value,atTime=ctx?.currentTime||0){const elapsed=ctx?(atTime-playStart)/beat:0;beat=60/value;if(ctx&&(running||paused))playStart=atTime-elapsed*beat;studioEngine?.setBeat(beat,atTime);$('#studio-tempo').value=String(value);}
+function queueStudioTempo(value){if(running||paused){pendingTempo=value;$('#drop-status').textContent=value+' BPM queued for the next bar.';}else applyTempo(value);}
+function selectSession(name){if(running){pendingSession=name;$$('[data-session]').forEach(b=>b.classList.toggle('is-queued',b.dataset.session===name));$('#drop-status').textContent=SkaziStudio.profiles[name].title+' queued for the next bar.';}else{pendingSession=null;applySession(name);}}
 $$('[data-session]').forEach(b=>b.onclick=()=>selectSession(b.dataset.session));
+$$('[data-shape]').forEach(input=>input.oninput=()=>{const key=input.dataset.shape,value=Number(input.value);studioControls[key]=value;input.nextElementSibling.value=value+'%';if(key==='master'&&master)master.gain.setTargetAtTime(value/100,ctx.currentTime,.025);else studioEngine?.set(key,value);});
+$('#export-loop').onclick=async()=>{
+ const button=$('#export-loop'),solo=$$('[data-solo][aria-pressed="true"]').map(b=>b.dataset.solo);button.disabled=true;button.setAttribute('aria-busy','true');$('#drop-status').textContent='Rendering your four-bar loop…';
+ try{const snapshot={session:currentSession,tempo:Number($('#studio-tempo').value),layers:Object.fromEntries(Object.entries(layers).map(([key,on])=>[key,on&&(!solo.length||solo.includes(key))])),patterns:structuredClone(patterns),levels:{...channelLevels},controls:{...studioControls}};
+ const buffer=await SkaziStudio.renderLoop(snapshot),url=URL.createObjectURL(new Blob([SkaziStudio.wav(buffer)],{type:'audio/wav'})),link=document.createElement('a');link.href=url;link.download='skazi-studio-'+snapshot.session+'-'+snapshot.tempo+'bpm.wav';link.click();setTimeout(()=>URL.revokeObjectURL(url),60000);$('#drop-status').textContent='Loop saved · stereo WAV · 44.1 kHz · effects tail included.';
+ }catch{ $('#drop-status').textContent='Loop could not be saved in this browser. Try again in a current browser.';}finally{button.disabled=false;button.removeAttribute('aria-busy');}
+};
+applySession('roll');
 
 // Keep header identity and download action synchronized, including deep-link jumps.
 const headerBrand=$('header .brand'),headerDownload=$('#header-download'),heroDownload=$('.hero-copy .actions>.button');
