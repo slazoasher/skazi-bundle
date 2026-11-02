@@ -1,0 +1,49 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Shared transport QA</title>
+<style>body{margin:0;background:#111;color:#eee;font:14px system-ui}header,pre{padding:16px}button{font:inherit;padding:12px}pre{white-space:pre-wrap}iframe{border:0;width:100%;height:900px}</style>
+<header><button id="run">Check shared transport</button> <span id="status">Ready</span></header><pre id="results"></pre><iframe id="site" title="Studio under test"></iframe>
+<script>
+document.querySelector('#run').onclick=async()=>{
+ const frame=document.querySelector('#site'),results=[],button=document.querySelector('#run'),status=document.querySelector('#status');button.disabled=true;status.textContent='Running';
+ try{
+  for(const [width,height] of [[320,700],[390,844],[768,1024],[1280,720],[1440,900]]){
+   const checks=[],check=(name,pass)=>{checks.push({name,pass:Boolean(pass)});if(!pass)throw Error(width+': '+name);};
+   sessionStorage.removeItem('skazi-studio-workspace-v1');frame.style.width=width+'px';frame.style.height=height+'px';const loaded=new Promise(r=>frame.addEventListener('load',r,{once:true}));frame.src='../../?intro=0&transport='+width;await loaded;
+   const doc=frame.contentDocument,win=frame.contentWindow,$=s=>doc.querySelector(s),wait=ms=>new Promise(r=>setTimeout(r,ms));await doc.fonts.ready;
+   function showStudio(){window.scrollTo({top:frame.offsetTop,left:0,behavior:'instant'});win.scrollTo({top:$('#lab').getBoundingClientRect().top+win.scrollY-100,left:0,behavior:'instant'});}
+   showStudio();await wait(80);
+   const box=e=>e.getBoundingClientRect(),group=$('.transport-actions'),primary=$('#transport'),stop=$('#reset-session');
+   const shape=()=>{const bar=box($('.studio-transport')),g=box(group);return [g.width,g.height,g.left-bar.left,box($('.studio-time')).left-bar.left,box($('.tempo-control')).left-bar.left];};
+   const readyShape=shape();check('Ready key fills fixed playback region',Math.abs(box(primary).width-(box(group).width-2))<1);
+   check('Idle Stop is inaccessible',stop.hidden&&stop.disabled&&stop.inert&&stop.tabIndex===-1&&stop.getAttribute('aria-hidden')==='true');
+   async function transition(action){
+    const samples=[];let begin=0;const sampled=new Promise((resolve,reject)=>{
+     const timeout=setTimeout(()=>{observer.disconnect();reject(Error('Transition did not start'));},3500);
+     const observer=new win.MutationObserver(()=>{observer.disconnect();clearTimeout(timeout);win.requestAnimationFrame(function sample(time){if(!begin)begin=time;const p=box(primary),s=box(stop),g=box(group);samples.push({width:p.width,stopWidth:s.width,overlap:Math.max(0,p.right-s.left),shape:shape(),outside:Math.max(0,g.left-p.left,s.right-g.right)});if(time-begin<340)win.requestAnimationFrame(sample);else resolve(samples);});});observer.observe(group,{attributes:true,attributeFilter:['data-transport-state']});
+    });action();return sampled;
+   }
+   const opening=await transition(()=>primary.click());
+   check('Playback region and adjacent controls stay fixed',opening.every(s=>s.shape.every((v,i)=>Math.abs(v-readyShape[i])<1)));
+   check('Opening is interpolated rather than jumping',opening.some(s=>s.width>box(primary).width+2&&s.width<readyShape[0]-3));
+   check('Segments never overlap or leave their region',opening.every(s=>s.overlap<1&&s.outside<1));
+   check('Playing splits into equal 44px-high targets',Math.abs(box(primary).width-box(stop).width)<1&&box(primary).width>=44&&box(stop).width>=44&&box(primary).height>=44&&box(stop).height>=44);
+   check('Playing exposes Pause and Stop',primary.getAttribute('aria-label')==='Pause'&&!stop.hidden&&!stop.inert&&!stop.disabled);
+   check('Brand motion is active only for visible playback',win.getComputedStyle($('.studio-brand-mark'),'::after').animationName==='studio-brand-sheen');
+   win.scrollTo({top:0,behavior:'instant'});await wait(80);check('Logo motion stops outside the studio viewport',win.getComputedStyle($('.studio-brand-mark'),'::after').animationName==='none');
+   showStudio();await wait(80);check('Logo motion resumes when the playing studio returns',win.getComputedStyle($('.studio-brand-mark'),'::after').animationName==='studio-brand-sheen');
+   await transition(()=>primary.click());check('Pause preserves split layout',primary.getAttribute('aria-label')==='Resume'&&Math.abs(box(primary).width-box(stop).width)<1);
+   check('Pause stops logo animation',win.getComputedStyle($('.studio-brand-mark'),'::after').animationName==='none');
+   await transition(()=>primary.click());stop.focus();const closing=await transition(()=>stop.click());
+   check('Stop returns focus to Play',doc.activeElement===primary);
+   check('Stop restores one full-width key',primary.getAttribute('aria-label')==='Play'&&Math.abs(box(primary).width-(box(group).width-2))<1);
+   check('Closing is interpolated without moving neighbors',closing.some(s=>s.width<box(primary).width-2&&s.width>readyShape[0]/2+1)&&closing.every(s=>s.shape.every((v,i)=>Math.abs(v-readyShape[i])<1)));
+   check('Stopped segment stays inaccessible',stop.hidden&&stop.inert&&stop.disabled&&stop.tabIndex===-1);
+   const motion=$('.motion-toggle');if(motion.getAttribute('aria-pressed')!=='true')motion.click();
+   check('Visual-motion pause disables transport transitions',win.getComputedStyle(group).transitionDuration==='0s');
+   primary.click();await wait(120);check('Visual-motion pause suppresses logo motion',win.getComputedStyle($('.studio-brand-mark'),'::after').animationName==='none');stop.click();
+   results.push({width,height,checks,openingSamples:opening.length,closingSamples:closing.length,regionWidth:readyShape[0],regionHeight:readyShape[1]});
+  }
+  status.textContent='Complete';
+ }catch(error){results.push({error:String(error.stack||error)});status.textContent='Failed';}
+ finally{document.querySelector('#results').textContent=JSON.stringify({version:41,results},null,2);button.disabled=false;}
+};
+</script></html>

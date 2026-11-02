@@ -1,0 +1,42 @@
+/* A product badge inspired by the plugin headers, within the existing studio. */
+.studio-workstation .studio-title{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:16px;min-height:52px;height:auto;padding:8px 16px}
+.studio-title .studio-identity{display:flex;align-items:center;gap:10px;min-width:0;color:#fff}
+.studio-brand-mark{position:relative;display:grid;place-items:center;width:76px;height:34px;padding:3px 8px;border:1px solid #4a4a4a;border-radius:5px;background:#090909;overflow:hidden;isolation:isolate;flex:none}
+.studio-brand-mark img{display:block;width:58px;height:28px;object-fit:contain}
+.studio-brand-mark::after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 25%,#ffffff24 50%,transparent 75%);transform:translateX(-160%);pointer-events:none}
+.studio-in-view.is-playing .studio-brand-mark::after{animation:studio-brand-sheen 5.6s cubic-bezier(.22,1,.36,1) infinite}
+.studio-title .studio-product-name{display:grid;gap:3px;color:#eee;font:700 12px/1.2 Manrope,sans-serif;letter-spacing:.08em}
+.studio-product-name small{color:#bcbcbc;font:500 8px/1.3 Manrope,sans-serif;letter-spacing:.09em;white-space:nowrap}
+.studio-title .project-name{position:static;transform:none;inset:auto;min-width:0;justify-self:center;max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:11px;color:#c4c4c4}
+.studio-title .studio-demo{font-size:9px;color:#bcbcbc;white-space:nowrap}
+.studio-title #studio-help-toggle{width:28px;height:28px;margin:0;justify-self:end}
+
+/* One fixed footprint, morphing from a single key into two equal segments. */
+.studio-workstation .transport-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,0fr);gap:0;width:176px;min-width:176px;max-width:176px;height:46px;min-height:46px;flex:none;align-items:stretch;border:1px solid #656565;border-radius:8px;background:#242424;overflow:hidden;isolation:isolate;transition:grid-template-columns 260ms cubic-bezier(.22,1,.36,1)}
+.studio-workstation .transport-actions[data-transport-state=playing],.studio-workstation .transport-actions[data-transport-state=paused]{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.studio-workstation .transport-actions #transport,.studio-workstation .transport-actions #reset-session{display:inline-flex;width:100%;min-width:0;max-width:none;height:44px;min-height:44px;padding:0;gap:7px;border:0;border-radius:0;box-shadow:none;overflow:hidden;white-space:nowrap;transition:background-color 220ms ease,color 220ms ease,opacity 160ms ease,visibility 0s}
+.studio-workstation .transport-actions #transport{background:#e50914;color:#fff}
+.studio-workstation .transport-actions #transport[aria-pressed=true]{background:#eee;color:#141414}
+.studio-workstation .transport-actions #transport:hover{background:#bd0912}
+.studio-workstation .transport-actions #transport[aria-pressed=true]:hover{background:#d9d9d9}
+.studio-workstation .transport-actions #reset-session{opacity:1;visibility:visible;border-left:1px solid #656565;background:#242424;color:#eee}
+.studio-workstation .transport-actions #reset-session:hover{background:#383838}
+.studio-workstation .transport-actions #reset-session[hidden]{display:inline-flex!important;opacity:0;visibility:hidden;pointer-events:none;transition:opacity 140ms ease,visibility 0s 140ms}
+.studio-workstation .transport-actions .control-label{font-size:11px;line-height:1}
+.studio-workstation .transport-actions #transport svg{animation:transport-symbol-in 180ms ease-out}
+.studio-workstation .transport-actions button:focus-visible{position:relative;z-index:1;outline:2px solid #fff;outline-offset:-4px}
+@keyframes transport-symbol-in{from{opacity:.25}to{opacity:1}}
+@keyframes studio-brand-sheen{0%,68%{transform:translateX(-160%)}90%,100%{transform:translateX(160%)}}
+@media(max-width:900px){.studio-title .studio-demo{display:none}.studio-workstation .studio-title{grid-template-columns:auto minmax(0,1fr) auto}}
+@media(max-width:650px){
+ .studio-workstation .studio-title{padding:8px 12px;gap:8px;min-height:50px}
+ .studio-title .studio-identity{gap:8px}.studio-brand-mark{width:64px;height:32px;padding:3px 6px}.studio-brand-mark img{width:50px;height:26px}
+ .studio-title .studio-product-name{font-size:10px;letter-spacing:.04em}.studio-product-name small{display:none}
+ .studio-title .project-name{display:block;font-size:10px;justify-self:end}
+ .studio-workstation .transport-actions{width:96px;min-width:96px;max-width:96px;grid-column:1;grid-row:1}
+ .studio-workstation .transport-actions #transport,.studio-workstation .transport-actions #reset-session{gap:0}
+}
+.motion-paused .studio-workstation .studio-brand-mark::after{animation:none}
+.motion-paused .transport-actions,.motion-paused .studio-workstation .transport-actions #transport,.motion-paused .studio-workstation .transport-actions #reset-session{transition:none}
+.motion-paused .transport-actions #transport svg{animation:none}
+@media(prefers-reduced-motion:reduce){.studio-brand-mark::after{animation:none!important}.studio-workstation .transport-actions,.studio-workstation .transport-actions #transport,.studio-workstation .transport-actions #reset-session,.studio-workstation .transport-actions #reset-session[hidden]{transition:none}.studio-workstation .transport-actions #transport svg{animation:none}}

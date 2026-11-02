@@ -7,7 +7,7 @@ document.querySelector('#run').onclick=async()=>{
  const check=(name,value)=>{results.push({name,pass:Boolean(value)});if(!value)throw Error(name);};
  try{
   sessionStorage.removeItem('skazi-studio-workspace-v1');
-  const loaded=new Promise(resolve=>frame.addEventListener('load',resolve,{once:true}));frame.src='../../?qa=39&intro=0';await loaded;
+  const loaded=new Promise(resolve=>frame.addEventListener('load',resolve,{once:true}));frame.src='../../?qa=41&intro=0';await loaded;
   const doc=frame.contentDocument,win=frame.contentWindow,$=s=>doc.querySelector(s),wait=ms=>new Promise(r=>setTimeout(r,ms));await doc.fonts.ready;
   const input=(selector,value)=>{const element=$(selector);element.dispatchEvent(new win.Event('focus'));element.value=String(value);element.dispatchEvent(new win.Event('input',{bubbles:true}));element.dispatchEvent(new win.Event('change',{bubbles:true}));};
   const music=()=>JSON.stringify([...doc.querySelectorAll('[data-pattern] button,[data-level],[data-layer],[data-solo],[data-shape],#studio-tempo')].map(e=>[e.dataset,e.value,e.getAttribute('aria-pressed'),e.title]));
@@ -50,6 +50,6 @@ document.querySelector('#run').onclick=async()=>{
   check('Closed workspace stays closed after reload',frame.contentDocument.querySelector('#studio-advanced').hidden);
   frame.contentDocument.querySelector('#studio-advanced-toggle').click();check('Last panel is remembered even when restored closed',frame.contentDocument.querySelector('#tab-mixer').getAttribute('aria-selected')==='true');
   results.push({heightClosed,heightExpanded,percentShorter:Math.round((1-heightClosed/heightExpanded)*100)});status.textContent='Complete';
- }catch(error){results.push({error:String(error.stack||error)});status.textContent='Failed';}finally{document.querySelector('#results').textContent=JSON.stringify({version:39,results},null,2);button.disabled=false;}
+ }catch(error){results.push({error:String(error.stack||error)});status.textContent='Failed';}finally{document.querySelector('#results').textContent=JSON.stringify({version:41,results},null,2);button.disabled=false;}
 };
 </script></html>

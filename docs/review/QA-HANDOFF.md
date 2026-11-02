@@ -66,3 +66,17 @@ Track rows now leave at least 6px between their power/solo controls and level sl
 - **28 accessibility cases passed with zero reported violations**, using the existing axe-core 4.14 suite against the new CSS. [Raw accessibility results](qa/axe-40.json). Arrow-key panel navigation was also checked at 320px; focus and selected panel move together.
 
 Reproduce the spacing checks at `/demo/qa/spacing.html` with **Check studio spacing**. Public audio/editing logic is unchanged; the layout harness starts and pauses playback to exercise the conditional Stop button. Testing remains Chromium on Windows rather than a physical-device or cross-browser certification.
+
+
+## Revision 41 — shared transport and plugin-inspired identity
+
+- A single fixed playback region now holds full-width Play, equal Pause/Stop halves while playing, and equal Resume/Stop halves when paused. Stop returns to full-width Play. The CSS grid interpolates over 260ms; colors and the playback symbol change softly. The surrounding clock, tempo and preset positions remain stable. Desktop region: 176×46px, with two 87×44px targets when split. Mobile region: 96×46px, with two 47×44px targets.
+- Hidden Stop remains inert, disabled, `aria-hidden` and outside the tab order during its visual fade-out. Stopping from its keyboard focus returns focus to Play. Existing audio clock and asynchronous-start safeguards remain intact.
+- The original SKAZI artwork replaces the small asterisk in the studio title, in a dark badge inspired by the plugin headers. The existing palette, channel layout and Advanced workspace remain. A restrained light sweep appears on the badge only during visible playback, stops offscreen/paused/stopped, and follows the site's visual-motion control. Reduced-motion rules remove these animations/transitions; native reduced-motion preference switching was not emulated in this run.
+- **90 transport assertions passed** across 320×700, 390×844, 768×1024, 1280×720 and 1440×900. Actual animation frames verify interpolated opening/closing, equal final halves, stable neighboring controls, no segment overlap, focus, inactive Stop semantics and logo visibility/motion behavior. The QA fixture explicitly scrolls both its outer frame and inner studio into view for IntersectionObserver checks. [Transport results](qa/transport-41.json), reproducible at `/demo/qa/transport.html`.
+- **72 layout cases passed** with no reported collisions or document overflow. **28 axe-core cases reported zero violations.** **29 editing/audio/export workflow assertions passed**, including matching export snapshots and equivalent independent WAV renders. [Spacing](qa/spacing-41.json) · [Accessibility](qa/axe-41.json) · [Workflow](qa/compact-workflow-41.json).
+- All three Node regression suites passed, including extended transport accessibility-state assertions. Root and `/demo/` load the correct assets and logo. Desktop and mobile screenshots were visually inspected; no captured warnings/errors in the final demo preview.
+
+[Full-width Play](studio-ready-41.png) · [Split playback](studio-playing-41.png) · [Mobile](studio-mobile-41.png).
+
+[Hebrew product evolution plan](DAW-EVOLUTION.md) describes the next stages: durable session recovery, project files and session-wide history; independent bar editing/Piano Roll; original plugin audio and real mixer routing; accessibility and cross-browser usability work. Those future capabilities are explicitly separated from what revision 41 implements. The earlier Chromium/physical-device/native-screen-reader limits still apply.

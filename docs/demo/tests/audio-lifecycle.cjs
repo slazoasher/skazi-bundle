@@ -8,7 +8,7 @@ const lifecycle=source.slice(source.indexOf('function schedule()'),source.indexO
 function fixture(){
  let resolveAudio,rejectAudio;const pending=new Promise((resolve,reject)=>{resolveAudio=resolve;rejectAudio=reject;});
  const elements=new Map(),timers=[],intervals=new Set(),events=[];
- const element=()=>({textContent:'',set innerHTML(value){this.textContent=value.replace(/<[^>]*>/g,'');},focus(){},classList:{add(){},remove(){},toggle(){}},style:{setProperty(){}},setAttribute(){},removeAttribute(){}});
+ const element=()=>({textContent:'',attributes:{},set innerHTML(value){this.textContent=value.replace(/<[^>]*>/g,'');},focus(){},classList:{add(){},remove(){},toggle(){}},style:{setProperty(){}},setAttribute(name,value){this.attributes[name]=String(value);},removeAttribute(name){delete this.attributes[name];}});
  const scope={SkaziStudio:require('../studio-engine.js'),studioEngine:{play(){},reset(){}},studioControls:{master:65},currentSession:'roll',noteEdits:{},pendingSession:null,pendingTempo:null,buildBusy:false,running:false,starting:false,paused:false,pausing:false,activeVoices:new Set(),runGeneration:0,step:0,nextTime:0,timer:null,beat:60/138,playStart:0,
   ctx:{currentTime:1,suspend:()=>Promise.resolve()},master:{gain:{cancelScheduledValues(){},setValueAtTime(){},setTargetAtTime(){}}},
   setupAudio:()=>pending,stopPreview(){},stopCompare(){},cancelBuild(){},
@@ -34,12 +34,17 @@ function fixture(){
  assert.equal(await failed,false);assert.equal(d.scope.starting,false);assert.equal(d.scope.running,false);
  assert.equal(d.scope.$('#transport').textContent,'Retry audio');
  const e=fixture();const playing=e.scope.startLoop();e.resolveAudio();await playing;
+ assert.equal(e.scope.$('.transport-actions').attributes['data-transport-state'],'playing');
+ assert.equal(e.scope.$('#reset-session').inert,false);assert.equal(e.scope.$('#reset-session').attributes['aria-hidden'],'false');
  const originalStart=e.scope.playStart;e.scope.ctx.currentTime=1.32;const savedStep=e.scope.step;
  assert.equal(await e.scope.pauseLoop(),true);assert.equal(e.scope.paused,true);assert.equal(e.intervals.size,0);
  assert.equal(e.scope.$('#transport').textContent,'Resume');assert.equal(e.scope.$('#reset-session').hidden,false);
+ assert.equal(e.scope.$('.transport-actions').attributes['data-transport-state'],'paused');
  assert.equal(await e.scope.startLoop(),true);assert.equal(e.scope.playStart,originalStart,'Resume must preserve the audio clock origin');
  assert.ok(e.scope.step>=savedStep);assert.equal(e.scope.paused,false);assert.equal(e.intervals.size,1);
  e.scope.stopLoop();assert.equal(e.scope.$('#reset-session').hidden,true);assert.equal(e.scope.$('#transport').textContent,'Play');
+ assert.equal(e.scope.$('.transport-actions').attributes['data-transport-state'],'ready');
+ assert.equal(e.scope.$('#reset-session').inert,true);assert.equal(e.scope.$('#reset-session').disabled,true);assert.equal(e.scope.$('#reset-session').tabIndex,-1);assert.equal(e.scope.$('#reset-session').attributes['aria-hidden'],'true');
  const f=fixture();const queued=[];f.scope.pendingSession='acid';f.scope.applySession=(name,time)=>queued.push({name,time});f.scope.buildBusy=true;f.scope.advanceBuild=time=>queued.push({build:time});const fstart=f.scope.startLoop();f.resolveAudio();await fstart;
  assert.equal(queued[0].name,'acid');assert.equal(queued[0].time,f.scope.playStart);assert.equal(queued[1].build,f.scope.playStart);assert.equal(f.scope.pendingSession,null);f.scope.stopLoop();
  console.log('PASS: duplicate start, stop during resume, stale callbacks, rewind, audio failure, pause/resume clock, conditional Stop');

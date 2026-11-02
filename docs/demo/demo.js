@@ -55,7 +55,9 @@ function setTransport(mode){
  const icon=mode==='pause'?'<rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/>':'<path d="m8 5 11 7-11 7z"/>';
  button.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+icon+'</svg><span class="control-label">'+label+'</span>';
  button.setAttribute('aria-label',label);button.setAttribute('aria-pressed',String(mode==='pause'));
- $('#reset-session').hidden=mode==='play'||mode==='retry';
+ const idle=mode==='play'||mode==='retry',stop=$('#reset-session');
+ $('.transport-actions').setAttribute('data-transport-state',idle?'ready':mode==='pause'?'playing':'paused');
+ stop.hidden=idle;stop.inert=idle;stop.disabled=idle;stop.tabIndex=idle?-1:0;stop.setAttribute('aria-hidden',String(idle));
 }
 async function startLoop(){
  if(running||starting||pausing)return false;
@@ -152,7 +154,7 @@ for(const key of Object.keys(layers)){let peak=0;if(running&&channelAnalysers[ke
 if(running&&analyser){analyser.getFloatTimeDomainData(masterSamples);let peak=0;for(const sample of masterSamples)peak=Math.max(peak,Math.abs(sample));$('#master-peak').textContent='PEAK '+(peak>.0001?(20*Math.log10(peak)).toFixed(1):'−∞')+' dB';const elapsedBeats=Math.max(0,(ctx.currentTime-playStart)/beat);const phase=(elapsedBeats/16)%1;setDAWPosition(Math.floor(elapsedBeats/4)%4+1,Math.floor(elapsedBeats*4)%16+1);$('.rack-playhead').style.setProperty('--playhead',Math.max(0,phase));}else if(!paused){$('#master-peak').textContent='PEAK −∞ dB';}if(running&&!document.body.classList.contains('motion-paused'))visualFrame=requestAnimationFrame(drawStage);}
 function requestStageDraw(){if(scopeVisible&&!visualFrame)visualFrame=requestAnimationFrame(drawStage);}
 document.addEventListener('studio-audio-started',requestStageDraw);document.addEventListener('studio-audio-stopped',requestStageDraw);document.addEventListener('studio-audio-paused',requestStageDraw);document.addEventListener('visual-motion-change',requestStageDraw);addEventListener('resize',requestStageDraw);
-const stageObserver=new IntersectionObserver(entries=>{scopeVisible=entries[0].isIntersecting;if(scopeVisible&&!visualFrame)visualFrame=requestAnimationFrame(drawStage);else if(!scopeVisible){cancelAnimationFrame(visualFrame);visualFrame=0;}});stageObserver.observe($('#lab'));
+const stageObserver=new IntersectionObserver(entries=>{scopeVisible=entries[0].isIntersecting;$('#lab').classList.toggle('studio-in-view',scopeVisible);if(scopeVisible&&!visualFrame)visualFrame=requestAnimationFrame(drawStage);else if(!scopeVisible){cancelAnimationFrame(visualFrame);visualFrame=0;}});stageObserver.observe($('#lab'));
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&scopeVisible&&!visualFrame)visualFrame=requestAnimationFrame(drawStage);});
 
 $('#catalog-more').onclick=()=>{showAll=!showAll;render();if(!showAll)$('#collection').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});};
