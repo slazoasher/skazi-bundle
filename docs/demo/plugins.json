@@ -1,0 +1,398 @@
+[
+  {
+    "name": "SKAZI REVERB",
+    "folder": "Skverb",
+    "image": "../img/skverb-480.webp",
+    "subtitle": "Mega reverb machine",
+    "description": "A rack-style reverb in the spirit of the classic studio machines: ten algorithms from hall and plate to shimmer, reverse, gated and blackhole. Pre-delay with echo feedback and tempo sync, FREEZE for endless pads, DUCK so the tail breathes around your kick, and a resonant tail filter.",
+    "presets": "75 presets",
+    "category": "Effects",
+    "preview": "echo",
+    "tags": [
+      "75 presets",
+      "10 algorithms",
+      "Reverse layer",
+      "Resonant tail filter",
+      "Freeze + duck"
+    ],
+    "nameParts": [
+      "SKAZI ",
+      "REVERB"
+    ]
+  },
+  {
+    "name": "BULLY",
+    "folder": "Bully",
+    "image": "../img/bully-480.webp",
+    "subtitle": "Analog-character wavetable monster",
+    "description": "Three wavetable oscillators, analog drift and a saturated ladder filter. Shape your sound with drag-and-drop modulation, chaos generators and a full FX rack.",
+    "presets": "462 presets",
+    "category": "Instruments",
+    "preview": "wide",
+    "tags": [
+      "462 presets",
+      "SHARP 24 filter",
+      "FULL RANDOM",
+      "Drag & drop mod",
+      "Chaos LFOs",
+      "Psy · Afro · Growl"
+    ],
+    "nameParts": [
+      "BUL",
+      "LY"
+    ]
+  },
+  {
+    "name": "SKAZI",
+    "folder": "SKAZI-Synth",
+    "image": "../img/skazi-480.webp",
+    "subtitle": "Psy / acid / VA synth",
+    "description": "Supersaw unison, custom wavetables and a powerful sequencer. Perform with four macros, A/B morph and kick ducking, or roll a completely new sound.",
+    "presets": "3,650 presets",
+    "category": "Instruments",
+    "preview": "psy",
+    "tags": [
+      "3,650 presets",
+      "Supersaw",
+      "PERFORM page",
+      "Your own wavetables",
+      "Arp + sequencer"
+    ],
+    "nameParts": [
+      "SKA",
+      "ZI"
+    ]
+  },
+  {
+    "name": "BAMBA",
+    "folder": "Bamba",
+    "image": "../img/bamba-480.webp",
+    "subtitle": "Riser & uplift maker",
+    "description": "Create uplifters, snare rolls, impacts and sub drops across 1–24 bars. Layer your samples, automate the roll rate and build the tension.",
+    "presets": "260 presets",
+    "category": "Instruments",
+    "preview": "riser",
+    "tags": [
+      "260 presets",
+      "Your Splice risers",
+      "Quantized rolls",
+      "Up to 24 bars",
+      "+6 octaves"
+    ],
+    "nameParts": [
+      "BAM",
+      "BA"
+    ]
+  },
+  {
+    "name": "TAHINI",
+    "folder": "Tahini",
+    "image": "../img/tahini-480.webp",
+    "subtitle": "Space delay + reverb",
+    "description": "Seven delay characters with filtered, driven and pitch-shifted repeats. Add shimmer, reverse, freeze and a spacious ducking reverb.",
+    "presets": "250 presets",
+    "category": "Effects",
+    "preview": "echo",
+    "tags": [
+      "250 presets",
+      "7 delay types",
+      "Echo filter + drive",
+      "Pitch on repeats",
+      "Freeze"
+    ],
+    "nameParts": [
+      "TAH",
+      "INI"
+    ]
+  },
+  {
+    "name": "TBON 303",
+    "folder": "TBON303",
+    "image": "../img/tbon303-480.webp",
+    "subtitle": "Acid bass line synth",
+    "description": "Classic acid movement with accent, slide and a powerful resonant filter. Build patterns in the sequencer and push fourteen drive flavours.",
+    "presets": "544 presets",
+    "category": "Instruments",
+    "preview": "acid",
+    "tags": [
+      "544 presets",
+      "Hard acid",
+      "Accent + slide",
+      "14 drive types",
+      "Acid sequencer",
+      "Win + Mac · VST3 / AU"
+    ],
+    "nameParts": [
+      "TBON ",
+      "303"
+    ]
+  },
+  {
+    "name": "SALAT",
+    "folder": "Salat",
+    "image": "../img/salat-480.webp",
+    "subtitle": "Glitch multi-FX + RISE",
+    "description": "Rearrange your groove with synced chops, stutters and tape stops. Add a full FX chain and use RISE for long, tempo-locked pitch builds.",
+    "presets": "104 presets",
+    "category": "Effects",
+    "preview": "stutter",
+    "tags": [
+      "104 presets",
+      "MAKE A SALAT",
+      "RISE up to 4 octaves",
+      "Chop · drive · crush",
+      "Delay · reverb"
+    ],
+    "nameParts": [
+      "SA",
+      "LAT"
+    ]
+  },
+  {
+    "name": "MIDI GOD",
+    "folder": "MidiGod",
+    "image": "../img/midigod-480.webp",
+    "subtitle": "MIDI pattern generator + audio to MIDI",
+    "description": "Generate basslines, melodies, arps, chords and drums in your key across ten genres. ROLL BASS writes rolling psy and techno basslines around the kick. Drag MIDI into your DAW or turn audio into MIDI.",
+    "presets": "126 presets",
+    "category": "MIDI",
+    "preview": "arp",
+    "tags": [
+      "126 presets",
+      "ROLL BASS",
+      "10 genres x 9 roles",
+      "Drag MIDI to the DAW",
+      "Audio to MIDI"
+    ],
+    "nameParts": [
+      "MIDI ",
+      "GOD"
+    ]
+  },
+  {
+    "name": "KICKASS",
+    "folder": "Kickass",
+    "image": "../img/kickass-480.webp",
+    "subtitle": "Kick drum synth",
+    "description": "Build punchy kicks with a two-stage pitch envelope, precise decay, three-band EQ and clean-to-driven tone. Layer your own samples for extra character.",
+    "presets": "50 presets",
+    "category": "Instruments",
+    "preview": "kick",
+    "tags": [
+      "50 presets",
+      "Snap + sweep pitch",
+      "3-band EQ",
+      "Splice kick browser",
+      "Key track"
+    ],
+    "nameParts": [
+      "KICK",
+      "ASS"
+    ]
+  },
+  {
+    "name": "SUBICH",
+    "folder": "Subich",
+    "image": "../img/subich-480.webp",
+    "subtitle": "Bass + sub bass synth",
+    "description": "Two oscillators and a dedicated sub, built for focused basslines. Shape the groove with dual filters, modulation, legato and glide.",
+    "presets": "1,000 presets",
+    "category": "Instruments",
+    "preview": "sub",
+    "tags": [
+      "1,000 presets",
+      "Psytrance",
+      "Techno",
+      "House",
+      "Indie dance"
+    ],
+    "nameParts": [
+      "SUB",
+      "ICH"
+    ]
+  },
+  {
+    "name": "SHAKSUKA",
+    "folder": "Shaksuka",
+    "image": "../img/shaksuka-480.webp",
+    "subtitle": "Random chop & glitch FX",
+    "description": "Turn audio into rhythmic chops, stutters and reverses. Add tape stops, pitch shifts, gates and filters with swing and evolving grooves.",
+    "presets": "509 presets",
+    "category": "Effects",
+    "preview": "glitch",
+    "tags": [
+      "509 presets",
+      "11 effects",
+      "Groove quantize",
+      "Evolving patterns"
+    ],
+    "nameParts": [
+      "SHAK",
+      "SUKA"
+    ]
+  },
+  {
+    "name": "PITAPUMP",
+    "folder": "PitaPump",
+    "image": "../img/pitapump-480.webp",
+    "subtitle": "Sidechain LFO tool",
+    "description": "Shape the pulse with ten pump curves or draw your own. Sync to the song, trigger from MIDI or follow your kick.",
+    "presets": "105 presets",
+    "category": "Effects",
+    "preview": "pump",
+    "tags": [
+      "105 presets",
+      "Draw mode",
+      "Audio sidechain",
+      "Auto pre-amp"
+    ],
+    "nameParts": [
+      "PITA",
+      "PUMP"
+    ]
+  },
+  {
+    "name": "ZHUG",
+    "folder": "Zhug",
+    "image": "../img/zhug-480.webp",
+    "subtitle": "Saturator + widener",
+    "description": "Eight drive types, from warm tube colour to bitcrushed edges. Dial in multiband saturation, stereo width and a focused mono low end.",
+    "presets": "118 presets",
+    "category": "Effects",
+    "preview": "drive",
+    "tags": [
+      "118 presets",
+      "4x oversampled",
+      "Multiband",
+      "Bass mono"
+    ],
+    "nameParts": [
+      "ZH",
+      "UG"
+    ]
+  },
+  {
+    "name": "THE FILTERFISH",
+    "folder": "FilterFish",
+    "image": "../img/filterfish-480.webp",
+    "subtitle": "Filter FX",
+    "description": "Animate your sound with creative filters, LFOs and envelopes. Layer chorus, flanger, glitch, delay and reverb, or randomize the whole chain.",
+    "presets": "800 presets",
+    "category": "Effects",
+    "preview": "filter",
+    "tags": [
+      "800 presets",
+      "Many filter types",
+      "Glitch",
+      "Full FX chain"
+    ],
+    "nameParts": [
+      "THE ",
+      "FILTERFISH"
+    ]
+  },
+  {
+    "name": "KUBE",
+    "folder": "Kube",
+    "image": "../img/kube-480.webp",
+    "subtitle": "Psytrance wavetable synth",
+    "description": "Two wavetable oscillators with 24 KUBE-only tables (growl, yoy, robot and more), or drag and drop your own Serum .wav wavetables. Two warp slots per oscillator, 16-voice unison with blend and width, sub, noise and wavefold, a filter, mod section and FX rack, in a lime-on-black skin.",
+    "presets": "306 presets",
+    "category": "Instruments",
+    "preview": "psy",
+    "tags": [
+      "306 presets",
+      "Serum .wav import",
+      "2 warps per osc",
+      "16-voice unison"
+    ],
+    "nameParts": [
+      "KU",
+      "BE"
+    ]
+  },
+  {
+    "name": "QUAZI",
+    "folder": "Quazi",
+    "image": "../img/quazi-480.webp",
+    "subtitle": "4-band fuzz",
+    "description": "A clean 4-band crossover feeds each band into its own soft, hard, fuzz or tube distortion, with its own drive and level. Drag the crossovers on the screen. The mix blends each band with its clean self, so half-wet never sounds hollow. Stereo width with MONO BASS and a 3-band EQ (low shelf, bell, high shelf) finish the sound.",
+    "presets": "104 presets",
+    "category": "Effects",
+    "preview": "drive",
+    "tags": [
+      "104 presets",
+      "4 bands x 4 drive types",
+      "4x oversampled",
+      "Stereo width + mono bass",
+      "Post EQ"
+    ],
+    "nameParts": [
+      "QUA",
+      "ZI"
+    ]
+  },
+  {
+    "name": "SKACID",
+    "folder": "Skacid",
+    "image": "../img/skacid-480.webp",
+    "subtitle": "Acid bassline synth · Special Shigaon Edition",
+    "description": "A squelchy 303-style voice with accent and slide, driven by a 16-step sequencer that keeps evolving with chance, MUTATE, ratchets and swing. Play it as a sequencer, an arpeggiator or from MIDI, then push it through five distortions, OTT, delay and reverb.",
+    "presets": "129 presets",
+    "category": "Instruments",
+    "preview": "acid",
+    "tags": [
+      "129 presets",
+      "Evolving sequencer",
+      "MUTATE",
+      "SEQ · ARP · MIDI",
+      "5 distortions"
+    ],
+    "nameParts": [
+      "SK",
+      "ACID"
+    ]
+  },
+  {
+    "name": "SKILTER",
+    "folder": "Skilter",
+    "image": "../img/skilter-480.webp",
+    "subtitle": "Morphing multimode filter",
+    "description": "Morph smoothly from lowpass to bandpass, highpass and notch at 12 to 48 dB, with analog-style resonance that self-oscillates. Move it with an LFO, an envelope follower or a tempo-locked step sequencer, add drive before or after, and watch it on a live spectrum.",
+    "presets": "150 presets",
+    "category": "Effects",
+    "preview": "filter",
+    "tags": [
+      "150 presets",
+      "LP · BP · HP · notch morph",
+      "Self-oscillation",
+      "LFO · envelope · step seq",
+      "RANDOM"
+    ],
+    "nameParts": [
+      "SKIL",
+      "TER"
+    ]
+  },
+  {
+    "name": "SKWIDE",
+    "folder": "Skwide",
+    "image": "../img/skwide-480.webp",
+    "subtitle": "Phase-safe stereo imager",
+    "description": "Push any sound up to 200% wide and it still sounds full in mono: every bit of width goes into the sides. An allpass spread engine opens up mono synths, the PHASE wheel and DRIFT move the image, DEPTH pulls it near or far, and MONO BASS keeps the low end tight.",
+    "presets": "70 presets",
+    "category": "Effects",
+    "preview": "wide",
+    "tags": [
+      "70 presets",
+      "200% width, mono safe",
+      "Phase wheel + drift",
+      "Haas SUPER WIDE",
+      "Imager + scope"
+    ],
+    "nameParts": [
+      "SK",
+      "WIDE"
+    ]
+  }
+]
