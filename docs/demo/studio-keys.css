@@ -1,0 +1,99 @@
+.studio-keys {
+  background: #171717;
+  border-top: 1px solid #373737;
+  color: #f3f3f3;
+  font-family: Manrope, sans-serif;
+}
+.studio-keys [hidden] { display: none !important; }
+.studio-keys .keys-toggle {
+  width: 100%; min-height: 48px; display: flex; align-items: center; gap: 12px;
+  padding: 8px 16px; color: inherit; background: #1c1c1c; border: 0; text-align: left;
+  font: 700 13px Manrope, sans-serif;
+}
+.studio-keys .keys-toggle:hover, .studio-keys .keys-toggle[aria-expanded=true] { background: #252525; }
+.keys-toggle small { margin-left: 8px; font-size: 11px; font-weight: 500; color: #bcbcbc; }
+.keys-toggle svg { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.keys-toggle-device { margin-left: auto; font-size: 10px; letter-spacing: .08em; color: #d0d0d0; }
+.keys-toggle[aria-expanded=true] .keys-chevron { transform: rotate(180deg); }
+.keys-chevron { transition: transform 180ms ease; }
+.keys-panel { padding: 12px 16px 14px; border-top: 1px solid #373737; }
+.keys-panel:not([hidden]) > * { animation: keys-enter 180ms ease-out both; }
+@keyframes keys-enter {
+  from { opacity: .35; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.keys-console { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.keys-instrument { display: grid; gap: 2px; min-width: 82px; }
+.keys-instrument span { font-size: 9px; letter-spacing: .12em; color: #bbb; }
+.keys-instrument strong { font-size: 14px; line-height: 1.25; }
+.keys-waveform {
+  width: min(26%, 132px); height: 28px; border: 1px solid #424242; border-radius: 4px;
+  background: repeating-linear-gradient(90deg, #131313 0 15px, #252525 15px 16px);
+}
+.keys-octaves { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+.keys-octaves button {
+  width: 44px; min-height: 44px; color: #f2f2f2; background: #282828; border: 1px solid #565656;
+  border-radius: 5px; font: 700 16px Manrope, sans-serif;
+}
+.keys-octaves button:disabled { opacity: .5; cursor: default; }
+.keys-octaves button:hover:not(:disabled) { border-color: #ff454e; }
+.keys-octaves output { min-width: 55px; text-align: center; font-size: 11px; font-variant-numeric: tabular-nums; }
+.keys-bed {
+  display: flex; gap: 2px; padding: 4px; min-width: 0; border: 1px solid #4a4a4a; border-radius: 6px;
+  background: #0d0d0d; isolation: isolate;
+}
+.keys-octave { position: relative; display: flex; flex: 1; min-width: 0; }
+.studio-keys .keys-bed button {
+  padding: 0; display: grid; align-items: end; justify-items: center; border-radius: 0 0 4px 4px;
+  font: 700 10px Manrope, sans-serif; cursor: pointer; touch-action: manipulation;
+  transition: transform 110ms ease, background-color 110ms ease, box-shadow 110ms ease;
+}
+.studio-keys .keys-white {
+  flex: 1; min-width: 0; height: 88px; padding-bottom: 7px !important; color: #222;
+  border: 1px solid #252525; background: linear-gradient(#d9d9d6, #f7f7f4 76%);
+  box-shadow: inset 0 -4px #aaa;
+}
+.studio-keys .keys-black {
+  position: absolute; z-index: 1; top: 0; left: calc(var(--key-position) * 100% / 7);
+  width: 9%; height: 53px; translate: -50% 0; padding-bottom: 6px !important;
+  border: 1px solid #070707; background: linear-gradient(#282828, #131313); color: #eee;
+  box-shadow: inset 0 -4px #050505, 1px 2px 2px #0008;
+}
+.studio-keys .keys-pad {
+  flex: 1; min-width: 0; min-height: 62px; align-items: center !important; padding: 6px !important;
+  border-radius: 4px !important; border: 1px solid #5c5c5c; background: #252525; color: #eee;
+}
+.keys-bed.is-pads { gap: 8px; }
+.studio-keys .keys-bed button.is-down {
+  background: #bd0710; color: #fff; transform: translateY(2px);
+  box-shadow: inset 0 -3px #8e070e, inset 0 0 0 1px #ff737b;
+}
+.studio-keys :focus-visible { outline: 2px solid #ff737b; outline-offset: 2px; }
+.studio-keys .keys-bed button:focus-visible { outline-offset: -3px; }
+.keys-footer { margin-top: 8px; display: flex; gap: 6px 16px; flex-wrap: wrap; justify-content: space-between; }
+.keys-footer span { color: #ccc; font-size: 11px; line-height: 1.45; }
+.keys-keycap {
+  align-self: end; display: grid; place-items: center; width: 16px; height: 16px;
+  margin-bottom: 2px; border-radius: 3px; background: #14141418;
+  color: inherit; font: 800 10px Manrope, sans-serif;
+}
+.keys-black .keys-keycap, .keys-pad .keys-keycap, .is-down .keys-keycap { background: #ffffff24; }
+.keys-pad .keys-keycap { align-self: center; }
+@media (max-width: 650px) {
+  .studio-keys .keys-toggle, .keys-panel { padding-inline: 10px; }
+  .keys-toggle small { display: none; }
+  .keys-console { gap: 6px; }
+  .keys-waveform { flex: 1; min-width: 0; }
+  .keys-instrument { min-width: 62px; }
+  .keys-instrument strong { font-size: 12px; }
+  .keys-octaves { gap: 3px; }
+  .keys-octaves output { min-width: 48px; }
+  .studio-keys .keys-black { width: 11%; }
+}
+.motion-paused .studio-keys *, .motion-paused .studio-keys .keys-bed button { transition: none; }
+.motion-paused .keys-panel:not([hidden]) > * { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .studio-keys *, .studio-keys .keys-bed button { transition: none; }
+  .keys-panel:not([hidden]) > * { animation: none; }
+  .studio-keys .keys-bed button.is-down { transform: none; }
+}
