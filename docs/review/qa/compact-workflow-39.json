@@ -1,0 +1,133 @@
+{
+  "version": 39,
+  "results": [
+    {
+      "name": "Advanced is closed on a fresh visit",
+      "pass": true
+    },
+    {
+      "name": "Master spectrum remains visible outside Advanced",
+      "pass": true
+    },
+    {
+      "name": "Disclosure opens without changing music",
+      "pass": true
+    },
+    {
+      "name": "Collapse returns focus and preserves music",
+      "pass": true
+    },
+    {
+      "name": "Hidden workspace has no rendered controls",
+      "pass": true
+    },
+    {
+      "name": "Compact level updates mixer and dB readout",
+      "pass": true
+    },
+    {
+      "name": "Modified session is indicated",
+      "pass": true
+    },
+    {
+      "name": "Clip opens correct Pattern context",
+      "pass": true
+    },
+    {
+      "name": "Clear removes selected track notes",
+      "pass": true
+    },
+    {
+      "name": "Undo restores notes",
+      "pass": true
+    },
+    {
+      "name": "Redo restores cleared pattern",
+      "pass": true
+    },
+    {
+      "name": "Selected velocity is editable",
+      "pass": true
+    },
+    {
+      "name": "Slider edit has one undo entry",
+      "pass": true
+    },
+    {
+      "name": "Slider redo restores exact value",
+      "pass": true
+    },
+    {
+      "name": "Scoped keyboard undo works",
+      "pass": true
+    },
+    {
+      "name": "New edit clears redo branch",
+      "pass": true
+    },
+    {
+      "name": "Detailed mixer synchronizes compact level",
+      "pass": true
+    },
+    {
+      "name": "Sound shows controls and selected plugin",
+      "pass": true
+    },
+    {
+      "name": "Edits, levels and sound survive collapse",
+      "pass": true
+    },
+    {
+      "name": "WAV render completes 1",
+      "pass": true
+    },
+    {
+      "name": "WAV render completes 2",
+      "pass": true
+    },
+    {
+      "name": "Actual export snapshot is unchanged by disclosure",
+      "pass": true
+    },
+    {
+      "renderComparison": {
+        "maxDeltaPcm": 1,
+        "rmsDeltaPcm": 0.18612163245566635,
+        "sameLength": true
+      }
+    },
+    {
+      "name": "Rendered WAV remains equivalent within two PCM quantization steps",
+      "pass": true
+    },
+    {
+      "name": "Audio starts",
+      "pass": true
+    },
+    {
+      "name": "Collapse does not pause or rewind transport",
+      "pass": true
+    },
+    {
+      "name": "Paused position survives disclosure",
+      "pass": true
+    },
+    {
+      "name": "Workspace state restores for this visit",
+      "pass": true
+    },
+    {
+      "name": "Closed workspace stays closed after reload",
+      "pass": true
+    },
+    {
+      "name": "Last panel is remembered even when restored closed",
+      "pass": true
+    },
+    {
+      "heightClosed": 685,
+      "heightExpanded": 1203,
+      "percentShorter": 43
+    }
+  ]
+}

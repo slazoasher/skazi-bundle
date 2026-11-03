@@ -1,0 +1,415 @@
+{
+  "version": 41,
+  "results": [
+    {
+      "width": 320,
+      "height": 700,
+      "checks": [
+        {
+          "name": "Ready key fills fixed playback region",
+          "pass": true
+        },
+        {
+          "name": "Idle Stop is inaccessible",
+          "pass": true
+        },
+        {
+          "name": "Playback region and adjacent controls stay fixed",
+          "pass": true
+        },
+        {
+          "name": "Opening is interpolated rather than jumping",
+          "pass": true
+        },
+        {
+          "name": "Segments never overlap or leave their region",
+          "pass": true
+        },
+        {
+          "name": "Playing splits into equal 44px-high targets",
+          "pass": true
+        },
+        {
+          "name": "Playing exposes Pause and Stop",
+          "pass": true
+        },
+        {
+          "name": "Brand motion is active only for visible playback",
+          "pass": true
+        },
+        {
+          "name": "Logo motion stops outside the studio viewport",
+          "pass": true
+        },
+        {
+          "name": "Logo motion resumes when the playing studio returns",
+          "pass": true
+        },
+        {
+          "name": "Pause preserves split layout",
+          "pass": true
+        },
+        {
+          "name": "Pause stops logo animation",
+          "pass": true
+        },
+        {
+          "name": "Stop returns focus to Play",
+          "pass": true
+        },
+        {
+          "name": "Stop restores one full-width key",
+          "pass": true
+        },
+        {
+          "name": "Closing is interpolated without moving neighbors",
+          "pass": true
+        },
+        {
+          "name": "Stopped segment stays inaccessible",
+          "pass": true
+        },
+        {
+          "name": "Visual-motion pause disables transport transitions",
+          "pass": true
+        },
+        {
+          "name": "Visual-motion pause suppresses logo motion",
+          "pass": true
+        }
+      ],
+      "openingSamples": 39,
+      "closingSamples": 50,
+      "regionWidth": 96,
+      "regionHeight": 46
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "checks": [
+        {
+          "name": "Ready key fills fixed playback region",
+          "pass": true
+        },
+        {
+          "name": "Idle Stop is inaccessible",
+          "pass": true
+        },
+        {
+          "name": "Playback region and adjacent controls stay fixed",
+          "pass": true
+        },
+        {
+          "name": "Opening is interpolated rather than jumping",
+          "pass": true
+        },
+        {
+          "name": "Segments never overlap or leave their region",
+          "pass": true
+        },
+        {
+          "name": "Playing splits into equal 44px-high targets",
+          "pass": true
+        },
+        {
+          "name": "Playing exposes Pause and Stop",
+          "pass": true
+        },
+        {
+          "name": "Brand motion is active only for visible playback",
+          "pass": true
+        },
+        {
+          "name": "Logo motion stops outside the studio viewport",
+          "pass": true
+        },
+        {
+          "name": "Logo motion resumes when the playing studio returns",
+          "pass": true
+        },
+        {
+          "name": "Pause preserves split layout",
+          "pass": true
+        },
+        {
+          "name": "Pause stops logo animation",
+          "pass": true
+        },
+        {
+          "name": "Stop returns focus to Play",
+          "pass": true
+        },
+        {
+          "name": "Stop restores one full-width key",
+          "pass": true
+        },
+        {
+          "name": "Closing is interpolated without moving neighbors",
+          "pass": true
+        },
+        {
+          "name": "Stopped segment stays inaccessible",
+          "pass": true
+        },
+        {
+          "name": "Visual-motion pause disables transport transitions",
+          "pass": true
+        },
+        {
+          "name": "Visual-motion pause suppresses logo motion",
+          "pass": true
+        }
+      ],
+      "openingSamples": 41,
+      "closingSamples": 50,
+      "regionWidth": 96,
+      "regionHeight": 46
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "checks": [
+        {
+          "name": "Ready key fills fixed playback region",
+          "pass": true
+        },
+        {
+          "name": "Idle Stop is inaccessible",
+          "pass": true
+        },
+        {
+          "name": "Playback region and adjacent controls stay fixed",
+          "pass": true
+        },
+        {
+          "name": "Opening is interpolated rather than jumping",
+          "pass": true
+        },
+        {
+          "name": "Segments never overlap or leave their region",
+          "pass": true
+        },
+        {
+          "name": "Playing splits into equal 44px-high targets",
+          "pass": true
+        },
+        {
+          "name": "Playing exposes Pause and Stop",
+          "pass": true
+        },
+        {
+          "name": "Brand motion is active only for visible playback",
+          "pass": true
+        },
+        {
+          "name": "Logo motion stops outside the studio viewport",
+          "pass": true
+        },
+        {
+          "name": "Logo motion resumes when the playing studio returns",
+          "pass": true
+        },
+        {
+          "name": "Pause preserves split layout",
+          "pass": true
+        },
+        {
+          "name": "Pause stops logo animation",
+          "pass": true
+        },
+        {
+          "name": "Stop returns focus to Play",
+          "pass": true
+        },
+        {
+          "name": "Stop restores one full-width key",
+          "pass": true
+        },
+        {
+          "name": "Closing is interpolated without moving neighbors",
+          "pass": true
+        },
+        {
+          "name": "Stopped segment stays inaccessible",
+          "pass": true
+        },
+        {
+          "name": "Visual-motion pause disables transport transitions",
+          "pass": true
+        },
+        {
+          "name": "Visual-motion pause suppresses logo motion",
+          "pass": true
+        }
+      ],
+      "openingSamples": 44,
+      "closingSamples": 50,
+      "regionWidth": 176,
+      "regionHeight": 46
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "checks": [
+        {
+          "name": "Ready key fills fixed playback region",
+          "pass": true
+        },
+        {
+          "name": "Idle Stop is inaccessible",
+          "pass": true
+        },
+        {
+          "name": "Playback region and adjacent controls stay fixed",
+          "pass": true
+        },
+        {
+          "name": "Opening is interpolated rather than jumping",
+          "pass": true
+        },
+        {
+          "name": "Segments never overlap or leave their region",
+          "pass": true
+        },
+        {
+          "name": "Playing splits into equal 44px-high targets",
+          "pass": true
+        },
+        {
+          "name": "Playing exposes Pause and Stop",
+          "pass": true
+        },
+        {
+          "name": "Brand motion is active only for visible playback",
+          "pass": true
+        },
+        {
+          "name": "Logo motion stops outside the studio viewport",
+          "pass": true
+        },
+        {
+          "name": "Logo motion resumes when the playing studio returns",
+          "pass": true
+        },
+        {
+          "name": "Pause preserves split layout",
+          "pass": true
+        },
+        {
+          "name": "Pause stops logo animation",
+          "pass": true
+        },
+        {
+          "name": "Stop returns focus to Play",
+          "pass": true
+        },
+        {
+          "name": "Stop restores one full-width key",
+          "pass": true
+        },
+        {
+          "name": "Closing is interpolated without moving neighbors",
+          "pass": true
+        },
+        {
+          "name": "Stopped segment stays inaccessible",
+          "pass": true
+        },
+        {
+          "name": "Visual-motion pause disables transport transitions",
+          "pass": true
+        },
+        {
+          "name": "Visual-motion pause suppresses logo motion",
+          "pass": true
+        }
+      ],
+      "openingSamples": 35,
+      "closingSamples": 46,
+      "regionWidth": 176,
+      "regionHeight": 46
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "checks": [
+        {
+          "name": "Ready key fills fixed playback region",
+          "pass": true
+        },
+        {
+          "name": "Idle Stop is inaccessible",
+          "pass": true
+        },
+        {
+          "name": "Playback region and adjacent controls stay fixed",
+          "pass": true
+        },
+        {
+          "name": "Opening is interpolated rather than jumping",
+          "pass": true
+        },
+        {
+          "name": "Segments never overlap or leave their region",
+          "pass": true
+        },
+        {
+          "name": "Playing splits into equal 44px-high targets",
+          "pass": true
+        },
+        {
+          "name": "Playing exposes Pause and Stop",
+          "pass": true
+        },
+        {
+          "name": "Brand motion is active only for visible playback",
+          "pass": true
+        },
+        {
+          "name": "Logo motion stops outside the studio viewport",
+          "pass": true
+        },
+        {
+          "name": "Logo motion resumes when the playing studio returns",
+          "pass": true
+        },
+        {
+          "name": "Pause preserves split layout",
+          "pass": true
+        },
+        {
+          "name": "Pause stops logo animation",
+          "pass": true
+        },
+        {
+          "name": "Stop returns focus to Play",
+          "pass": true
+        },
+        {
+          "name": "Stop restores one full-width key",
+          "pass": true
+        },
+        {
+          "name": "Closing is interpolated without moving neighbors",
+          "pass": true
+        },
+        {
+          "name": "Stopped segment stays inaccessible",
+          "pass": true
+        },
+        {
+          "name": "Visual-motion pause disables transport transitions",
+          "pass": true
+        },
+        {
+          "name": "Visual-motion pause suppresses logo motion",
+          "pass": true
+        }
+      ],
+      "openingSamples": 38,
+      "closingSamples": 49,
+      "regionWidth": 176,
+      "regionHeight": 46
+    }
+  ]
+}

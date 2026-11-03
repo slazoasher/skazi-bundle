@@ -1,0 +1,16 @@
+[
+  {
+    "client": 375,
+    "downloadIconOffset": 0,
+    "overflow": false,
+    "scrollWidth": 375,
+    "width": 390
+  },
+  {
+    "client": 305,
+    "downloadIconOffset": 0,
+    "overflow": false,
+    "scrollWidth": 305,
+    "width": 320
+  }
+]

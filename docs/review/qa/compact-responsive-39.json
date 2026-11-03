@@ -1,0 +1,38 @@
+[
+  {
+    "advancedHidden": true,
+    "height": 820,
+    "overflow": 0,
+    "studioHeight": 930,
+    "width": 320
+  },
+  {
+    "advancedHidden": true,
+    "height": 844,
+    "overflow": 0,
+    "studioHeight": 930,
+    "width": 390
+  },
+  {
+    "arrangement": [
+      777,
+      777
+    ],
+    "height": 390,
+    "overflow": 0,
+    "width": 844
+  },
+  {
+    "advancedHidden": true,
+    "height": 1000,
+    "overflow": 0,
+    "width": 768
+  },
+  {
+    "advancedHidden": true,
+    "height": 1000,
+    "overflow": 0,
+    "studioHeight": 685,
+    "width": 1440
+  }
+]

@@ -1,0 +1,54 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Studio spacing QA</title>
+<style>body{margin:0;background:#111;color:#eee;font:14px system-ui}header,pre{padding:16px}button{padding:12px;font:inherit}pre{white-space:pre-wrap}iframe{height:1100px;border:0;width:100%}</style>
+<header><button id="run">Check studio spacing</button> <span id="status">Ready</span></header><pre id="results"></pre><iframe id="site" title="Studio layout under test"></iframe>
+<script>
+const frame=document.querySelector('#site'),status=document.querySelector('#status');
+function measure(doc,state,width){
+ const win=doc.defaultView,studio=doc.querySelector('#lab'),controls=[],texts=[];
+ const name=e=>e.id||e.getAttribute('aria-label')||e.textContent.trim().slice(0,40);
+ const rect=e=>{const r=e.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom};};
+ const overlap=(a,b)=>Math.min(a.right,b.right)-Math.max(a.left,b.left)>1&&Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>1;
+ function visibleRect(element,box=rect(element)){
+  if(!element.getClientRects().length||win.getComputedStyle(element).visibility==='hidden')return null;
+  for(let parent=element.parentElement;parent&&parent!==doc.body;parent=parent.parentElement){
+   const style=win.getComputedStyle(parent),r=rect(parent);
+   if(/hidden|auto|scroll|clip/.test(style.overflowX)){box.left=Math.max(box.left,r.left);box.right=Math.min(box.right,r.right);}
+   if(/hidden|auto|scroll|clip/.test(style.overflowY)){box.top=Math.max(box.top,r.top);box.bottom=Math.min(box.bottom,r.bottom);}
+  }
+  if(element.closest('.arranger-clips'))box.left=Math.max(box.left,rect(element.closest('.arranger-track').querySelector('.arranger-track-head')).right);
+  return box.right-box.left>1&&box.bottom-box.top>1?box:null;
+ }
+ for(const element of studio.querySelectorAll('button,input,select,textarea,a[href]')){const box=visibleRect(element);if(box)controls.push({element,box,name:name(element)});}
+ const walker=doc.createTreeWalker(studio,win.NodeFilter.SHOW_TEXT);
+ while(walker.nextNode()){
+  const node=walker.currentNode,element=node.parentElement;
+  if(!node.textContent.trim()||element.closest('button,svg,.sr,[aria-hidden="true"]'))continue;
+  const range=doc.createRange();range.selectNodeContents(node);const box=visibleRect(element,rect(range));if(box)texts.push({element,box,text:node.textContent.trim().slice(0,60)});
+ }
+ const collisions=[];
+ for(let a=0;a<controls.length;a++)for(let b=a+1;b<controls.length;b++)if(overlap(controls[a].box,controls[b].box))collisions.push({type:'controls',a:controls[a].name,b:controls[b].name});
+ for(const text of texts)for(const control of controls)if(!control.element.contains(text.element)&&overlap(text.box,control.box))collisions.push({type:'text/control',text:text.text,control:control.name});
+ for(let a=0;a<texts.length;a++)for(let b=a+1;b<texts.length;b++)if(overlap(texts[a].box,texts[b].box))collisions.push({type:'text/text',a:texts[a].text,b:texts[b].text});
+ const tabs=doc.querySelector('.studio-dock-tabs').getBoundingClientRect(),mixer=doc.querySelector('.studio-channels').getBoundingClientRect();
+ const rowGaps=[...doc.querySelectorAll('.arranger-track-head')].map(head=>{const tools=head.querySelector('.track-tools').getBoundingClientRect(),level=head.querySelector('.track-level input').getBoundingClientRect();return Math.round((level.top-tools.bottom)*10)/10;});
+ return {width,height:win.innerHeight,state,controls:controls.length,documentOverflow:Math.max(0,doc.documentElement.scrollWidth-win.innerWidth),collisions,rowGaps,mixerTabSeparation:state==='mixer'?Math.round(mixer.top-tabs.bottom):undefined};
+}
+document.querySelector('#run').onclick=async()=>{
+ const results=[],button=document.querySelector('#run');button.disabled=true;status.textContent='Running';
+ try{
+  for(const [width,height] of [[320,700],[360,780],[390,844],[650,800],[651,800],[768,1024],[900,900],[901,900],[1024,768],[1280,720],[1440,900],[844,390]]){
+   sessionStorage.removeItem('skazi-studio-workspace-v1');frame.style.width=width+'px';frame.style.height=height+'px';const loaded=new Promise(r=>frame.addEventListener('load',r,{once:true}));frame.src='../../?intro=0&spacing='+width+'x'+height;await loaded;
+   const doc=frame.contentDocument,win=frame.contentWindow,$=s=>doc.querySelector(s),settle=()=>new Promise(r=>win.requestAnimationFrame(()=>win.requestAnimationFrame(r)));await doc.fonts.ready;await settle();
+   results.push(measure(doc,'compact',width));
+   $('#transport').click();const timeout=Date.now()+3000;while($('#transport').getAttribute('aria-label')!=='Pause'&&Date.now()<timeout)await new Promise(r=>setTimeout(r,25));
+   if($('#transport').getAttribute('aria-label')!=='Pause')throw Error('Audio did not start at '+width);$('#transport').click();await new Promise(r=>setTimeout(r,40));results.push(measure(doc,'paused-with-stop',width));$('#reset-session').click();
+   $('#studio-help-toggle').click();await settle();results.push(measure(doc,'help',width));$('#studio-help-toggle').click();
+   $('[data-clip-track="acid"]').click();const velocity=$('#note-velocity');velocity.value=31;velocity.dispatchEvent(new win.Event('input',{bubbles:true}));velocity.dispatchEvent(new win.Event('change',{bubbles:true}));await settle();results.push(measure(doc,'pattern-edited-acid',width));
+   $('#tab-mixer').click();await settle();results.push(measure(doc,'mixer',width));
+   $('#tab-sound').click();await settle();results.push(measure(doc,'sound',width));
+  }
+  status.textContent=results.some(r=>r.collisions.length||r.documentOverflow)?'Review':'Complete';
+ }catch(error){results.push({error:String(error.stack||error)});status.textContent='Failed';}
+ finally{document.querySelector('#results').textContent=JSON.stringify({version:42,results},null,2);button.disabled=false;}
+};
+</script></html>

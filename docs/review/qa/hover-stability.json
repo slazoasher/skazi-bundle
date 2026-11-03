@@ -1,0 +1,51 @@
+[
+  {
+    "color": "rgb(229, 9, 20)",
+    "filter": "none",
+    "name": "Logic Pro",
+    "transform": "none",
+    "transition": "0s"
+  },
+  {
+    "color": "rgb(229, 9, 20)",
+    "filter": "none",
+    "name": "Reaper",
+    "transform": "none",
+    "transition": "0s"
+  },
+  {
+    "color": "rgb(229, 9, 20)",
+    "filter": "none",
+    "name": "Studio One",
+    "transform": "none",
+    "transition": "0s"
+  },
+  {
+    "color": "rgb(229, 9, 20)",
+    "filter": "none",
+    "name": "FL Studio",
+    "transform": "none",
+    "transition": "0s"
+  },
+  {
+    "color": "rgb(229, 9, 20)",
+    "filter": "none",
+    "name": "Bitwig Studio",
+    "transform": "none",
+    "transition": "0s"
+  },
+  {
+    "color": "rgb(229, 9, 20)",
+    "filter": "none",
+    "name": "Cubase",
+    "transform": "none",
+    "transition": "0s"
+  },
+  {
+    "color": "rgb(229, 9, 20)",
+    "filter": "none",
+    "name": "Ableton Live",
+    "transform": "none",
+    "transition": "0s"
+  }
+]

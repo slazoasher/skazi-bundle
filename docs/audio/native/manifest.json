@@ -1,0 +1,1290 @@
+{
+  "version": 1,
+  "sampleRate": 48000,
+  "encoding": "FLAC PCM_24",
+  "source": {
+    "repository": "https://github.com/slazoasher/skazi-bundle",
+    "release": "v1.15",
+    "commit": "58dced012df87ad3d977a49cc14685d5a01c1db0",
+    "installerSha256": "35ff13b662a20f9d100bb82ff06bab4817dcfb13652fe8d4f0e243eb16df0bf9",
+    "host": "Spotify Pedalboard 0.9.26",
+    "blockSize": 256
+  },
+  "description": "Native VST3 recordings using documented website patches; browser pitch/gate/mix processing remains sample-based.",
+  "voices": {
+    "kick": {
+      "plugin": "KICKASS",
+      "patch": "Website / Tight psy kick",
+      "file": "kick-499c32b7b222.flac",
+      "sha256": "499c32b7b222706a4653a4fddcad58a619c8847fee39e9ef709274f01f3b2fc6",
+      "bytes": 18902,
+      "frames": 73728,
+      "nativeBinarySha256": "853fb04a0dac1fc93b83a05cb61b6c787e039f698d928aff4865e9d443ac24c1",
+      "gain": 1.0,
+      "parameters": {
+        "start_hz": 2602.7368164,
+        "punch_hz": 164.9999847,
+        "end_hz": 65.4063873,
+        "snap_ms": 2.5068586,
+        "sweep_ms": 25.0000019,
+        "hold_ms": 12.0037451,
+        "decay_ms": 155.0000153,
+        "sub_level": 1.0,
+        "sample_level": 0.16,
+        "sample_offset_ms": 0.0,
+        "sample_tune_st": 0.0,
+        "sample_hpf_hz": 20.0,
+        "sample_lpf_hz": 20000.0,
+        "sample_length_ms": 2000.0,
+        "key_track": true,
+        "drive": 0.1,
+        "eq_low_db": 0.0,
+        "eq_mid_db": -1.5,
+        "eq_mid_freq_hz": 499.9999695,
+        "eq_high_db": 0.5,
+        "level_db": -9.0,
+        "bypass": false,
+        "program": "Init - Init Kick"
+      },
+      "samples": [
+        {
+          "midi": 33,
+          "velocity": 48,
+          "accent": false,
+          "frames": 24000,
+          "gateFrames": 13440,
+          "offsetFrames": 0
+        },
+        {
+          "midi": 33,
+          "velocity": 88,
+          "accent": false,
+          "frames": 24000,
+          "gateFrames": 13440,
+          "offsetFrames": 24576
+        },
+        {
+          "midi": 33,
+          "velocity": 120,
+          "accent": false,
+          "frames": 24000,
+          "gateFrames": 13440,
+          "offsetFrames": 49152
+        }
+      ]
+    },
+    "bass": {
+      "plugin": "SUBICH",
+      "patch": "Website / Rolling foundation",
+      "file": "bass-d92af738f0c2.flac",
+      "sha256": "d92af738f0c255f0a6f898630de6b2646b07086709ceceafe589dbdf3cea39f4",
+      "bytes": 784954,
+      "frames": 1627200,
+      "nativeBinarySha256": "44076df1e18415ff53971c53c3d8f464296176a35875fd12ff16e121912cbc93",
+      "gain": 1.0,
+      "parameters": {
+        "osc_1_wave": "SQUARE",
+        "osc_1_octave": 0.0,
+        "osc_1_semi": 0.0,
+        "osc_1_fine_ct": 0.0,
+        "osc_1_shape": 12.0,
+        "osc_1_level": 72.0,
+        "osc_2_wave": "SQUARE",
+        "osc_2_octave": -1.0,
+        "osc_2_semi": 0.0,
+        "osc_2_detune_ct": 7.0,
+        "osc_2_shape": 50.0,
+        "osc_2_level_fm_depth_when_fm_is_on": 0.0,
+        "osc_2_hard_sync": false,
+        "osc_2_fms_osc_1": false,
+        "sub_wave": "SINE",
+        "sub_octave": -1.0,
+        "sub_level": 22.0,
+        "noise": 0.0,
+        "filter_1_type": "LP 24",
+        "filter_1_cutoff_hz": 281.0,
+        "filter_1_reso": 28.0,
+        "filter_1_env": 68.0,
+        "filter_1_drive": 24.0,
+        "filter_1_key_track": 45.0,
+        "filter_2_type": "HP 12",
+        "filter_2_cutoff_hz": 28.0,
+        "filter_2_reso": 20.0,
+        "filter_2_env": 0.0,
+        "filter_2_drive": 0.0,
+        "filter_2_key_track": 0.0,
+        "filter_routing": "SER",
+        "amp_attack_ms": 0.7,
+        "amp_decay_ms": 130.0,
+        "amp_sustain": 12.0,
+        "amp_release_ms": 22.1,
+        "filter_attack_ms": 0.0,
+        "filter_decay_ms": 85.0,
+        "filter_sustain": 2.0,
+        "filter_release_ms": 25.0,
+        "lfo_1_shape": "SINE",
+        "lfo_1_sync": true,
+        "lfo_1_rate_sync": "1/8",
+        "lfo_1_rate_hz_hz": 2.0,
+        "lfo_1_depth": 0.0,
+        "lfo_1_target": "CUTOFF 1",
+        "lfo_2_shape": "S&H",
+        "lfo_2_sync": false,
+        "lfo_2_rate_sync": "1/16",
+        "lfo_2_rate_hz_hz": 0.8,
+        "lfo_2_depth": 0.0,
+        "lfo_2_target": "PITCH",
+        "voice_mode": "MONO",
+        "glide_ms": 0.0,
+        "velocity": 75.0,
+        "bend_range": 2.0,
+        "drive": 30.0,
+        "volume_db": -6.0,
+        "bypass": false
+      },
+      "samples": [
+        {
+          "midi": 24,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 0
+        },
+        {
+          "midi": 24,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 21696
+        },
+        {
+          "midi": 24,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 43392
+        },
+        {
+          "midi": 27,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 65088
+        },
+        {
+          "midi": 27,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 86784
+        },
+        {
+          "midi": 27,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 108480
+        },
+        {
+          "midi": 30,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 130176
+        },
+        {
+          "midi": 30,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 151872
+        },
+        {
+          "midi": 30,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 173568
+        },
+        {
+          "midi": 33,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 195264
+        },
+        {
+          "midi": 33,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 216960
+        },
+        {
+          "midi": 33,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 238656
+        },
+        {
+          "midi": 36,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 260352
+        },
+        {
+          "midi": 36,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 282048
+        },
+        {
+          "midi": 36,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 303744
+        },
+        {
+          "midi": 39,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 325440
+        },
+        {
+          "midi": 39,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 347136
+        },
+        {
+          "midi": 39,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 368832
+        },
+        {
+          "midi": 42,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 390528
+        },
+        {
+          "midi": 42,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 412224
+        },
+        {
+          "midi": 42,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 433920
+        },
+        {
+          "midi": 45,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 455616
+        },
+        {
+          "midi": 45,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 477312
+        },
+        {
+          "midi": 45,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 499008
+        },
+        {
+          "midi": 48,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 520704
+        },
+        {
+          "midi": 48,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 542400
+        },
+        {
+          "midi": 48,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 564096
+        },
+        {
+          "midi": 51,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 585792
+        },
+        {
+          "midi": 51,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 607488
+        },
+        {
+          "midi": 51,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 629184
+        },
+        {
+          "midi": 54,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 650880
+        },
+        {
+          "midi": 54,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 672576
+        },
+        {
+          "midi": 54,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 694272
+        },
+        {
+          "midi": 57,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 715968
+        },
+        {
+          "midi": 57,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 737664
+        },
+        {
+          "midi": 57,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 759360
+        },
+        {
+          "midi": 60,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 781056
+        },
+        {
+          "midi": 60,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 802752
+        },
+        {
+          "midi": 60,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 824448
+        },
+        {
+          "midi": 63,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 846144
+        },
+        {
+          "midi": 63,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 867840
+        },
+        {
+          "midi": 63,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 889536
+        },
+        {
+          "midi": 66,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 911232
+        },
+        {
+          "midi": 66,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 932928
+        },
+        {
+          "midi": 66,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 954624
+        },
+        {
+          "midi": 69,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 976320
+        },
+        {
+          "midi": 69,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 998016
+        },
+        {
+          "midi": 69,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1019712
+        },
+        {
+          "midi": 72,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1041408
+        },
+        {
+          "midi": 72,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1063104
+        },
+        {
+          "midi": 72,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1084800
+        },
+        {
+          "midi": 75,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1106496
+        },
+        {
+          "midi": 75,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1128192
+        },
+        {
+          "midi": 75,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1149888
+        },
+        {
+          "midi": 78,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1171584
+        },
+        {
+          "midi": 78,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1193280
+        },
+        {
+          "midi": 78,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1214976
+        },
+        {
+          "midi": 81,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1236672
+        },
+        {
+          "midi": 81,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1258368
+        },
+        {
+          "midi": 81,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1280064
+        },
+        {
+          "midi": 84,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1301760
+        },
+        {
+          "midi": 84,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1323456
+        },
+        {
+          "midi": 84,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1345152
+        },
+        {
+          "midi": 87,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1366848
+        },
+        {
+          "midi": 87,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1388544
+        },
+        {
+          "midi": 87,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1410240
+        },
+        {
+          "midi": 90,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1431936
+        },
+        {
+          "midi": 90,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1453632
+        },
+        {
+          "midi": 90,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1475328
+        },
+        {
+          "midi": 93,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1497024
+        },
+        {
+          "midi": 93,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1518720
+        },
+        {
+          "midi": 93,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1540416
+        },
+        {
+          "midi": 96,
+          "velocity": 48,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1562112
+        },
+        {
+          "midi": 96,
+          "velocity": 88,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1583808
+        },
+        {
+          "midi": 96,
+          "velocity": 120,
+          "accent": false,
+          "frames": 21120,
+          "gateFrames": 13440,
+          "offsetFrames": 1605504
+        }
+      ]
+    },
+    "acid": {
+      "plugin": "SKACID",
+      "patch": "Website / Resonant acid",
+      "file": "acid-a902a7889204.flac",
+      "sha256": "a902a7889204694ff678ca8579b7d49802852f54885d4f9dd2efec34ff587dba",
+      "bytes": 1170585,
+      "frames": 1468750,
+      "nativeBinarySha256": "019954edca48dd756dc9d8d47eb760d473b0dae8e6fc7240e5044bfebda8c0b3",
+      "gain": 1.0,
+      "parameters": {
+        "wave": "SAW",
+        "sub_osc": 12.0,
+        "tune_st": 0.0,
+        "fine_ct": 0.0,
+        "cutoff_hz": 780.0,
+        "resonance": 68.0,
+        "env_mod": 62.0,
+        "decay_ms": 190.0,
+        "accent": 65.0,
+        "filter_drive": 22.0,
+        "slide_time_ms": 60.0,
+        "gate_length": 55.0,
+        "lfo_shape": "SINE",
+        "lfo_rate": "1/2",
+        "lfo_depth": 0.0,
+        "lfo_target": "CUTOFF",
+        "drift": 0.0,
+        "distortion": "CRUNCH",
+        "dist_drive": 23.0,
+        "dist_tone": 70.0,
+        "dist_mix": 38.0,
+        "delay_time": "1/4D",
+        "delay_feedback": 35.0,
+        "delay_mix": 0.0,
+        "reverb_size": 40.0,
+        "reverb_mix": 0.0,
+        "volume_db": -4.0,
+        "filter_type": "24 dB",
+        "key_track": 0.0,
+        "filter_attack_ms": 0.0,
+        "amp_attack_ms": 2.0,
+        "amp_decay_ms": 1001.0,
+        "amp_sustain": 100.0,
+        "amp_release_ms": 8.0,
+        "ott_depth": 0.0,
+        "ott_time": 30.0,
+        "track_key": "C",
+        "play_mode": "MIDI",
+        "arp_mode": "UP",
+        "arp_octaves": 1.0,
+        "seq_rate": "1/16",
+        "seq_length": 16.0,
+        "swing": 0.0,
+        "chance": 100.0,
+        "mutate": 0.0,
+        "ratchet": 0.0,
+        "step_1_note": 0.0,
+        "step_1_octave": "MID",
+        "step_1_gate": "NOTE",
+        "step_1_accent": false,
+        "step_1_slide": false,
+        "step_2_note": 10.0,
+        "step_2_octave": "UP",
+        "step_2_gate": "NOTE",
+        "step_2_accent": false,
+        "step_2_slide": false,
+        "step_3_note": 0.0,
+        "step_3_octave": "MID",
+        "step_3_gate": "NOTE",
+        "step_3_accent": false,
+        "step_3_slide": true,
+        "step_4_note": 12.0,
+        "step_4_octave": "MID",
+        "step_4_gate": "NOTE",
+        "step_4_accent": true,
+        "step_4_slide": false,
+        "step_5_note": 10.0,
+        "step_5_octave": "UP",
+        "step_5_gate": "NOTE",
+        "step_5_accent": true,
+        "step_5_slide": false,
+        "step_6_note": 0.0,
+        "step_6_octave": "MID",
+        "step_6_gate": "NOTE",
+        "step_6_accent": false,
+        "step_6_slide": false,
+        "step_7_note": 0.0,
+        "step_7_octave": "MID",
+        "step_7_gate": "NOTE",
+        "step_7_accent": false,
+        "step_7_slide": false,
+        "step_8_note": 0.0,
+        "step_8_octave": "MID",
+        "step_8_gate": "NOTE",
+        "step_8_accent": false,
+        "step_8_slide": false,
+        "step_9_note": 0.0,
+        "step_9_octave": "MID",
+        "step_9_gate": "NOTE",
+        "step_9_accent": false,
+        "step_9_slide": false,
+        "step_10_note": 5.0,
+        "step_10_octave": "UP",
+        "step_10_gate": "NOTE",
+        "step_10_accent": false,
+        "step_10_slide": false,
+        "step_11_note": 0.0,
+        "step_11_octave": "MID",
+        "step_11_gate": "NOTE",
+        "step_11_accent": true,
+        "step_11_slide": false,
+        "step_12_note": 5.0,
+        "step_12_octave": "MID",
+        "step_12_gate": "REST",
+        "step_12_accent": false,
+        "step_12_slide": true,
+        "step_13_note": 0.0,
+        "step_13_octave": "UP",
+        "step_13_gate": "NOTE",
+        "step_13_accent": true,
+        "step_13_slide": false,
+        "step_14_note": 5.0,
+        "step_14_octave": "MID",
+        "step_14_gate": "NOTE",
+        "step_14_accent": false,
+        "step_14_slide": false,
+        "step_15_note": 10.0,
+        "step_15_octave": "MID",
+        "step_15_gate": "NOTE",
+        "step_15_accent": true,
+        "step_15_slide": false,
+        "step_16_note": 5.0,
+        "step_16_octave": "MID",
+        "step_16_gate": "NOTE",
+        "step_16_accent": false,
+        "step_16_slide": false,
+        "bypass": false
+      },
+      "samples": [
+        {
+          "midi": 24,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 0
+        },
+        {
+          "midi": 24,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 29375
+        },
+        {
+          "midi": 27,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 58750
+        },
+        {
+          "midi": 27,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 88125
+        },
+        {
+          "midi": 30,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 117500
+        },
+        {
+          "midi": 30,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 146875
+        },
+        {
+          "midi": 33,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 176250
+        },
+        {
+          "midi": 33,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 205625
+        },
+        {
+          "midi": 36,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 235000
+        },
+        {
+          "midi": 36,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 264375
+        },
+        {
+          "midi": 39,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 293750
+        },
+        {
+          "midi": 39,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 323125
+        },
+        {
+          "midi": 42,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 352500
+        },
+        {
+          "midi": 42,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 381875
+        },
+        {
+          "midi": 45,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 411250
+        },
+        {
+          "midi": 45,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 440625
+        },
+        {
+          "midi": 48,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 470000
+        },
+        {
+          "midi": 48,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 499375
+        },
+        {
+          "midi": 51,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 528750
+        },
+        {
+          "midi": 51,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 558125
+        },
+        {
+          "midi": 54,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 587500
+        },
+        {
+          "midi": 54,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 616875
+        },
+        {
+          "midi": 57,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 646250
+        },
+        {
+          "midi": 57,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 675625
+        },
+        {
+          "midi": 60,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 705000
+        },
+        {
+          "midi": 60,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 734375
+        },
+        {
+          "midi": 63,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 763750
+        },
+        {
+          "midi": 63,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 793125
+        },
+        {
+          "midi": 66,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 822500
+        },
+        {
+          "midi": 66,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 851875
+        },
+        {
+          "midi": 69,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 881250
+        },
+        {
+          "midi": 69,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 910625
+        },
+        {
+          "midi": 72,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 940000
+        },
+        {
+          "midi": 72,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 969375
+        },
+        {
+          "midi": 75,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 998750
+        },
+        {
+          "midi": 75,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 1028125
+        },
+        {
+          "midi": 78,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 1057500
+        },
+        {
+          "midi": 78,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 1086875
+        },
+        {
+          "midi": 81,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 1116250
+        },
+        {
+          "midi": 81,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 1145625
+        },
+        {
+          "midi": 84,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 1175000
+        },
+        {
+          "midi": 84,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 1204375
+        },
+        {
+          "midi": 87,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 1233750
+        },
+        {
+          "midi": 87,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 1263125
+        },
+        {
+          "midi": 90,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 1292500
+        },
+        {
+          "midi": 90,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 1321875
+        },
+        {
+          "midi": 93,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 1351250
+        },
+        {
+          "midi": 93,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 1380625
+        },
+        {
+          "midi": 96,
+          "velocity": 80,
+          "accent": false,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 1410000
+        },
+        {
+          "midi": 96,
+          "velocity": 112,
+          "accent": true,
+          "frames": 28799,
+          "gateFrames": 19200,
+          "offsetFrames": 1439375
+        }
+      ]
+    }
+  }
+}

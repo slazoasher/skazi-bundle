@@ -1,0 +1,166 @@
+/* Match the original collection's white/red word splits and expand affordance. */
+.hero .hero-art:before{display:none}
+html:has(body.motion-paused){scroll-behavior:auto}
+.sr{inset:0 auto auto 0;margin:-1px;padding:0;border:0;white-space:nowrap}
+/* Selection is red; enabled/muted states are expressed by power and contrast. */
+.studio-workstation .arranger-track{--track-color:#b8b8b8!important}
+.studio-workstation .arranger-track.track-selected{--track-color:#e50914!important}
+.studio-workstation .studio-channel{--track-color:#b8b8b8!important;border-top-color:transparent;border-bottom-color:transparent}
+.studio-workstation .studio-channel.channel-selected{--track-color:#e50914!important;border-top-color:#e50914}
+.studio-workstation .studio-presets .is-queued{box-shadow:inset 0 0 0 1px #e50914}
+.studio-shaping{display:grid;grid-template-columns:repeat(4,minmax(100px,1fr)) auto;gap:22px;align-items:center;padding:17px 20px;background:#171717;border-top:1px solid #383838}
+.studio-shaping label{display:grid;grid-template-columns:1fr auto;gap:3px 8px;align-items:center;color:#ccc;font:600 11px Manrope,sans-serif;min-width:0}
+.studio-shaping output{grid-column:2;grid-row:1;color:#aaa;font-size:10px;font-variant-numeric:tabular-nums}
+.studio-shaping input{grid-column:1/-1;min-width:0;width:100%;height:28px;margin:0;accent-color:#e50914;cursor:pointer}
+.studio-shaping button{display:flex;align-items:center;justify-content:center;gap:9px;min-height:44px;padding:0 15px;border:1px solid #555;border-radius:7px;background:#242424;color:#eee;font:600 12px Manrope,sans-serif;transition:background .2s,border-color .2s}
+.studio-shaping button svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.studio-shaping button:hover{background:#e50914;border-color:#e50914}
+.studio-shaping button:disabled{cursor:progress;opacity:.65}
+@media(max-width:800px){.studio-shaping{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 22px;padding:14px}.studio-shaping button{grid-column:1/-1}}
+.hero .hero-copy .actions>.button{justify-content:center;gap:12px}
+.hero-copy .actions svg.download-icon,.download-options svg.download-icon{display:block;width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+#download>.download-options .button{min-height:54px;min-width:220px;padding:14px 22px;gap:12px;justify-content:center;align-items:center;font:600 13px/1.3 Manrope,sans-serif}
+.artist-socials a:hover,.artist-socials a:focus-visible,.footer-socials a:hover,.footer-socials a:focus-visible{color:#e50914}
+.getting-started .steps h4 #selected-daw,.getting-started .steps>div>b{color:#e50914!important;transition:none;animation:none}
+.getting-started .steps h4 #selected-daw{font:700 19px/1.35 Manrope,sans-serif}
+.artist-socials a:hover,.artist-socials a:focus-visible{color:#fff}
+.artist-socials a:hover>svg,.artist-socials a:focus-visible>svg{color:#e50914}
+.getting-started .daw-choices [data-daw="Studio One"] img{border-radius:26%}
+.device-channel .device-open{left:auto;right:16px;top:16px;bottom:auto;width:40px;height:40px;opacity:0;pointer-events:none;transform:none;transition:opacity .2s,background .2s,border-color .2s}
+.device-channel:hover .device-open,.device-channel:focus-within .device-open{opacity:1;pointer-events:auto}
+.device-channel .device-open:hover,.device-channel .device-open:focus-visible{transform:none}
+.note-inspector{padding:18px 20px;border-top:1px solid #414141;background:#181818}
+.note-inspector-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}
+.note-inspector-heading b{font:600 13px Manrope,sans-serif;color:#f2f2f2}
+.note-inspector-heading p,.pattern-hint{margin:5px 0 0;font:400 11px/1.6 Manrope,sans-serif;color:#aaa}
+.pattern-tools,.acid-articulation{display:flex;gap:6px}
+.note-inspector button{min-height:40px;padding:0 12px;background:#252525;border:1px solid #555;border-radius:6px;color:#ddd;font:600 11px Manrope,sans-serif}
+.note-inspector button:hover{border-color:#e50914;background:#321719}
+.note-inspector button[aria-pressed=true]{background:#e50914;border-color:#e50914;color:#fff}
+.note-inspector button:disabled{opacity:.45;cursor:default}
+.note-controls{display:grid;grid-template-columns:auto repeat(3,minmax(80px,1fr)) auto;align-items:center;gap:22px}
+.note-controls label{display:grid;grid-template-columns:1fr auto;align-items:center;gap:3px 6px;font:600 11px Manrope,sans-serif;color:#ccc;min-width:0}
+.note-controls output{font-variant-numeric:tabular-nums;color:#eee}
+.note-controls input{grid-column:1/-1;width:100%;height:28px;margin:0;accent-color:#e50914;min-width:0}
+.note-controls [hidden]{display:none}
+.track-pattern .step-button.edit-selected{outline:2px solid #fff;outline-offset:-4px}
+.studio-workstation .step-button[aria-pressed=true]:before{opacity:var(--note-opacity,1)}
+.pattern-hint{margin-top:12px}
+@media(max-width:900px){.note-controls{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.note-inspector-heading{align-items:flex-start;flex-direction:column}.note-controls>button,.acid-articulation{grid-column:1/-1}.note-inspector{padding:16px 12px}}
+@media(max-width:650px){.hero .hero-wordmark{top:24px}.hero .hero-art{top:170px}.hero .hero-copy{padding-top:565px}#download>.download-options .button{min-width:0;width:100%;font-size:12px}.note-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.note-controls label:last-of-type{grid-column:1/-1}}
+@media(hover:none),(pointer:coarse){.device-channel .device-open{opacity:1;pointer-events:auto}}
+/* Opaque, stationary controls avoid glass trails and subpixel colour flicker. */
+header,.page-scrolled header{background:#0c0c0c;backdrop-filter:none;transition:none;box-shadow:none}
+dialog::backdrop{backdrop-filter:none;background:#000e}
+.button:hover,.button:active,.artist-socials a:hover,.artist-socials a:active{transform:none;filter:none;box-shadow:none}
+.button:hover>span{transform:none}
+.studio-workstation button,.studio-workstation button:hover,.studio-workstation button:active{filter:none!important;transform:none;transition:border-color .12s ease,background-color .12s ease,color .12s ease}
+.getting-started .daw-choices button,.getting-started .daw-choices button:hover{transform:none;transition:none;filter:none;box-shadow:none;background:#202020;color:#bdbdbd}
+.getting-started .daw-choices button:hover{border-color:#888}
+.getting-started .daw-choices button[aria-pressed=true],.getting-started .daw-choices button[aria-pressed=true]:hover{background:#321719;border-color:#e50914;color:#fff;box-shadow:inset 0 0 0 1px #e50914}
+.studio-workstation .studio-presets button{transition:none}
+.studio-workstation .studio-presets button[aria-pressed=true]:hover{background:#eee;color:#161616}
+.studio-session-actions{display:flex;align-items:center;gap:8px;flex:none}
+.studio-workstation .studio-session-actions #build-drop,.studio-workstation .studio-session-actions #export-loop{display:inline-flex;align-items:center;justify-content:center;width:44px;min-width:44px;max-width:44px;height:44px;min-height:44px;padding:0;gap:0;border-radius:7px;order:initial}
+.studio-session-actions #export-loop{background:#242424;border:1px solid #555;color:#eee}
+.studio-session-actions #export-loop:hover{background:#303030;border-color:#999}
+.studio-session-actions #export-loop svg{width:18px;height:18px;display:block;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.studio-workstation .studio-session-actions #build-drop svg{width:19px;height:19px}
+.studio-session-actions button:disabled{opacity:.65;cursor:progress}
+.studio-shaping{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:800px){.studio-shaping{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.studio-session-actions{grid-column:1/-1;grid-row:3;justify-self:end}.studio-workstation .studio-session-actions #build-drop{grid-column:auto;grid-row:auto}}
+#collection .tool h3{display:block;color:var(--text);text-shadow:none;line-height:1.1}
+#collection .tool h3 .plugin-name-base{font:inherit;color:var(--text)}
+.plugin-name-accent{font:inherit;font-style:normal;color:#e50914}
+#collection .tool h3 .plugin-name-accent{color:#e50914;transition:text-shadow .22s ease}
+#collection .tool:hover h3,#collection .tool:focus-visible h3{color:var(--text);text-shadow:none}
+#collection .tool:hover .plugin-name-accent,#collection .tool:focus-visible .plugin-name-accent{text-shadow:0 0 18px #e5091450}
+.featured-section .plugin-name-accent{color:#e50914}
+#collection .tool-image{position:relative;overflow:hidden}
+#collection .search-icon{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;flex-shrink:0}
+.tool-open-icon{position:absolute;right:12px;bottom:12px;width:38px;height:38px;display:grid;place-items:center;border:1px solid #777;border-radius:50%;background:#101010ed;color:#fff;opacity:0;transform:translateY(5px);transition:opacity .2s ease,transform .24s cubic-bezier(.22,1,.36,1),background .2s ease,border-color .2s ease;pointer-events:none}
+.tool-open-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+.tool:hover .tool-open-icon,.tool:focus-visible .tool-open-icon{opacity:1;transform:translateY(0);background:#e50914;border-color:#e50914}
+
+/* The coloured rail denotes selection, independently of enabled audio layers. */
+.studio-workstation .arranger-track-head{border-left-color:transparent}
+.studio-workstation .track-selected .arranger-track-head{border-left-color:#e50914}
+
+/* Keep the section's download and compatibility groups on the same centre axis. */
+#download>.download-formats{width:fit-content;max-width:100%;margin:20px auto 0;justify-content:center;gap:18px;text-align:center}
+#download>.download-options{justify-content:center}
+.windows-note:not([hidden]){margin-left:auto;margin-right:auto}
+.windows-note button{width:30px;height:30px;display:grid;place-items:center;padding:0;line-height:1}
+.start-heading .micro{color:#ff303b}.getting-started .daw-choice-label span{color:#aaa}
+
+/* Exact supplied credit, with full text preserved at narrow widths. */
+footer.shell{align-items:center;gap:24px}
+footer.shell .footer-meta{display:block;flex:1;min-width:0}
+footer.shell .footer-credit{margin:0;font-size:11px;font-weight:400;line-height:1.7;color:#b3b3b3!important;letter-spacing:0;white-space:normal}
+footer.shell .footer-socials{margin:0;flex-shrink:0}
+
+/* Restore the original opening's scale, light wipe, red hairline and quiet Skip. */
+#site-intro{background:#0c0c0c}
+#site-intro:focus{outline:none}
+.intro-mark{width:min(860px,88vw);overflow:visible}
+.intro-mark img{animation-name:handoff-mark-in,handoff-wipe;animation-duration:1.15s,1.05s;animation-timing-function:cubic-bezier(.16,1,.3,1),cubic-bezier(.65,0,.2,1);animation-delay:0s,.08s;animation-fill-mode:both,both;mask-image:linear-gradient(100deg,#000 46%,rgba(0,0,0,.35) 52%,transparent 58%);mask-size:260% 100%;mask-position:100% 0}
+.intro-line{top:calc(50% + min(190px,27vw));width:min(420px,60vw);height:1px;background:linear-gradient(90deg,transparent,#e50914 30%,#e50914 70%,transparent);animation:handoff-line 1s cubic-bezier(.16,1,.3,1) .75s both}
+.intro-skip{right:24px;bottom:24px;min-height:44px;padding:0 14px;border-color:#ffffff24;background:#ffffff08;color:#aaa;font:500 12px Manrope,"Segoe UI",sans-serif;letter-spacing:.06em}
+.intro-skip:hover{border-color:#ffffff66;color:#fff}
+@keyframes handoff-mark-in{from{opacity:0;transform:scale(1.06);filter:blur(10px)}40%{opacity:1}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes handoff-wipe{from{mask-position:100% 0}to{mask-position:0 0}}
+@keyframes handoff-line{from{transform:scaleX(0);opacity:0}30%{opacity:1}to{transform:scaleX(1);opacity:.9}}
+@media(max-width:900px){footer.shell{gap:18px}.getting-started .steps>div{padding:20px 16px}}
+@media(max-width:650px){
+ footer.shell{flex-direction:column;align-items:center;gap:12px;text-align:center}
+ footer.shell .footer-meta{width:100%}footer.shell .footer-socials{justify-content:center;gap:16px}
+ footer.shell .footer-socials a{min-width:30px;width:30px}
+ #download>.download-formats{gap:14px}
+ .intro-skip{right:18px;bottom:18px}
+}
+@media(hover:none),(pointer:coarse){.tool-open-icon{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.intro-mark img,.intro-line{animation:none;mask-image:none;transform:none;filter:none;opacity:1}.tool-open-icon,.plugin-name-accent{transition:none}}
+/* Compact session selector and consistent media actions. */
+.studio-presets{display:inline-flex;width:max-content;max-width:100%;height:38px;padding:3px;gap:2px;background:#111;border:1px solid #494949;border-radius:8px;box-shadow:inset 0 1px #ffffff0c}
+.studio-presets button{height:30px;min-height:30px;padding:0 11px;border:0;border-radius:5px;background:transparent;color:#c9c9c9;box-shadow:none;font:600 11px Manrope,sans-serif;white-space:nowrap}
+.studio-presets button b{font:inherit}.studio-presets button:hover{background:#292929;color:#fff}
+.studio-presets button[aria-pressed=true]{background:#eee;color:#161616;box-shadow:none}
+.studio-presets button:focus-visible{outline:2px solid #e50914;outline-offset:1px;z-index:1}
+.media-icon{width:17px;height:17px;fill:currentColor;flex:none}
+.media-action{gap:9px;border-radius:7px;min-height:44px;padding:0 17px;box-shadow:inset 0 1px #ffffff20}
+.media-action span{font:600 12px Manrope,sans-serif}.media-action:hover{transform:translateY(-1px)}
+.media-action[aria-pressed=true]{background:#eee;color:#161616;border-color:#eee}
+.listen-bottom b{width:40px;height:40px;border-color:#777;background:#151515cc;transition:background .2s,border-color .2s,transform .2s}
+.listen-bottom b svg{width:18px;height:18px;fill:currentColor}
+.listen:hover .listen-bottom b,.listen:focus-visible .listen-bottom b{background:#e50914;border-color:#e50914;transform:scale(1.05)}
+.listen[aria-pressed=true] .listen-bottom b{background:#eee;border-color:#eee;color:#171717}
+.feature .feature-image.feature-open{position:relative;width:100%;min-width:0;margin:0;padding:25px;border:0;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.feature-open img{width:100%;height:100%;min-width:0;min-height:0;object-fit:contain}
+.feature-open .tool-open-icon{opacity:0;transform:translateY(5px);background:#101010ed}
+.feature-open:focus-visible .tool-open-icon{opacity:1;transform:none;background:#e50914;border-color:#e50914}
+@media(hover:hover) and (pointer:fine){.feature-open:hover .tool-open-icon{opacity:1;transform:none;background:#e50914;border-color:#e50914}}
+.device-channel{position:relative}
+.device-channel .device-open{position:absolute;left:calc(50% - 24px);top:calc(50% - 24px);width:48px;height:48px;padding:0;display:grid;place-items:center;border:1px solid #aaa;border-radius:50%;background:#101010e8;color:#fff;box-shadow:0 4px 20px #0009;transition:background .2s,transform .2s,border-color .2s}
+.device-channel .device-open svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.device-channel .device-open:hover,.device-channel .device-open:focus-visible{background:#e50914;border-color:#e50914;transform:scale(1.06)}
+#collection .search:focus-within{outline:2px solid #e50914;outline-offset:2px;box-shadow:0 0 0 3px #e5091433}
+.search-hint{display:block;color:#aaa;font:500 10px Manrope,sans-serif}.search-hint[hidden]{display:none}
+@media(max-width:650px){.studio-presets{width:max-content;max-width:100%;height:38px}.studio-presets button{height:30px;min-height:30px;padding:0 8px}}
+@media(max-width:650px){.studio-presets button{flex:none;min-width:max-content;padding:0 6px;font-size:9px}.studio-presets button b{font-size:9px}}
+
+/* Keep the expand control attached to the plugin artwork. */
+.device-channel .device-image{position:relative;min-width:0;display:grid;place-items:center;overflow:hidden;border:1px solid #3b3b3b;border-radius:8px;background:#111}
+.device-channel .device-image img{display:block;width:100%;height:155px;object-fit:contain;filter:drop-shadow(0 8px 15px #0006)}
+.device-channel .device-image .device-open{position:absolute;left:auto;right:8px;top:8px;bottom:auto;width:44px;height:44px;z-index:1}
+.device-channel .device-image:hover .device-open,.device-channel .device-image:focus-within .device-open{opacity:1;pointer-events:auto}
+@media(hover:none),(pointer:coarse){.device-channel .device-image .device-open{opacity:1;pointer-events:auto}}
+@media(max-width:650px){.device-channel .device-image img{height:140px}}
+@media(min-width:651px) and (max-height:800px){.device-channel .device-image img{height:130px}}
+@media(max-width:650px){.mobile-menu{color:#f2f2f2;border:1px solid #4b4b4b;border-radius:5px}.mobile-menu:hover,.mobile-menu:focus-visible{color:#fff;border-color:#e50914;background:#242424}.menu-open #main-navigation{background:#141414;border-bottom-color:#4b4b4b}.menu-open #main-navigation a{color:#eee}.menu-open #main-navigation a:hover,.menu-open #main-navigation a:focus-visible{color:#fff;background:#292929}}
+.ticker{padding-right:64px}.ticker-track{gap:0;animation-duration:var(--ticker-duration,32s)}.ticker-cycle{display:flex;align-items:center;gap:42px;flex:none;white-space:nowrap;padding-right:42px}
+@media(max-width:650px){.ticker-cycle{gap:28px;padding-right:28px}}
+
+.studio-rotate-hint{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 10px;background:#242424;border-bottom:1px solid #555;color:#eee;font:600 11px/1.4 Manrope,sans-serif}
+.studio-rotate-hint[hidden]{display:none!important}.studio-rotate-hint button{flex:none;width:32px;height:32px;border:1px solid #666;border-radius:4px;background:#111;color:#fff;font-size:20px;cursor:pointer}.studio-rotate-hint button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.device-channel .device-image{width:max-content;max-width:100%;justify-self:center}.device-channel .device-image img{width:auto;max-width:100%}

@@ -1,87 +1,247 @@
-# SKAZI Bundle
+<div align="center">
+  <img src="docs/img/skazi-logo.png" alt="SKAZI" width="320">
+</div>
 
-All SKAZI plugins by Asher Swissa in one place, and one installer for all of them.
-Every plugin uses the vendor name **SKAZI**, so DAWs list them together.
+<h1 align="center">SKAZI Bundle</h1>
 
-| Folder | Plugin | Type |
-|---|---|---|
-| `SKAZI-Synth` | SKAZI | Psy / acid / VA synth: Virus-style supersaw unison and analog drift, wavetables (load your own WAV), FOLD/PWM/ASYM shaping, arpeggiator, step sequencer with per-step locks, 10 distortion types, full FX rack with FX filter and bass-mono width, PERFORM page (4 macros, A/B morph, kick duck, voice cards), RANDOM that rolls every section, BULLY skin, 3,650 presets |
-| `Shaksuka` | SHAKSUKA | Random chop & glitch FX |
-| `PitaPump` | PITA PUMP | Sidechain LFO tool |
-| `FilterFish` | The FilterFish | Filter FX: morphing filter with LFO and envelope, distortion, glitch, chorus, flanger, tempo-synced delay, reverb with 11 types (CLASSIC plus the SKAZI REVERB hall, plate, room, chamber, cathedral, spring, shimmer, reverse, gated, blackhole) with decay and pre-delay, inflator, ON/OFF switch, 800 presets |
-| `Subich` | SUBICH | Bass + sub bass synth: 2 osc, sub, 2 filters, 2 LFOs, wheels, 1000 presets |
-| `Bamba` | BAMBA | Riser & uplift maker: synth risers plus a Splice layer that finds your own riser/uplift samples (short/long, stretch to the bars), snare rolls and gated uplifts quantized 1/2 to 1/128 with an automatable RATE knob, mixer with FX sends, pitch up to +6 octaves with its own curve, 1 to 24 bars, 260 presets with impacts and FX in their own section |
-| `Tahini` | TAHINI | Space delay + reverb: 7 delay types (ping-pong, stereo, tape, digital, BBD, multi-tap, dual), resonant low/high cut and tape/tube/fuzz/crush drive inside the echo loop, pitch on the repeats (+-24 st, shimmer blend), reverse, tape stops, reverb with duck and freeze, 250 presets |
-| `Zhug` | ZHUG | Saturator + widener, 4x oversampled, multiband |
-| `Bully` | BULLY | Wavetable synth: 3 osc with dual warp, 2 filters, 10 LFOs, chaos, mod matrix, FX rack, arp, analog character (drift, saturation, boost, spread), SHARP 24 zero-delay-feedback ladder filter, 462 presets |
-| `Kickass` | KICKASS | Kick drum synth: two-stage pitch (snap + sweep), hold/decay, 3-band EQ, sample layer with a browser for your own Splice kicks, key track, 50 presets |
-| `TBON303` | SKAZI 303 (TBON 303) | Acid bass line synth: 303-style diode ladder filter with accent and slide, sub oscillator, 14 drive types, circuit mods, chorus/delay/reverb/widener, 16-step sequencer with pattern generator, screaming resonance (self-oscillates at the top of the knob), 544 presets incl. 32 HARD ACID |
-| `Salat` | SALAT | Glitch multi-FX: tempo-synced chopper (stutter, reverse, gate, tape stop, hold), drive, crush, resonant filter with synced LFO, ring mod, flanger/chorus, ping-pong delay, reverb, MAKE A SALAT randomizer, 104 presets |
-| `MidiGod` | MIDI GOD | MIDI pattern generator (instrument + MIDI out): 10 genres (full-on, prog psy, psy-tech, tech/deep/bass house, melodic/hard techno, trance, EDM) x 9 roles (bass, acid, lead, pluck, arp, chords, pad, counter, drums), key/scale/groove controls, ROLL BASS rolling-bass engine (styles, syncopation, kick avoid, octave jump, pitch dip, glide, groove, variation, evolve, mutate), drag the loop into the DAW as MIDI, audio to MIDI (melody, bass, drums, chords) that follows glides, resizable window, 126 presets |
-| `Kube` | KUBE | Psytrance wavetable synth: 24 KUBE-only tables (growl, yoy and more), Serum .wav wavetable import (drag and drop), 2 warp slots per oscillator (sync, bend, PWM, asym, mirror, flip, quantize, FM/AM/RM), 16-voice unison with blend, lime-on-black skin, 106 presets |
-| `Quazi` | QUAZI | 4-band distortion: Linkwitz-Riley crossover with draggable splits, SOFT/HARD/FUZZ/TUBE drive and level per band at 4x oversampling, phase-matched dry/wet mix, stereo width with MONO BASS, 3-band post EQ (low shelf, bell, high shelf), 104 presets |
-| `Skacid` | SKACID | Acid bassline synth (Special Shigaon Edition): 303-style voice with 24/18/12 dB and band filters, accent and slide, 16-step sequencer with chance, MUTATE, ratchet, swing and drift, SEQ/ARP/MIDI play modes, CRUNCH/FUZZ/FOLD/RECTIFY/CRUSH distortion, OTT, ping-pong delay and reverb, 129 presets |
-| `Skilter` | SKILTER | Morphing multimode filter: LP to BP to HP to notch morph, 12-48 dB slopes, analog-style resonance that self-oscillates, LFO, envelope follower and 16-step BPM-synced sequencer, tube/tape/hard drive pre or post, macro knob, 1x/2x/4x oversampling, Stereo/Mid-Side/Dual L-R, live spectrum and scope, RANDOM, 150 presets |
-| `Skwide` | SKWIDE | Phase-safe stereo imager: width 0-200% that never cancels in mono (everything goes into the side), 10-stage allpass MONO SPREAD for mono sources, PHASE wheel with drift, psychoacoustic DEPTH (near/far), LR4 LOW BYPASS and MONO BASS, Haas SUPER WIDE with 0-30 ms per side and a MONO SAFE mode, wet/dry MIX, frequency imager, Lissajous/polar scope with correlation and mono-sum readout, RANDOM, 70 presets |
-| `Skverb` | SKAZI REVERB | Mega reverb machine: 10 algorithms (hall, plate, room, chamber, cathedral, spring, shimmer, reverse, gated, blackhole) on an 8-line FDN, pre-delay with echo FEEDBACK and tempo SYNC, FREEZE, DUCK, DRIVE, shimmer pitch loop in any mode, REVERSE layer, resonant TAIL FILTER (LP/BP/HP with envelope sweep), width, rack-style panel with amber display, RANDOM, 75 presets |
+<p align="center"><strong>19 free instruments, effects and MIDI tools by Asher Swissa.</strong><br>
+One installer for Windows. One for Mac.</p>
 
-`Common` holds the shared metal skin, knobs, preset bar and A/B code used by SUBICH, BAMBA, TAHINI, ZHUG, SALAT, MIDI GOD and QUAZI.
+<p align="center">
+  <a href="https://github.com/slazoasher/skazi-bundle/releases/latest/download/SKAZI.Bundle.Setup.exe"><strong>Download for Windows</strong></a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/slazoasher/skazi-bundle/releases/latest/download/SKAZI.Bundle.pkg"><strong>Download for Mac</strong></a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/slazoasher/skazi-bundle/releases/latest">Release notes</a>
+</p>
 
-Plugin IDs (manufacturer + plugin codes) are unchanged, so existing DAW projects keep loading them.
+<p align="center">
+  <a href="#install">Install</a> · <a href="#plugin-collection">Plugin collection</a> · <a href="#try-it-in-your-browser">Browser studio</a> · <a href="#troubleshooting">Troubleshooting</a>
+</p>
 
-## Adding a new plugin (one click for everyone)
+## Install
 
-1. Put the plugin folder here with bundle-style CMake (JUCE 8.0.4, vendor "SKAZI", AU on Mac).
-2. Add it to `build_bundle.ps1`, `mac/build_mac.sh`, `mac/welcome.html`, `mac/Uninstall SKAZI Bundle.command`,
-   `BundleInstaller/SetupMain.cpp` and a row at the end of the table above.
-3. On the download page (`docs/index.html`), add its card **at the bottom of the list** (the newest plugin is always last;
-   BULLY stays first) and update the plugin and preset counts.
-4. Push to `main`. CI builds both installers and publishes them as the next release (v1.3, v1.4, ...).
-   The page's download buttons link to `releases/latest`, so they serve the new installer as soon as the release is up.
+| Platform | Installer | Formats |
+| :--- | :--- | :--- |
+| Windows 64-bit | [SKAZI.Bundle.Setup.exe](https://github.com/slazoasher/skazi-bundle/releases/latest/download/SKAZI.Bundle.Setup.exe) | VST3 and standalone apps |
+| macOS, Intel and Apple silicon | [SKAZI.Bundle.pkg](https://github.com/slazoasher/skazi-bundle/releases/latest/download/SKAZI.Bundle.pkg) | VST3, Audio Units and standalone apps |
 
-## Build the installer (Windows)
+1. Download and run the installer for your system. On Windows, select the plugins you want to install.
+2. Open your DAW and look for **SKAZI** in the plugin browser. Rescan if the plugins do not appear. Use **AU** in Logic Pro or GarageBand, and **VST3** in a VST3 host.
+3. Load an instrument on an instrument or MIDI track, or put an effect on an audio track. Pick a preset and play. For standalone use, look for the included apps in the Windows Start menu or in `/Applications/SKAZI/` on Mac.
 
-Needs Visual Studio 2022 (C++ workload), CMake and Git.
+> [!NOTE]
+> The current installers are distributed without Windows code signing or Apple Developer ID signing, so your system may display a security prompt. Get the installer from the [official GitHub release](https://github.com/slazoasher/skazi-bundle/releases/latest), where you can check the asset name and release notes.
 
+## Plugin collection
+
+Browse all 19 plugins by category. Select a screenshot to enlarge it or a plugin name to view its source.
+
+### Instruments
+
+<table>
+<tbody>
+  <tr>
+    <td width="33%" valign="top">
+      <a href="docs/img/bamba-960.webp"><img src="docs/img/bamba-480.webp" alt="BAMBA plugin interface" width="260"></a><br>
+      <strong><a href="Bamba/">BAMBA</a></strong><br>
+      Riser &amp; uplift maker<br>
+      <sub>260 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/bully-960.webp"><img src="docs/img/bully-480.webp" alt="BULLY plugin interface" width="260"></a><br>
+      <strong><a href="Bully/">BULLY</a></strong><br>
+      Analog-character wavetable monster<br>
+      <sub>462 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/kickass-960.webp"><img src="docs/img/kickass-480.webp" alt="KICKASS plugin interface" width="260"></a><br>
+      <strong><a href="Kickass/">KICKASS</a></strong><br>
+      Kick drum synth<br>
+      <sub>50 presets</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">
+      <a href="docs/img/kube-960.webp"><img src="docs/img/kube-480.webp" alt="KUBE plugin interface" width="260"></a><br>
+      <strong><a href="Kube/">KUBE</a></strong><br>
+      Psytrance wavetable synth<br>
+      <sub>306 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/skacid-960.webp"><img src="docs/img/skacid-480.webp" alt="SKACID plugin interface" width="260"></a><br>
+      <strong><a href="Skacid/">SKACID</a></strong><br>
+      Acid bassline synth · Special Shigaon Edition<br>
+      <sub>129 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/skazi-960.webp"><img src="docs/img/skazi-480.webp" alt="SKAZI plugin interface" width="260"></a><br>
+      <strong><a href="SKAZI-Synth/">SKAZI</a></strong><br>
+      Psy / acid / VA synth<br>
+      <sub>3,650 presets</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">
+      <a href="docs/img/subich-960.webp"><img src="docs/img/subich-480.webp" alt="SUBICH plugin interface" width="260"></a><br>
+      <strong><a href="Subich/">SUBICH</a></strong><br>
+      Bass + sub bass synth<br>
+      <sub>1,000 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/tbon303-960.webp"><img src="docs/img/tbon303-480.webp" alt="TBON 303 plugin interface" width="260"></a><br>
+      <strong><a href="TBON303/">TBON 303</a></strong><br>
+      Acid bass line synth<br>
+      <sub>544 presets</sub>
+    </td>
+  </tr>
+</tbody>
+</table>
+
+### Effects
+
+<table>
+<tbody>
+  <tr>
+    <td width="33%" valign="top">
+      <a href="docs/img/pitapump-960.webp"><img src="docs/img/pitapump-480.webp" alt="PITAPUMP plugin interface" width="260"></a><br>
+      <strong><a href="PitaPump/">PITAPUMP</a></strong><br>
+      Sidechain LFO tool<br>
+      <sub>105 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/quazi-960.webp"><img src="docs/img/quazi-480.webp" alt="QUAZI plugin interface" width="260"></a><br>
+      <strong><a href="Quazi/">QUAZI</a></strong><br>
+      4-band fuzz<br>
+      <sub>104 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/salat-960.webp"><img src="docs/img/salat-480.webp" alt="SALAT plugin interface" width="260"></a><br>
+      <strong><a href="Salat/">SALAT</a></strong><br>
+      Glitch multi-FX + RISE<br>
+      <sub>104 presets</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">
+      <a href="docs/img/shaksuka-960.webp"><img src="docs/img/shaksuka-480.webp" alt="SHAKSUKA plugin interface" width="260"></a><br>
+      <strong><a href="Shaksuka/">SHAKSUKA</a></strong><br>
+      Random chop &amp; glitch FX<br>
+      <sub>509 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/skverb-960.webp"><img src="docs/img/skverb-480.webp" alt="SKAZI REVERB plugin interface" width="260"></a><br>
+      <strong><a href="Skverb/">SKAZI REVERB</a></strong><br>
+      Mega reverb machine<br>
+      <sub>75 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/skilter-960.webp"><img src="docs/img/skilter-480.webp" alt="SKILTER plugin interface" width="260"></a><br>
+      <strong><a href="Skilter/">SKILTER</a></strong><br>
+      Morphing multimode filter<br>
+      <sub>150 presets</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">
+      <a href="docs/img/skwide-960.webp"><img src="docs/img/skwide-480.webp" alt="SKWIDE plugin interface" width="260"></a><br>
+      <strong><a href="Skwide/">SKWIDE</a></strong><br>
+      Phase-safe stereo imager<br>
+      <sub>70 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/tahini-960.webp"><img src="docs/img/tahini-480.webp" alt="TAHINI plugin interface" width="260"></a><br>
+      <strong><a href="Tahini/">TAHINI</a></strong><br>
+      Space delay + reverb<br>
+      <sub>250 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/filterfish-960.webp"><img src="docs/img/filterfish-480.webp" alt="THE FILTERFISH plugin interface" width="260"></a><br>
+      <strong><a href="FilterFish/">THE FILTERFISH</a></strong><br>
+      Filter FX<br>
+      <sub>800 presets</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">
+      <a href="docs/img/zhug-960.webp"><img src="docs/img/zhug-480.webp" alt="ZHUG plugin interface" width="260"></a><br>
+      <strong><a href="Zhug/">ZHUG</a></strong><br>
+      Saturator + widener<br>
+      <sub>118 presets</sub>
+    </td>
+  </tr>
+</tbody>
+</table>
+
+### MIDI
+
+<table>
+<tbody>
+  <tr>
+    <td width="33%" valign="top">
+      <a href="docs/img/midigod-960.webp"><img src="docs/img/midigod-480.webp" alt="MIDI GOD plugin interface" width="260"></a><br>
+      <strong><a href="MidiGod/">MIDI GOD</a></strong><br>
+      MIDI pattern generator + audio to MIDI<br>
+      <sub>126 presets</sub>
+    </td>
+  </tr>
+</tbody>
+</table>
+
+## Try it in your browser
+
+[![SKAZI Studio showing five tracks, a live spectrum and playback controls](docs/review/studio-final.png)](https://sergey-bar.github.io/skazi-bundle/?v=50#lab)
+
+Press **Play** to hear *Forest Signal*, a 16-bar psytrance loop built with samples rendered from KICKASS, SUBICH and SKACID. Play the on-screen keys, edit the groove, mix the tracks and export a stereo WAV.
+
+[Open SKAZI Studio](https://sergey-bar.github.io/skazi-bundle/?v=50#lab) · [Watch the project trailer](https://sergey-bar.github.io/skazi-bundle/review/skazi-trailer.html?v=2)
+
+## Troubleshooting
+
+<details>
+<summary>Show troubleshooting tips</summary>
+
+- **A plugin is missing.** Check that your DAW scans the right format and rescan. The installer places VST3 plugins in the `SKAZI` subfolder of your system VST3 directory.
+- **Where are the files?** On Windows, check `C:\Program Files\Common Files\VST3\SKAZI\` for plugins and `C:\Program Files\SKAZI\` for apps. On Mac, check `/Library/Audio/Plug-Ins/VST3/SKAZI/`, `/Library/Audio/Plug-Ins/Components/` or `/Applications/SKAZI/`.
+- **Updating an existing installation.** Download the latest installer from Releases. Plugin IDs are kept stable so existing DAW projects can find the updated plugins. Check the release notes for changes that affect your setup.
+- **Uninstalling.** On Windows, remove **SKAZI Bundle** under Installed apps. On Mac, run **Uninstall SKAZI Bundle.command** from `/Applications/SKAZI/`.
+- **Reporting a problem.** Include your OS, DAW and version, plugin name and format, bundle version, and the steps to reproduce it. [Open an issue](https://github.com/slazoasher/skazi-bundle/issues/new).
+
+</details>
+
+## Source and builds
+
+<details>
+<summary>Show source and build instructions</summary>
+
+The plugins are free to download and the source is available in this repository. The folder links in the collection take you to each plugin's code.
+
+### Windows
+
+Install Visual Studio 2022 with the C++ workload, CMake and Git. From PowerShell in the repository root:
+
+```powershell
+.\build_bundle.ps1
 ```
-powershell -ExecutionPolicy Bypass -File build_bundle.ps1
+
+The installer is written to `dist\SKAZI Bundle Setup.exe`. Use `-PluginsOnly` to build the plugins or `-InstallerOnly` to package a previous build. The installer supports `/silent` and `/uninstall`.
+
+### macOS
+
+From the repository root on a Mac:
+
+```bash
+bash mac/build_mac.sh
 ```
 
-Output: `dist\SKAZI Bundle Setup.exe`, plus every plugin's VST3 and app in `dist\Plugins`.
-JUCE is downloaded automatically (8.0.4 and 8.0.15, the versions each plugin was built with).
-`-PluginsOnly` builds just the plugins, `-InstallerOnly` re-packs the last built plugins.
+The script builds for Intel and Apple silicon and writes `dist/SKAZI Bundle.pkg`. Both platform builds are also defined in the [bundle workflow](.github/workflows/build-bundle.yml).
 
-## What the installer does
+### Adding a plugin
 
-- Lets you tick which plugins to install
-- VST3s go to `C:\Program Files\Common Files\VST3\SKAZI\`
-- Standalone apps go to `C:\Program Files\SKAZI\` with a SKAZI Start Menu folder (desktop shortcuts optional)
-- Removes older separate installs of the same plugins (SKAZI 1.2, SHAKSUKA, The FilterFish) so nothing shows up twice
-- Shows up as "SKAZI Bundle" in Windows "Add or remove programs"; the same exe uninstalls (`/uninstall`)
-- `/silent` installs everything without a window
+1. Add the plugin folder with a JUCE CMake configuration and the **SKAZI** vendor name. Keep existing plugin IDs stable when updating a plugin.
+2. Update the platform build scripts, the Windows installer, and the [Mac installer resources](mac/).
+3. Add the plugin to the [website catalog](docs/demo/plugins.json) and update the collection in this README.
 
-The installer is not code-signed, so Windows SmartScreen shows "Windows protected your PC":
-click **More info, then Run anyway**.
+Shared UI components live in [Common](Common/).
 
-## Logo
-
-Save the SKAZI logo as `Resources\skazi_logo.png` (and in each plugin's `Resources` folder) and rebuild;
-until then a drawn stand-in is used.
-
-## Mac (OS X / macOS)
-
-`mac/build_mac.sh` builds all plugins for Apple Silicon + Intel and makes **`dist/SKAZI Bundle.pkg`**:
-
-- VST3 to `/Library/Audio/Plug-Ins/VST3/SKAZI/`
-- Audio Units to `/Library/Audio/Plug-Ins/Components/` (Logic, GarageBand, Ableton)
-- Apps to `/Applications/SKAZI/`, with **Uninstall SKAZI Bundle.command**
-
-It must run on a Mac (`bash mac/build_mac.sh`). Without a Mac, push this folder to GitHub:
-`.github/workflows/build-bundle.yml` builds the Mac `.pkg` and the Windows `.exe` on GitHub's
-machines; download them from the run's **Artifacts**.
-
-The Mac installer is not signed with an Apple Developer ID, so the first time macOS blocks it:
-right-click the `.pkg`, choose **Open**, then **Open** again (or System Settings > Privacy & Security > Open Anyway).
-
-Before pushing to GitHub, remove the `SKAZI-Synth/.git` folder from this copy (the full history stays
-in `Documents\ACIDANCE\ACIDANCE`), otherwise GitHub treats it as an empty sub-project.
+</details>

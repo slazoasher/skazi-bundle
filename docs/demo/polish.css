@@ -1,0 +1,54 @@
+/* The original quiet opening: a mark, one red line, and a flight into the hero. */
+#site-intro{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:#0c0c0c;overflow:hidden}
+#site-intro[hidden]{display:none}
+.intro-pending #site-intro{display:flex}
+html.intro-pending{overflow:hidden}
+main#main:focus{outline:none}
+.intro-pending .hero-wordmark img{opacity:0}
+.intro-pending .hero-copy>.eyebrow,.intro-pending .hero-copy>h1,.intro-pending .hero-copy>.intro,.intro-pending .hero-copy>.actions,.intro-pending .hero-facts{opacity:0}
+.intro-mark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(490px,76vw)}
+.intro-mark img{width:100%;height:auto;animation:opening-mark .8s cubic-bezier(.16,1,.3,1) both}
+.intro-line{position:absolute;top:calc(50% + min(175px,29vw));width:min(180px,35vw);height:2px;background:#e50914;transform-origin:center;animation:opening-line .8s cubic-bezier(.22,1,.36,1) .35s both}
+.intro-skip{position:absolute;right:28px;bottom:28px;display:flex;align-items:center;gap:10px;min-height:44px;padding:0 16px;border:1px solid #555;border-radius:24px;background:transparent;color:#ccc;font:500 12px Manrope,"Segoe UI",sans-serif;cursor:pointer}
+.intro-skip svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.intro-skip:hover{border-color:#aaa;color:#fff}.intro-skip:focus-visible{outline:2px solid #fff;outline-offset:4px}
+@keyframes opening-mark{from{opacity:0;transform:translate3d(0,14px,0) scale(.975)}to{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+@keyframes opening-line{from{opacity:0;transform:scaleX(.2)}to{opacity:1;transform:scaleX(1)}}
+
+/* Explicit zero padding and a symmetric glyph keep the power centred at every DPI. */
+.studio-workstation .track-tools button{padding:0;box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:28px;height:28px;min-width:28px;min-height:28px;flex:0 0 28px;line-height:1}
+.studio-workstation .track-tools [data-layer] svg{display:block;width:16px;height:16px;flex:0 0 16px;margin:0;transform:none}
+
+/* Read the two musical coordinates separately, without a tiny clock caption. */
+.studio-workstation .studio-time{width:100px;min-width:100px;padding:4px 10px;border-color:#555;background:#0a0a0a;border-radius:6px}
+.position-values{display:grid;grid-template-columns:1fr 1px 1fr;gap:9px;align-items:center;width:100%}
+.position-unit{display:flex;flex-direction:column;align-items:center;gap:1px}
+.studio-workstation .position-unit b{font-size:18px;line-height:20px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:.01em;color:#f4f4f4}
+.studio-workstation .position-unit small{font-size:8px;line-height:10px;font-weight:500;letter-spacing:.09em;color:#b3b3b3}
+.position-divider{width:1px;height:24px;background:#3c3c3c}
+.studio-workstation .studio-status{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:16px;min-height:40px;padding:10px 14px;font-size:11px;line-height:1.55}
+.studio-workstation .studio-status>span,.studio-workstation .studio-status b{font-size:11px;line-height:1.55}
+.studio-workstation .studio-status>#drop-status{text-align:center}
+.studio-workstation .studio-status>span:last-child{font-size:11px;white-space:normal;color:#aaa}
+
+/* One easing family; interactive controls remain stationary when hovered. */
+:root{--motion-ease:cubic-bezier(.22,1,.36,1)}
+.button{transition:background .18s ease,color .18s ease,transform .24s var(--motion-ease),box-shadow .24s ease}
+.button:hover{transform:translateY(-2px)}
+.studio-workstation button,.studio-workstation input{transition:background-color .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease}
+.studio-workstation .button:hover,.studio-workstation .button:active{transform:none}
+.tool-image img,.feature-image img{transition:transform .5s var(--motion-ease),filter .3s ease}
+.artist-socials a{transition:background .18s ease,border-color .18s ease,color .18s ease,transform .24s var(--motion-ease)}
+.artist-socials a:hover{transform:translateY(-2px)}
+.ticker-track{animation-timing-function:linear;backface-visibility:hidden}
+.motion-toggle svg{width:15px;height:15px;fill:currentColor}
+.hero-in-view .hero-art>img,.hero-in-view .hero-wordmark{will-change:transform}
+@media(max-width:900px){.studio-workstation .studio-status{grid-template-columns:auto minmax(0,1fr);gap:5px 14px}.studio-workstation .studio-status>span:last-child{grid-column:1/-1;text-align:right}}
+@media(max-width:650px){
+ .studio-workstation .studio-time{width:64px;min-width:64px;padding:4px}.position-values{gap:4px}
+ .studio-workstation .position-unit b{font-size:16px;line-height:20px}.studio-workstation .position-unit small{font-size:8px;letter-spacing:.025em}
+ .studio-workstation .studio-status{grid-template-columns:1fr;gap:5px;padding:11px 12px}
+ .studio-workstation .studio-status>#drop-status,.studio-workstation .studio-status>span:last-child{text-align:left;grid-column:auto}
+ .intro-skip{right:18px;bottom:18px}
+}
+@media(prefers-reduced-motion:reduce){.intro-mark img,.intro-line{animation:none}.button,.studio-workstation button,.tool-image img,.feature-image img,.artist-socials a{transition:none}.hero-art>img,.hero-wordmark{will-change:auto!important}}
