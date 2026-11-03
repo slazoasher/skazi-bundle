@@ -35,27 +35,158 @@ One installer for Windows. One for Mac.</p>
 
 ## Plugin collection
 
-| Plugin | What it does | Presets |
-| :--- | :--- | ---: |
-| [**SKAZI**](SKAZI-Synth/) | Psytrance, acid and virtual analog synthesis | 3,650 |
-| [**BULLY**](Bully/) | Wavetable synthesis | 462 |
-| [**SKAZI 303**](TBON303/) | 303-style acid basslines | 544 |
-| [**BAMBA**](Bamba/) | Risers and uplifts | 260 |
-| [**TAHINI**](Tahini/) | Delay and reverb | 250 |
-| [**SUBICH**](Subich/) | Bass and sub-bass synthesis | 1,000 |
-| [**ZHUG**](Zhug/) | Saturation and stereo widening | — |
-| [**SALAT**](Salat/) | Glitch and multi-effects processing | 104 |
-| [**KICKASS**](Kickass/) | Kick drum synthesis | 50 |
-| [**MIDI GOD**](MidiGod/) | MIDI pattern generation and audio-to-MIDI conversion | 126 |
-| [**KUBE**](Kube/) | Psytrance wavetable synthesis | 306 |
-| [**QUAZI**](Quazi/) | Four-band distortion | 104 |
-| [**SHAKSUKA**](Shaksuka/) | Random chopping and glitch effects | 509 |
-| [**PITA PUMP**](PitaPump/) | Sidechain-style volume shaping | 105 |
-| [**The FilterFish**](FilterFish/) | Filtering, tempo-synced delay and 11 reverb types | 800 |
-| [**SKACID**](Skacid/) | Acid bassline synthesis with Accent and Slide | 129 |
-| [**SKILTER**](Skilter/) | Morphing multimode filter | 150 |
-| [**SKWIDE**](Skwide/) | Stereo imaging | 70 |
-| [**SKAZI REVERB**](Skverb/) | Reverb with freeze, ducking and pre-delay | 75 |
+Browse all 19 plugins by category. Select a screenshot to enlarge it or a plugin name to view its source.
+
+### Instruments
+
+<table>
+<tbody>
+  <tr>
+    <td width="33%" valign="top">
+      <a href="docs/img/bamba-960.webp"><img src="docs/img/bamba-480.webp" alt="BAMBA plugin interface" width="260"></a><br>
+      <strong><a href="Bamba/">BAMBA</a></strong><br>
+      Riser &amp; uplift maker<br>
+      <sub>260 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/bully-960.webp"><img src="docs/img/bully-480.webp" alt="BULLY plugin interface" width="260"></a><br>
+      <strong><a href="Bully/">BULLY</a></strong><br>
+      Analog-character wavetable monster<br>
+      <sub>462 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/kickass-960.webp"><img src="docs/img/kickass-480.webp" alt="KICKASS plugin interface" width="260"></a><br>
+      <strong><a href="Kickass/">KICKASS</a></strong><br>
+      Kick drum synth<br>
+      <sub>50 presets</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">
+      <a href="docs/img/kube-960.webp"><img src="docs/img/kube-480.webp" alt="KUBE plugin interface" width="260"></a><br>
+      <strong><a href="Kube/">KUBE</a></strong><br>
+      Psytrance wavetable synth<br>
+      <sub>306 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/skacid-960.webp"><img src="docs/img/skacid-480.webp" alt="SKACID plugin interface" width="260"></a><br>
+      <strong><a href="Skacid/">SKACID</a></strong><br>
+      Acid bassline synth · Special Shigaon Edition<br>
+      <sub>129 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/skazi-960.webp"><img src="docs/img/skazi-480.webp" alt="SKAZI plugin interface" width="260"></a><br>
+      <strong><a href="SKAZI-Synth/">SKAZI</a></strong><br>
+      Psy / acid / VA synth<br>
+      <sub>3,650 presets</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">
+      <a href="docs/img/subich-960.webp"><img src="docs/img/subich-480.webp" alt="SUBICH plugin interface" width="260"></a><br>
+      <strong><a href="Subich/">SUBICH</a></strong><br>
+      Bass + sub bass synth<br>
+      <sub>1,000 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/tbon303-960.webp"><img src="docs/img/tbon303-480.webp" alt="TBON 303 plugin interface" width="260"></a><br>
+      <strong><a href="TBON303/">TBON 303</a></strong><br>
+      Acid bass line synth<br>
+      <sub>544 presets</sub>
+    </td>
+  </tr>
+</tbody>
+</table>
+
+### Effects
+
+<table>
+<tbody>
+  <tr>
+    <td width="33%" valign="top">
+      <a href="docs/img/pitapump-960.webp"><img src="docs/img/pitapump-480.webp" alt="PITAPUMP plugin interface" width="260"></a><br>
+      <strong><a href="PitaPump/">PITAPUMP</a></strong><br>
+      Sidechain LFO tool<br>
+      <sub>105 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/quazi-960.webp"><img src="docs/img/quazi-480.webp" alt="QUAZI plugin interface" width="260"></a><br>
+      <strong><a href="Quazi/">QUAZI</a></strong><br>
+      4-band fuzz<br>
+      <sub>104 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/salat-960.webp"><img src="docs/img/salat-480.webp" alt="SALAT plugin interface" width="260"></a><br>
+      <strong><a href="Salat/">SALAT</a></strong><br>
+      Glitch multi-FX + RISE<br>
+      <sub>104 presets</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">
+      <a href="docs/img/shaksuka-960.webp"><img src="docs/img/shaksuka-480.webp" alt="SHAKSUKA plugin interface" width="260"></a><br>
+      <strong><a href="Shaksuka/">SHAKSUKA</a></strong><br>
+      Random chop &amp; glitch FX<br>
+      <sub>509 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/skverb-960.webp"><img src="docs/img/skverb-480.webp" alt="SKAZI REVERB plugin interface" width="260"></a><br>
+      <strong><a href="Skverb/">SKAZI REVERB</a></strong><br>
+      Mega reverb machine<br>
+      <sub>75 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/skilter-960.webp"><img src="docs/img/skilter-480.webp" alt="SKILTER plugin interface" width="260"></a><br>
+      <strong><a href="Skilter/">SKILTER</a></strong><br>
+      Morphing multimode filter<br>
+      <sub>150 presets</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">
+      <a href="docs/img/skwide-960.webp"><img src="docs/img/skwide-480.webp" alt="SKWIDE plugin interface" width="260"></a><br>
+      <strong><a href="Skwide/">SKWIDE</a></strong><br>
+      Phase-safe stereo imager<br>
+      <sub>70 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/tahini-960.webp"><img src="docs/img/tahini-480.webp" alt="TAHINI plugin interface" width="260"></a><br>
+      <strong><a href="Tahini/">TAHINI</a></strong><br>
+      Space delay + reverb<br>
+      <sub>250 presets</sub>
+    </td>
+    <td width="33%" valign="top">
+      <a href="docs/img/filterfish-960.webp"><img src="docs/img/filterfish-480.webp" alt="THE FILTERFISH plugin interface" width="260"></a><br>
+      <strong><a href="FilterFish/">THE FILTERFISH</a></strong><br>
+      Filter FX<br>
+      <sub>800 presets</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">
+      <a href="docs/img/zhug-960.webp"><img src="docs/img/zhug-480.webp" alt="ZHUG plugin interface" width="260"></a><br>
+      <strong><a href="Zhug/">ZHUG</a></strong><br>
+      Saturator + widener<br>
+      <sub>118 presets</sub>
+    </td>
+  </tr>
+</tbody>
+</table>
+
+### MIDI
+
+<table>
+<tbody>
+  <tr>
+    <td width="33%" valign="top">
+      <a href="docs/img/midigod-960.webp"><img src="docs/img/midigod-480.webp" alt="MIDI GOD plugin interface" width="260"></a><br>
+      <strong><a href="MidiGod/">MIDI GOD</a></strong><br>
+      MIDI pattern generator + audio to MIDI<br>
+      <sub>126 presets</sub>
+    </td>
+  </tr>
+</tbody>
+</table>
 
 ## Try it in your browser
 
