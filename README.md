@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="Resources/skazi_logo.png" alt="SKAZI" width="320">
+  <img src="docs/img/skazi-logo.png" alt="SKAZI" width="320">
 </div>
 
 <h1 align="center">SKAZI Bundle</h1>
