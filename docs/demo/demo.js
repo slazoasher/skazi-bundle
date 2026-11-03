@@ -29,7 +29,7 @@ search.addEventListener('input',event=>{if(!event.isComposing)cleanSearch();});
 search.addEventListener('paste',e=>{const pasted=e.clipboardData?.getData('text')||'';const clean=pasted.replace(englishSearch,'');if(clean===pasted)return;e.preventDefault();search.setRangeText(clean,search.selectionStart,search.selectionEnd,'end');searchHint.hidden=false;render();});
 fetch(new URL('plugins.json',siteAssetBase)).then(r=>{if(!r.ok)throw Error('catalog');return r.json();}).then(data=>{plugins=data.map(p=>({...p,image:new URL(p.image,siteAssetBase).href}));const featured=[['Subich','01 / FEEL THE LOW END','A focused foundation for your next bassline.'],['Skacid','02 / FOLLOW THE ACID','Accent, slide, and a sequence that keeps moving.'],['Tahini','03 / OPEN UP THE SPACE','Give a simple idea somewhere to go.']];$('#featured').innerHTML=featured.map(([folder,label,line])=>{const p=plugins.find(x=>x.folder===folder);return `<article class="feature"><button class="feature-image feature-open" data-plugin="${folder}" aria-label="Open ${escapeText(p.name)} plugin details" aria-haspopup="dialog" aria-controls="plugin-dialog"><img src="${p.image.replace('-480','-960')}" alt="${escapeText(p.name)} interface" loading="lazy"><span class="tool-open-icon" aria-hidden="true">${expandIcon}</span></button><div class="micro">${label}</div><h3>${pluginName(p)}</h3><p>${line}</p></article>`;}).join('');$$('#featured [data-plugin]').forEach(b=>b.onclick=()=>openPlugin(b.dataset.plugin));render();settleInitialSection();}).catch(()=>{$('#catalog').textContent='The collection could not load. Refresh to try again.';});
 // A synchronized, original browser synthesizer sketch. No plugin output claims.
-const channelPanners={},trackSettings={};
+const channelPanners={},trackSettings={},presetDrafts=new Map();
 const channelGains={},channelAnalysers={},channelMeterBuffers={},meterSmoothing={};let playStart=0;let analyser=null;let ctx=null,master=null,timer=null,nextTime=0,step=0,running=false,starting=false,paused=false,pausing=false,runGeneration=0;const activeVoices=new Set();const layers={kick:true,bass:true,acid:false,space:false,fx:false};let beat=60/138;
 const cells=Array.from({length:16},()=>{const x=document.createElement('i');$('.sequencer').append(x);return x;});
 let studioEngine=null,currentSession='roll',pendingSession=null,pendingTempo=null,scheduledLayerTime=0;
@@ -46,7 +46,7 @@ function schedule(){
   if(s===0){if(pendingSession){const name=pendingSession;pendingSession=null;applySession(name,t);}if(pendingTempo!==null){applyTempo(pendingTempo,t);pendingTempo=null;}if(buildBusy)advanceBuild(t);}
   const bar=Math.floor(Math.max(0,(t-playStart)/(beat*4))+.00001)%(SkaziStudio.barsFor?.(currentSession)??4);
   for(const event of SkaziStudio.plan(currentSession,bar,s,patterns,layers,noteEdits))studioEngine.play(event,t,beat,s);
-  const delay=Math.max(0,(t-ctx.currentTime)*1000);setTimeout(()=>{if(running&&generation===runGeneration){cells.forEach((c,i)=>c.classList.toggle('active',i===s));updateDAWStep(s);}},delay);
+  const delay=Math.max(0,(t-ctx.currentTime)*1000);setTimeout(()=>{if(running&&generation===runGeneration){cells.forEach((c,i)=>c.classList.toggle('active',i===s));updateDAWStep(s);setDAWPosition(bar+1,s+1);}},delay);
   step=(step+1)%16;nextTime+=beat/4;
  }
 }
@@ -152,7 +152,7 @@ function drawStage(timestamp=0){
  const rect=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2),w=Math.round(rect.width*dpr),h=Math.round(rect.height*dpr);
  if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}drawSpectrum(w,h,dpr);
 for(const key of Object.keys(layers)){let peak=0;if(running&&channelAnalysers[key]){const buf=channelMeterBuffers[key];channelAnalysers[key].getFloatTimeDomainData(buf);for(const sample of buf)peak=Math.max(peak,Math.abs(sample));}const target=peak>0?Math.max(0,(20*Math.log10(peak)+48)/48):0;meterSmoothing[key]=running?Math.max(target,(meterSmoothing[key]||0)*.83):0;document.querySelector('[data-meter="'+key+'"]').style.setProperty('--meter-level',Math.min(100,meterSmoothing[key]*100)+'%');}
-if(running&&analyser){analyser.getFloatTimeDomainData(masterSamples);let peak=0;for(const sample of masterSamples)peak=Math.max(peak,Math.abs(sample));$('#master-peak').textContent='PEAK '+(peak>.0001?(20*Math.log10(peak)).toFixed(1):'−∞')+' dB';const elapsedBeats=Math.max(0,(ctx.currentTime-playStart)/beat);const phase=(elapsedBeats/16)%1;setDAWPosition(Math.floor(elapsedBeats/4)%SkaziStudio.barsFor(currentSession)+1,Math.floor(elapsedBeats*4)%16+1);$('.rack-playhead').style.setProperty('--playhead',Math.max(0,phase));}else if(!paused){$('#master-peak').textContent='PEAK −∞ dB';}if(running&&!document.body.classList.contains('motion-paused'))visualFrame=requestAnimationFrame(drawStage);}
+if(running&&analyser){analyser.getFloatTimeDomainData(masterSamples);let peak=0;for(const sample of masterSamples)peak=Math.max(peak,Math.abs(sample));$('#master-peak').textContent='PEAK '+(peak>.0001?(20*Math.log10(peak)).toFixed(1):'−∞')+' dB';const elapsedBeats=Math.max(0,(ctx.currentTime-playStart)/beat);const phase=(elapsedBeats/16)%1;$('.rack-playhead').style.setProperty('--playhead',Math.max(0,phase));}else if(!paused){$('#master-peak').textContent='PEAK −∞ dB';}if(running&&!document.body.classList.contains('motion-paused'))visualFrame=requestAnimationFrame(drawStage);}
 function requestStageDraw(){if(scopeVisible&&!visualFrame)visualFrame=requestAnimationFrame(drawStage);}
 document.addEventListener('studio-audio-started',requestStageDraw);document.addEventListener('studio-audio-stopped',requestStageDraw);document.addEventListener('studio-audio-paused',requestStageDraw);document.addEventListener('visual-motion-change',requestStageDraw);addEventListener('resize',requestStageDraw);
 const stageObserver=new IntersectionObserver(entries=>{scopeVisible=entries[0].isIntersecting;$('#lab').classList.toggle('studio-in-view',scopeVisible);if(scopeVisible&&!visualFrame)visualFrame=requestAnimationFrame(drawStage);else if(!scopeVisible){cancelAnimationFrame(visualFrame);visualFrame=0;}});stageObserver.observe($('#lab'));
@@ -173,24 +173,36 @@ function updateDAWStep(s){$$('[data-pattern]').forEach(row=>{const key=row.datas
 $('#reset-session').onclick=()=>{stopLoop();step=0;$('#transport').focus({preventScroll:true});};
 updateLayers();
 function applySession(name,atTime){
- scheduledLayerTime=atTime||0;pendingTempo=null;cancelBuild();for(const key of Object.keys(noteEdits))noteEdits[key].fill(null);currentSession=name;const profile=SkaziStudio.profiles[name];
+  if(Object.keys(sessionPatternDefaults).length){
+  presetDrafts.set(currentSession,structuredClone({patterns,noteEdits,layers,tempo:Math.round(60/beat)}));
+ }
+ scheduledLayerTime=atTime||0;cancelBuild();currentSession=name;
+ const profile=SkaziStudio.profiles[name],draft=presetDrafts.get(name);
  const presets={roll:{active:['kick','bass','acid','space','fx'],steps:{kick:[0,4,8,12],bass:[1,2,3,5,6,7,9,10,11,13,14,15],acid:[0,3,6,8,10,11,14,15],space:[0,8],fx:[2,4,6,10,12,14,15]}},acid:{active:['kick','bass','acid','space','fx'],steps:{kick:[0,4,8,12],bass:[2,3,6,7,10,11,14,15],acid:[0,1,3,6,8,10,11,14],space:[0,8],fx:[2,4,6,10,12,14,15]}},minimal:{active:['kick','bass','space','fx'],steps:{kick:[0,4,8,12],bass:[3,6,10,14],acid:[2,6,10,14],space:[0,8],fx:[2,4,6,10,12,14]}}};
  const p=presets[name];$$('[data-session]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.session===name));b.classList.remove('is-queued');});
- for(const key of Object.keys(layers)){setLayer(key,p.active.includes(key));patterns[key]=Array.from({length:16},(_,i)=>p.steps[key].includes(i));const row=document.querySelector('[data-pattern="'+key+'"]');[...row.children].forEach((b,i)=>b.setAttribute('aria-pressed',String(patterns[key][i])));}
- sessionPatternDefaults=structuredClone(patterns);const when=atTime??ctx?.currentTime??0,elapsed=ctx?(when-playStart)/beat:0;beat=60/profile.tempo;if(ctx&&(running||paused))playStart=when-elapsed*beat;
+ sessionPatternDefaults=Object.fromEntries(Object.keys(layers).map(key=>[key,Array.from({length:16},(_,i)=>p.steps[key].includes(i))]));
+ for(const key of Object.keys(layers)){
+  setLayer(key,draft?.layers[key]??p.active.includes(key));
+  patterns[key]=[...(draft?.patterns[key]??sessionPatternDefaults[key])];
+  noteEdits[key]=draft?structuredClone(draft.noteEdits[key]):Array(16).fill(null);
+  const row=document.querySelector('[data-pattern="'+key+'"]');
+  [...row.children].forEach((button,i)=>button.setAttribute('aria-pressed',String(patterns[key][i])));
+ }
+ const when=atTime??ctx?.currentTime??0;
+ applyTempo(draft?.tempo??profile.tempo,when);
  const barCount=SkaziStudio.barsFor(name);
  $('#arrangement-length').textContent=barCount+' BARS / LOOP';
  $('#export-loop').title='Save '+barCount+' bars as stereo WAV';
- $('#studio-tempo').value=String(profile.tempo);$('#session-key').textContent=profile.key;
- $('#drop-status').textContent=profile.title+' loaded. Make it yours.';studioEngine?.setBeat(beat,when);document.dispatchEvent(new Event('studio-session-changed'));scheduledLayerTime=0;
+ $('#session-key').textContent=profile.key;
+ $('#drop-status').textContent=profile.title+' loaded. Make it yours.';document.dispatchEvent(new Event('studio-session-changed'));scheduledLayerTime=0;
 }
 function applyTempo(value,atTime=ctx?.currentTime||0){const elapsed=ctx?(atTime-playStart)/beat:0;beat=60/value;if(ctx&&(running||paused))playStart=atTime-elapsed*beat;studioEngine?.setBeat(beat,atTime);$('#studio-tempo').value=String(value);}
 function queueStudioTempo(value){if(running||paused){pendingTempo=value;$('#drop-status').textContent=value+' BPM queued for the next bar.';}else applyTempo(value);}
-function selectSession(name){if(running){pendingSession=name;$$('[data-session]').forEach(b=>b.classList.toggle('is-queued',b.dataset.session===name));$('#drop-status').textContent=SkaziStudio.profiles[name].title+' queued for the next bar.';}else{pendingSession=null;applySession(name);}}
+function selectSession(name){if(name===currentSession){pendingSession=null;$$('[data-session]').forEach(b=>b.classList.remove('is-queued'));return;}if(running||paused){pendingSession=name;$$('[data-session]').forEach(b=>b.classList.toggle('is-queued',b.dataset.session===name));$('#drop-status').textContent=SkaziStudio.profiles[name].title+' queued for the next bar.';}else{pendingSession=null;applySession(name);}}
 $$('[data-session]').forEach(b=>b.onclick=()=>selectSession(b.dataset.session));
 $$('[data-shape]').forEach(input=>input.oninput=()=>{const key=input.dataset.shape,value=Number(input.value);studioControls[key]=value;input.nextElementSibling.value=value+'%';if(key==='master'&&master)master.gain.setTargetAtTime(value/100,ctx.currentTime,.025);else studioEngine?.set(key,value);});
 $('#export-loop').onclick=async()=>{
- const button=$('#export-loop'),solo=$$('[data-solo][aria-pressed="true"]').map(b=>b.dataset.solo);button.disabled=true;button.setAttribute('aria-busy','true');$('#drop-status').textContent='Rendering your four-bar loop…';
+ const button=$('#export-loop'),solo=$$('[data-solo][aria-pressed="true"]').map(b=>b.dataset.solo);button.disabled=true;button.setAttribute('aria-busy','true');$('#drop-status').textContent='Rendering '+SkaziStudio.barsFor(currentSession)+' bars…';
  try{const snapshot={session:currentSession,tempo:Math.round(60/beat),noteEdits:structuredClone(noteEdits),layers:Object.fromEntries(Object.entries(layers).map(([key,on])=>[key,on&&(!solo.length||solo.includes(key))])),patterns:structuredClone(patterns),levels:{...channelLevels},controls:{...studioControls},trackSettings:structuredClone(trackSettings)};
  const buffer=await SkaziStudio.renderLoop(snapshot),url=URL.createObjectURL(new Blob([SkaziStudio.wav(buffer)],{type:'audio/wav'})),link=document.createElement('a');link.href=url;link.download='skazi-studio-'+snapshot.session+'-'+snapshot.tempo+'bpm.wav';link.click();setTimeout(()=>URL.revokeObjectURL(url),60000);$('#drop-status').textContent='Loop saved · stereo WAV · 44.1 kHz · effects tail included.';
  }catch{ $('#drop-status').textContent='Loop could not be saved in this browser. Try again in a current browser.';}finally{button.disabled=false;button.removeAttribute('aria-busy');}

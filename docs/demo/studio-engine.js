@@ -171,9 +171,21 @@
   return {play,set,setTrack,reset,setBeat,controls};
  }
  async function renderLoop(snapshot){
-  const sampleRate=44100,beat=60/snapshot.tempo,bars=barsFor(snapshot.session),duration=bars*beat*4+1.5;
+  const sampleRate=44100,beat=60/snapshot.tempo,bars=barsFor(snapshot.session);
+  let tail=1.5;
+  for(const track of ['acid','space']){
+   const controls=snapshot.trackSettings?.[track];
+   const feedback=(controls?.feedback??31)/100;
+   const send=controls?.send??snapshot.controls.space;
+   if(!snapshot.layers[track]||!send||feedback<=0)continue;
+   const repeats=1+Math.ceil(Math.log(.001)/Math.log(feedback));
+   tail=Math.max(tail,beat*(1.35*1.75+.75*repeats)+.15);
+  }
+  const duration=.03+bars*beat*4+tail;
   const Offline=root.OfflineAudioContext||root.webkitOfflineAudioContext;if(!Offline)throw Error('Offline audio is unavailable in this browser.');
-  const ctx=new Offline(2,Math.ceil(duration*sampleRate),sampleRate),master=ctx.createGain();master.gain.value=snapshot.controls.master/100;mastering(ctx,master,ctx.destination);
+  const ctx=new Offline(2,Math.ceil(duration*sampleRate),sampleRate),master=ctx.createGain();master.gain.value=snapshot.controls.master/100;const fade=ctx.createGain();fade.connect(ctx.destination);
+  fade.gain.setValueAtTime(1,duration-.08);fade.gain.linearRampToValueAtTime(0,duration-1/sampleRate);
+  mastering(ctx,master,fade);
   const channels={};for(const key of Object.keys(snapshot.layers)){channels[key]=ctx.createGain();channels[key].gain.value=snapshot.levels[key]**2;const pan=ctx.createStereoPanner();pan.pan.value=(snapshot.trackSettings?.[key]?.pan??0)/100;channels[key].connect(pan).connect(master);}
   await loadVoices(ctx);const engine=create(ctx,channels,new Set(),snapshot.controls,snapshot.trackSettings);
   for(let bar=0;bar<bars;bar++)for(let step=0;step<16;step++)for(const event of plan(snapshot.session,bar,step,snapshot.patterns,snapshot.layers,snapshot.noteEdits))engine.play(event,.03+(bar*16+step)*beat/4,beat,step);

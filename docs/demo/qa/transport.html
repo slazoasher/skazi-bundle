@@ -10,7 +10,11 @@ document.querySelector('#run').onclick=async()=>{
    sessionStorage.removeItem('skazi-studio-workspace-v1');frame.style.width=width+'px';frame.style.height=height+'px';const loaded=new Promise(r=>frame.addEventListener('load',r,{once:true}));frame.src='../../?intro=0&transport='+width;await loaded;
    const doc=frame.contentDocument,win=frame.contentWindow,$=s=>doc.querySelector(s),wait=ms=>new Promise(r=>setTimeout(r,ms));await doc.fonts.ready;
    function showStudio(){window.scrollTo({top:frame.offsetTop,left:0,behavior:'instant'});win.scrollTo({top:$('#lab').getBoundingClientRect().top+win.scrollY-100,left:0,behavior:'instant'});}
-   showStudio();await wait(80);
+   async function showAndWaitForStudio(){
+    const deadline=Date.now()+1500;
+    do{showStudio();await wait(80);}while(!$('#lab').classList.contains('studio-in-view')&&Date.now()<deadline);
+   }
+   await showAndWaitForStudio();
    const box=e=>e.getBoundingClientRect(),group=$('.transport-actions'),primary=$('#transport'),stop=$('#reset-session');
    const shape=()=>{const bar=box($('.studio-transport')),g=box(group);return [g.width,g.height,g.left-bar.left,box($('.studio-time')).left-bar.left,box($('.tempo-control')).left-bar.left];};
    const readyShape=shape();check('Ready key fills fixed playback region',Math.abs(box(primary).width-(box(group).width-2))<1);
@@ -27,9 +31,9 @@ document.querySelector('#run').onclick=async()=>{
    check('Segments never overlap or leave their region',opening.every(s=>s.overlap<1&&s.outside<1));
    check('Playing splits into equal 44px-high targets',Math.abs(box(primary).width-box(stop).width)<1&&box(primary).width>=44&&box(stop).width>=44&&box(primary).height>=44&&box(stop).height>=44);
    check('Playing exposes Pause and Stop',primary.getAttribute('aria-label')==='Pause'&&!stop.hidden&&!stop.inert&&!stop.disabled);
-   check('Brand motion is active only for visible playback',win.getComputedStyle($('.studio-brand-mark'),'::after').animationName==='studio-brand-sheen');
+   await showAndWaitForStudio();check('Brand motion is active only for visible playback',win.getComputedStyle($('.studio-brand-mark'),'::after').animationName==='studio-brand-sheen');
    win.scrollTo({top:0,behavior:'instant'});await wait(80);check('Logo motion stops outside the studio viewport',win.getComputedStyle($('.studio-brand-mark'),'::after').animationName==='none');
-   showStudio();await wait(80);check('Logo motion resumes when the playing studio returns',win.getComputedStyle($('.studio-brand-mark'),'::after').animationName==='studio-brand-sheen');
+   await showAndWaitForStudio();check('Logo motion resumes when the playing studio returns',win.getComputedStyle($('.studio-brand-mark'),'::after').animationName==='studio-brand-sheen');
    await transition(()=>primary.click());check('Pause preserves split layout',primary.getAttribute('aria-label')==='Resume'&&Math.abs(box(primary).width-box(stop).width)<1);
    check('Pause stops logo animation',win.getComputedStyle($('.studio-brand-mark'),'::after').animationName==='none');
    await transition(()=>primary.click());stop.focus();const closing=await transition(()=>stop.click());
@@ -39,7 +43,9 @@ document.querySelector('#run').onclick=async()=>{
    check('Stopped segment stays inaccessible',stop.hidden&&stop.inert&&stop.disabled&&stop.tabIndex===-1);
    const motion=$('.motion-toggle');if(motion.getAttribute('aria-pressed')!=='true')motion.click();
    check('Visual-motion pause disables transport transitions',win.getComputedStyle(group).transitionDuration==='0s');
-   primary.click();await wait(120);check('Visual-motion pause suppresses logo motion',win.getComputedStyle($('.studio-brand-mark'),'::after').animationName==='none');stop.click();
+   primary.click();await wait(120);check('Visual-motion pause suppresses logo motion',win.getComputedStyle($('.studio-brand-mark'),'::after').animationName==='none');
+   const position=$('#daw-position').textContent;await wait(250);
+   check('Visual-motion pause leaves the playback counter running',$('#daw-position').textContent!==position);stop.click();
    results.push({width,height,checks,openingSamples:opening.length,closingSamples:closing.length,regionWidth:readyShape[0],regionHeight:readyShape[1]});
   }
   status.textContent='Complete';

@@ -40,11 +40,11 @@
     compact.addEventListener('input',()=>{full.value=compact.value;full.dispatchEvent(new Event('input',{bubbles:true}));});
     full.addEventListener('input',sync);sync();
   }
-  const snapshot=()=>JSON.stringify({patterns,noteEdits,channelLevels,layers,studioControls,tempo:Math.round(60/beat),session:currentSession});
-  let initial=snapshot();
-  function edited(){document.querySelector('#studio-edited').hidden=snapshot()===initial;}
+  const snapshot=()=>JSON.stringify({patterns,noteEdits,channelLevels,layers,studioControls,trackSettings,tempo:Math.round(60/beat),session:currentSession});
+  const initial=new Map([[currentSession,snapshot()]]);
+  function edited(){document.querySelector('#studio-edited').hidden=snapshot()===initial.get(currentSession);}
   studio.addEventListener('input',()=>queueMicrotask(edited));
   studio.addEventListener('click',()=>queueMicrotask(edited));
   document.addEventListener('studio-pattern-changed',edited);
-  document.addEventListener('studio-session-changed',()=>{initial=snapshot();edited();});
+  document.addEventListener('studio-session-changed',()=>{if(!initial.has(currentSession))initial.set(currentSession,snapshot());edited();});
 })();
