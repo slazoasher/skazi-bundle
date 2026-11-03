@@ -198,18 +198,23 @@ Press **Play** to hear *Forest Signal*, a 16-bar psytrance loop built with sampl
 
 ## Troubleshooting
 
+<details>
+<summary>Show troubleshooting tips</summary>
+
 - **A plugin is missing.** Check that your DAW scans the right format and rescan. The installer places VST3 plugins in the `SKAZI` subfolder of your system VST3 directory.
 - **Where are the files?** On Windows, check `C:\Program Files\Common Files\VST3\SKAZI\` for plugins and `C:\Program Files\SKAZI\` for apps. On Mac, check `/Library/Audio/Plug-Ins/VST3/SKAZI/`, `/Library/Audio/Plug-Ins/Components/` or `/Applications/SKAZI/`.
 - **Updating an existing installation.** Download the latest installer from Releases. Plugin IDs are kept stable so existing DAW projects can find the updated plugins. Check the release notes for changes that affect your setup.
 - **Uninstalling.** On Windows, remove **SKAZI Bundle** under Installed apps. On Mac, run **Uninstall SKAZI Bundle.command** from `/Applications/SKAZI/`.
 - **Reporting a problem.** Include your OS, DAW and version, plugin name and format, bundle version, and the steps to reproduce it. [Open an issue](https://github.com/slazoasher/skazi-bundle/issues/new).
 
+</details>
+
 ## Source and builds
 
-The plugins are free to download and the source is available in this repository. The folder links in the collection take you to each plugin's code.
-
 <details>
-<summary>Build the bundle or add a plugin</summary>
+<summary>Show source and build instructions</summary>
+
+The plugins are free to download and the source is available in this repository. The folder links in the collection take you to each plugin's code.
 
 ### Windows
 
