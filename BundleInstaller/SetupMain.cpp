@@ -50,6 +50,7 @@ namespace
         if (name == "SKILTER")        return "Morphing filter + LFO, envelope, step seq";
         if (name == "SKWIDE")         return "Phase-safe stereo imager + Haas super wide";
         if (name == "SKAZI REVERB")   return "Mega reverb machine: 10 algorithms, reverse, tail filter";
+        if (name == "S-QUALIZER")     return "6-band dynamic M/S EQ + tube EQ, analyzer";
         return "Plugin";
     }
 

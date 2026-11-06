@@ -64,6 +64,7 @@ build Skacid      Skacid     "SKACID"         FETCHCONTENT_SOURCE_DIR_JUCE "$J4"
 build Skilter     Skilter    "SKILTER"        FETCHCONTENT_SOURCE_DIR_JUCE "$J4"
 build Skwide      Skwide     "SKWIDE"         FETCHCONTENT_SOURCE_DIR_JUCE "$J4"
 build Skverb      Skverb     "SKAZI REVERB"   FETCHCONTENT_SOURCE_DIR_JUCE "$J4"
+build Squalizer   Squalizer  "S-QUALIZER"     FETCHCONTENT_SOURCE_DIR_JUCE "$J4"
 
 cp "$ROOT/mac/Uninstall SKAZI Bundle.command" "$STAGE/Applications/SKAZI/"
 chmod +x "$STAGE/Applications/SKAZI/Uninstall SKAZI Bundle.command"
