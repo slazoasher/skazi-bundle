@@ -210,7 +210,9 @@ void SkwideAudioProcessorEditor::renderBackground()
 {
     const float scale = juce::Component::getApproximateScaleFactorForComponent (&canvas);
     auto& image = canvas.background;
-    image = juce::Image (juce::Image::ARGB, juce::roundToInt ((float) designWidth * scale), juce::roundToInt ((float) designHeight * scale), true);
+    // Drawn in software (no GPU readback per resize step), uploaded once in resized().
+    image = juce::Image (juce::Image::ARGB, juce::roundToInt ((float) designWidth * scale), juce::roundToInt ((float) designHeight * scale), true,
+                         juce::SoftwareImageType());
     juce::Graphics g (image);
     g.addTransform (juce::AffineTransform::scale (scale));
 
@@ -262,6 +264,7 @@ void SkwideAudioProcessorEditor::resized()
     {
         renderedScale = scale;
         renderBackground();
+        canvas.background = juce::NativeImageType().convert (canvas.background); // painted every frame, so keep it on the GPU
         canvas.repaint();
     }
 }

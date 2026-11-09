@@ -436,7 +436,10 @@ juce::Rectangle<float> ScopeView::scopeArea() const
 void ScopeView::resized()
 {
     const auto area = scopeArea();
-    trail = juce::Image (juce::Image::ARGB, juce::jmax (1, (int) area.getWidth() * 2), juce::jmax (1, (int) area.getHeight() * 2), true);
+    // Software image: it is redrawn 60 times a second, and on a Direct2D (native) image every
+    // redraw ends in a blocking GPU readback that stalls the host's UI thread.
+    trail = juce::Image (juce::Image::ARGB, juce::jmax (1, (int) area.getWidth() * 2), juce::jmax (1, (int) area.getHeight() * 2), true,
+                         juce::SoftwareImageType());
 }
 
 void ScopeView::mouseDown (const juce::MouseEvent& e)
