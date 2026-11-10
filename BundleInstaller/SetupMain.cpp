@@ -51,6 +51,7 @@ namespace
         if (name == "SKWIDE")         return "Phase-safe stereo imager + Haas super wide";
         if (name == "SKAZI REVERB")   return "Mega reverb machine: 10 algorithms, reverse, tail filter";
         if (name == "S-QUALIZER")     return "6-band dynamic M/S EQ + tube EQ, analyzer";
+        if (name == "SKAZON")         return "Wavetable + granular synth, 972 presets";
         return "Plugin";
     }
 
@@ -165,6 +166,14 @@ namespace
             programFiles().getChildFile ("Asher Swissa\\The FilterFish").deleteRecursively();
             deleteIfEmpty (programFiles().getChildFile ("Asher Swissa"));
             startMenu().getChildFile ("The FilterFish.lnk").deleteFile();
+        }
+        if (names.contains ("SKAZON"))
+        {
+            // SKAZON's own one-file Setup.exe (before it joined the bundle) put the app in Program Files\Asher Swissa
+            WindowsRegistry::deleteKey ("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\SKAZON");
+            programFiles().getChildFile ("Asher Swissa\\SKAZON").deleteRecursively();
+            deleteIfEmpty (programFiles().getChildFile ("Asher Swissa"));
+            startMenu().getChildFile ("SKAZON.lnk").deleteFile();
         }
         if (names.contains ("KICKASS"))
         {

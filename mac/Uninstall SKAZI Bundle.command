@@ -4,7 +4,7 @@ echo "This removes all SKAZI Bundle plugins and apps."
 read -r -p "Continue? (y/n) " answer
 [ "$answer" = "y" ] || exit 0
 
-for name in "SKAZI" "SHAKSUKA" "PITA PUMP" "The FilterFish" "SUBICH" "BAMBA" "TAHINI" "ZHUG" "BULLY" "KICKASS" "SALAT" "SKAZI 303" "MIDI GOD" "KUBE" "QUAZI" "SKACID" "SKILTER" "SKWIDE" "SKAZI REVERB" "S-QUALIZER"; do
+for name in "SKAZI" "SHAKSUKA" "PITA PUMP" "The FilterFish" "SUBICH" "BAMBA" "TAHINI" "ZHUG" "BULLY" "KICKASS" "SALAT" "SKAZI 303" "MIDI GOD" "KUBE" "QUAZI" "SKACID" "SKILTER" "SKWIDE" "SKAZI REVERB" "S-QUALIZER" "SKAZON"; do
     sudo rm -rf "/Library/Audio/Plug-Ins/Components/$name.component"
 done
 sudo rm -rf "/Library/Audio/Plug-Ins/VST3/SKAZI"
