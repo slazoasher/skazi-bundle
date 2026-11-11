@@ -400,7 +400,7 @@ namespace skazon
         if (r.notes.size() > 1)
         {
             midiLine << "MIDI: " << (int) r.notes.size() << " notes found  (";
-            for (size_t i = 0; i < juce::jmin<size_t> (12, r.notes.size()); ++i)
+            for (size_t i = 0; i < std::min<size_t> (12, r.notes.size()); ++i)
                 midiLine << (i ? " " : "") << juce::MidiMessage::getMidiNoteName (r.notes[i].pitch, true, true, 3);
             midiLine << (r.notes.size() > 12 ? " ...)" : ")") << "\nTimbre taken from the note at " << juce::String (r.heroStart, 2) << " s\n"
                      << "Click MIDI to hear the line on this patch, drag it into your DAW\n\n";
