@@ -113,6 +113,9 @@ const std::vector<skazi::ParamDef>& paramDefs()
             { "ampDec", "Amp Decay", P::Float, 10, 5000, 1000, "ms", 1, 0.35f },
             { "ampSus", "Amp Sustain", P::Float, 0, 100, 100, "%", 1 },
             { "ampRel", "Amp Release", P::Float, 2, 3000, 6, "ms", 1, 0.35f },
+            { "vca", "VCA Power", P::Float, 0, 100, 50, "%", 1 },
+            { "glideOn", "Glide", P::Bool, 0, 1, 0 },
+            { "glide", "Glide Time", P::Float, 5, 1000, 120, "ms", 1, 0.4f },
             { "ottDepth", "OTT Depth", P::Float, 0, 100, 0, "%", 1 },
             { "ottTime", "OTT Time", P::Float, 0, 100, 30, "%", 1 },
             { "seqKey", "Track Key", P::Choice, 0, 11, 0, "", 1, 1, { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" } },
@@ -219,7 +222,7 @@ void Engine::noteOn (int midiNote, bool accent, bool legato)
     }
     else
     {
-        pitchNow = pitchTarget;
+        if (! portamento) pitchNow = pitchTarget;
         sliding = false;
         fRising = true;   // renderVoice jumps to the peak, or rises there over FILTER ATTACK
         ampStage = 0;
@@ -247,8 +250,9 @@ float Engine::decimate (float a, float b)
 float Engine::renderVoice (const Settings& s, float lfo, float& second)
 {
     // pitch: jump, or glide when sliding
-    if (sliding) pitchNow += (pitchTarget - pitchNow) * coefFor (s.slideMs * 0.001 * 0.45, sr);
-    else         pitchNow = pitchTarget;
+    if (sliding)        pitchNow += (pitchTarget - pitchNow) * coefFor (s.slideMs * 0.001 * 0.45, sr);
+    else if (s.glideOn) pitchNow += (pitchTarget - pitchNow) * coefFor (s.glideMs * 0.001 * 0.45, sr);
+    else                pitchNow = pitchTarget;
     const float pitch = pitchNow + s.tune + s.fine * 0.01f + (s.lfoTarget == ToPitch ? lfo * 2.0f * s.lfoDepth : 0.0f);
     const double freq = 440.0 * std::pow (2.0, (pitch - 69.0) / 12.0);
 
@@ -291,9 +295,13 @@ float Engine::renderVoice (const Settings& s, float lfo, float& second)
     float k = juce::jlimit (0.0f, 1.05f, reso) * 4.15f;
     k *= 0.55f + 0.45f * juce::jlimit (0.0f, 1.0f, (fc - 80.0f) / 600.0f); // less resonance down low, like the 303
     const float g = 1.0f - (float) std::exp (-MathConstants<double>::twoPi * fc / osr);
-    const float accGain = 1.0f + (accented ? s.accent * accEnv * 0.9f : 0.0f);
+    const float accGain = 1.0f + (accented ? s.accent * accEnv * 1.4f : 0.0f);
     const float pre = 1.0f + s.fDrive * 3.0f;
-    const float post = (1.0f + 0.3f * k) / (1.0f + s.fDrive * 1.5f) * amp * accGain * 0.3f;
+    // VCA: accents and VCA POWER push the filter output into a soft clip before the amp envelope,
+    // so quiet parts come up, accents punch and the bass stays full when the resonance is high
+    const float vg = 1.0f + s.vca * 4.0f;
+    const float body = (1.0f + 0.45f * k) / (1.0f + s.fDrive * 1.5f) * accGain * 0.3f * vg;
+    const float post = amp * 1.3f / std::sqrt (vg);
 
     const float drv = juce::jlimit (0.0f, 1.0f, s.distDrive + (s.lfoTarget == ToDrive ? lfo * s.lfoDepth * 0.5f : 0.0f));
     const float dg = 1.0f + drv * drv * 40.0f;
@@ -336,7 +344,7 @@ float Engine::renderVoice (const Settings& s, float lfo, float& second)
             case FBand: tap = (y2 - y4) * 2.2f; break;
             default:    tap = y4; break;
         }
-        float x = tap * post;
+        float x = fastTanh (tap * body) * post;
 
         // distortion
         float wet;
@@ -483,6 +491,7 @@ void Engine::process (juce::AudioBuffer<float>& buffer, const juce::MidiBuffer& 
     const float fb = s.dlyFb, dmix = s.dlyMix;
     const float dcC = coefFor (1.0 / (2.0 * MathConstants<double>::pi * 25.0), sr);
 
+    portamento = s.glideOn;
     auto evt = midi.cbegin();
     for (int i = 0; i < n; ++i)
     {

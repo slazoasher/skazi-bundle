@@ -272,6 +272,11 @@ SkacidEditor::SkacidEditor (SkacidProcessor& p)
     ampDec = &addKnob ("ampDec", "DECAY", led, "ms", 40);
     ampSus = &addKnob ("ampSus", "SUSTAIN", led, "%", 40);
     ampRel = &addKnob ("ampRel", "RELEASE", led, "ms", 40);
+    vca = &addKnob ("vca", "VCA POWER", led, "%", 40);
+    vca->slider.setTooltip ("Pushes the 303 VCA harder: louder, punchier accents, fuller bass");
+    glideOn = &addToggle ("glideOn", "GLIDE");
+    glideOn->setTooltip ("Every note glides from the last one (portamento), not just the slide steps");
+    glide = &addKnob ("glide", "TIME", led, "ms", 30);
     ottDepth = &addKnob ("ottDepth", "DEPTH", rust, "%", 40);
     ottTime = &addKnob ("ottTime", "TIME", led, "%", 40);
     keyTrack->slider.setTooltip ("The cutoff follows the notes: higher notes open the filter more");
@@ -328,7 +333,7 @@ SkacidEditor::SkacidEditor (SkacidProcessor& p)
     // bass-machine dress: capped knobs on the silver panel, black printing everywhere
     allKnobs = { sub, tune, fine, cutoff, reso, envMod, decay, accent, fDrive, lfoDepth, drift, volume, distDrive, distTone, distMix,
                  dlyFb, dlyMix, revSize, revMix, seqLen, swing, slide, gateLen, chance, mutate, ratchet, arpOct,
-                 keyTrack, fAttack, ampAtk, ampDec, ampSus, ampRel, ottDepth, ottTime };
+                 keyTrack, fAttack, ampAtk, ampDec, ampSus, ampRel, ottDepth, ottTime, vca, glide };
     for (auto* k : allKnobs)
     {
         k->slider.setLookAndFeel (&tbLook);
@@ -506,9 +511,13 @@ void SkacidEditor::layout()
     put (*keyTrack, 270, y + 30, 40, 80);
     put (*fAttack, 350, y + 30, 40, 80);
 
-    section ({ 432, y, 416, h2 }, "AMP ENVELOPE");
-    kx = 452;
-    for (auto* k : { ampAtk, ampDec, ampSus, ampRel }) { put (*k, kx, y + 30, 40, 80); kx += 100; }
+    section ({ 432, y, 330, h2 }, "AMP / VCA");
+    kx = 440;
+    for (auto* k : { ampAtk, ampDec, ampSus, ampRel, vca }) { put (*k, kx, y + 30, 40, 64); kx += 64; }
+
+    section ({ 770, y, 78, h2 }, "GLIDE");
+    glideOn->setBounds (778, y + 30, 62, 22);
+    put (*glide, 780, y + 58, 30, 58);
 
     section ({ 856, y, 244, h2 }, "OTT");
     put (*ottDepth, 876, y + 30, 40, 80);

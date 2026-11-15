@@ -80,7 +80,8 @@ private:
     skazi::Knob *sub, *tune, *fine, *cutoff, *reso, *envMod, *decay, *accent, *fDrive;
     skazi::Knob *lfoDepth, *drift, *distDrive, *distTone, *distMix, *dlyFb, *dlyMix, *revSize, *revMix, *volume;
     skazi::Knob *seqLen, *swing, *slide, *gateLen, *chance, *mutate, *ratchet, *arpOct;
-    skazi::Knob *keyTrack, *fAttack, *ampAtk, *ampDec, *ampSus, *ampRel, *ottDepth, *ottTime;
+    skazi::Knob *keyTrack, *fAttack, *ampAtk, *ampDec, *ampSus, *ampRel, *ottDepth, *ottTime, *vca, *glide;
+    skazi::ParamToggle* glideOn;
     juce::ComboBox *lfoRate, *dlyTime, *arpMode;
     skazi::Meter* outMeter;
 

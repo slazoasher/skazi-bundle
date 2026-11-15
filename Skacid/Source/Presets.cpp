@@ -119,7 +119,9 @@ namespace
         {
             g.set ("playMode", (float) ModeMidi);
             g.range ("slide", 50, 120);
+            if (g.chance (0.4f)) { g.set ("glideOn", 1); g.range ("glide", 40, 220); }
         }
+        g.range ("vca", 35, 85);
         putPattern (p.values, pattern);
         return p;
     }
@@ -146,9 +148,9 @@ const std::vector<skazi::Preset>& presets()
                     l.push_back (make (bank, cats[c], r, skazi::presetName (g * 3 + 7)));
                 }
         };
+        add (SoundBank, 4); // 32, first: plain sounds to play from the keys, no sequencer or arp
         add (SeqBank, 8);   // 64
         add (ArpBank, 4);   // 32
-        add (SoundBank, 4); // 32
 
         // level-match: the trims were measured from these exact presets
         constexpr size_t numTrims = sizeof (presetTrims) / sizeof (presetTrims[0]);

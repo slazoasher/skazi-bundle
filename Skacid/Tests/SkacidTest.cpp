@@ -117,7 +117,7 @@ int main (int argc, char* argv[])
 
     const auto& list = skacid::presets();
 
-    // --trim <header>: measure every preset and write the volume trims that bring them to -17 dB RMS
+    // --trim <header>: measure every preset and write the volume trims that bring them to -15 dB RMS
     if (argc > 2 && juce::String (argv[1]) == "--trim")
     {
         juce::String out = "#pragma once\n\n// Volume trims (dB) that bring every preset to about the same loudness. Regenerate with: SkacidTest --trim Source/PresetTrims.h\n"
@@ -129,7 +129,7 @@ int main (int argc, char* argv[])
             const float db = juce::Decibels::gainToDecibels (r.rms, -100.0f);
             const float old = i < numOld ? skacid::presetTrims[i] : 0.0f;
             const float vol = list[i].values.at ("volume");
-            const float target = juce::jlimit (-24.0f, 6.0f, vol + (-17.0f - db));
+            const float target = juce::jlimit (-24.0f, 6.0f, vol + (-15.0f - db));
             const float trim = old + (target - vol);
             out << "    " << juce::String (trim, 2) << "f," << (i % 8 == 7 ? "\n" : "");
         }
@@ -199,6 +199,24 @@ int main (int argc, char* argv[])
         float tail = 0;
         for (int i = 20000; i < b.getNumSamples(); ++i) tail = juce::jmax (tail, std::abs (b.getSample (0, i)));
         check (tail < 0.02f, "MIDI mode note ends after note-off (tail " + juce::String (tail, 4) + ")");
+    }
+
+    // GLIDE on: a separate (not overlapping) note starts from the last pitch, so its start sounds different
+    {
+        auto v = list[0].values;
+        v["playMode"] = skacid::ModeMidi;
+        v["glide"] = 300;
+        juce::MidiBuffer m;
+        m.addEvent (juce::MidiMessage::noteOn (1, 36, (juce::uint8) 90), 0);
+        m.addEvent (juce::MidiMessage::noteOff (1, 36), 9000);
+        m.addEvent (juce::MidiMessage::noteOn (1, 60, (juce::uint8) 90), 12000);
+        juce::AudioBuffer<float> off, on;
+        render (v, 0.4, &off, &m, false);
+        v["glideOn"] = 1;
+        render (v, 0.4, &on, &m, false);
+        double diff = 0;
+        for (int i = 12000; i < 15000; ++i) diff += std::abs (on.getSample (0, i) - off.getSample (0, i));
+        check (diff / 3000.0 > 0.005, "GLIDE on changes the start of the next note (mean diff " + juce::String (diff / 3000.0, 4) + ")");
     }
 
     // Live mutation changes steps but keeps the pattern itself

@@ -45,6 +45,8 @@ struct Settings
     int fltType = F24;
     float keyTrack = 0, fAttack = 0;                                  // ms
     float ampAtk = 2, ampDec = 1000, ampSus = 1, ampRel = 6;          // ms, sustain 0..1
+    float vca = 0.5f, glideMs = 120;
+    bool glideOn = false;
     float ottDepth = 0, ottTime = 0.3f;
     float slideMs = 60, gateLen = 0.55f;
     int lfoShape = LfoSine, lfoRate = 2, lfoTarget = ToCutoff;
@@ -103,7 +105,7 @@ private:
     // oscillator
     double phase = 0.0, subPhase = 0.0;
     float pitchNow = 36.0f, pitchTarget = 36.0f; // MIDI note, glides when sliding
-    bool sliding = false;
+    bool sliding = false, portamento = false; // portamento: GLIDE is on, every new note glides from the last one
 
     // envelopes
     bool gate = false, accented = false, fRising = false;
@@ -162,6 +164,7 @@ Settings Settings::fromValues (Get v)
     s.cutoff = v ("cutoff"); s.reso = v ("reso") * 0.01f; s.envMod = v ("envMod") * 0.01f; s.decay = v ("decay");
     s.accent = v ("accent") * 0.01f; s.fDrive = v ("fDrive") * 0.01f;
     s.fltType = (int) v ("fltType"); s.keyTrack = v ("keyTrack") * 0.01f; s.fAttack = v ("fAttack");
+    s.vca = v ("vca") * 0.01f; s.glideOn = v ("glideOn") > 0.5f; s.glideMs = v ("glide");
     s.ampAtk = v ("ampAtk"); s.ampDec = v ("ampDec"); s.ampSus = v ("ampSus") * 0.01f; s.ampRel = v ("ampRel");
     s.ottDepth = v ("ottDepth") * 0.01f; s.ottTime = v ("ottTime") * 0.01f;
     s.slideMs = v ("slide"); s.gateLen = v ("gateLen") * 0.01f;
