@@ -18,11 +18,22 @@ juce::AudioProcessorValueTreeState::ParameterLayout SkyzProcessor::layout()
     return l;
 }
 
+#if SKYZ_CRASH_LOG
+static void skyzCrashLog (void*)
+{
+    juce::File::getSpecialLocation (juce::File::userDesktopDirectory).getChildFile ("SKYZ-crash.txt")
+        .replaceWithText (juce::Time::getCurrentTime().toString (true, true) + juce::newLine + juce::SystemStats::getStackBacktrace());
+}
+#endif
+
 SkyzProcessor::SkyzProcessor()
     : AudioProcessor (BusesProperties().withOutput ("Output", juce::AudioChannelSet::stereo(), true)),
       apvts (*this, nullptr, "SKYZ", layout())
 {
     for (int i = 0; i < NUM_PARAMS; ++i) raw[(size_t) i] = apvts.getRawParameterValue (paramDefs[i].id);
+   #if SKYZ_CRASH_LOG
+    juce::SystemStats::setApplicationCrashHandler (skyzCrashLog);
+   #endif
     std::atomic_store (&lanes, std::shared_ptr<const Lanes> (std::make_shared<Lanes> (lanesFromPattern (0))));
     setCurrentProgram (0);
 }

@@ -14,6 +14,7 @@ namespace
                                          .withUserDataFolder (juce::File::getSpecialLocation (juce::File::tempDirectory).getChildFile ("SKYZ-WebView2"))
                                          .withBackgroundColour (juce::Colour (0xff04060e)))
             .withNativeIntegrationEnabled()
+            .withKeepPageLoadedWhenBrowserIsHidden() // minimising the window must not blank and reload the screen
             .withResourceProvider (std::move (provider));
         for (auto* type : { "ready", "set", "gesture", "preset", "random", "mutate", "save", "ab", "note", "wheel", "lanes", "chain", "dragMidi" })
             o = o.withEventListener (type, [on, t = juce::String (type)] (const juce::var& v) { on (t, v); });

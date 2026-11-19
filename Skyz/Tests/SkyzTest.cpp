@@ -6,38 +6,40 @@
 
 namespace
 {
-    constexpr double rate = 48000.0;
+    const double rate = std::getenv ("SKYZ_RATE") ? std::atof (std::getenv ("SKYZ_RATE")) : 48000.0; // SKYZ_RATE=44100 SkyzTest ... to check another rate
     int failures = 0;
     void check (bool ok, const juce::String& what) { std::cout << (ok ? "  ok   " : "  FAIL ") << what << "\n"; failures += ok ? 0 : 1; }
 
     struct Result { bool finite = true; float peak = 0, rmsDb = -200; double clipped = 0; }; // clipped = share of samples at the limiter ceiling
 
     // plays notes for hold seconds, renders total seconds, measures from 'from' to hold
+    const int blockSize = std::getenv ("SKYZ_BLOCK") ? std::atoi (std::getenv ("SKYZ_BLOCK")) : 512; // SKYZ_BLOCK=64 to check small host blocks
+
     Result play (SkyzProcessor& p, std::initializer_list<int> notes, double hold, double total, double from)
     {
-        p.prepareToPlay (rate, 512);
-        juce::AudioBuffer<float> buf (2, 512);
+        p.prepareToPlay (rate, blockSize);
+        juce::AudioBuffer<float> buf (2, blockSize);
         Result r; double win = 0, best = 0; std::vector<double> ring (2400, 0.0); size_t ri = 0; // loudest 50 ms window
         juce::ignoreUnused (from);
         const int off = (int) (hold * rate), end = (int) (total * rate), start = (int) (from * rate);
-        for (int done = 0; done < end; done += 512)
+        for (int done = 0; done < end; done += blockSize)
         {
             juce::MidiBuffer midi;
             for (int n : notes)
             {
                 if (done == 0) midi.addEvent (juce::MidiMessage::noteOn (1, n, 0.85f), 0);
-                if (off >= done && off < done + 512) midi.addEvent (juce::MidiMessage::noteOff (1, n), off - done);
+                if (off >= done && off < done + blockSize) midi.addEvent (juce::MidiMessage::noteOff (1, n), off - done);
             }
             p.processBlock (buf, midi);
             for (int c = 0; c < 2; ++c)
-                for (int i = 0; i < 512; ++i)
+                for (int i = 0; i < blockSize; ++i)
                 {
                     const float x = buf.getSample (c, i);
                     if (! std::isfinite (x)) { r.finite = false; return r; }
                     r.peak = juce::jmax (r.peak, std::abs (x));
                     if (std::abs (x) > 0.985f) r.clipped += 1.0 / (2.0 * end);
                 }
-            for (int i = 0; i < 512; ++i)
+            for (int i = 0; i < blockSize; ++i)
             {
                 const double e = 0.5 * ((double) buf.getSample (0, i) * buf.getSample (0, i) + (double) buf.getSample (1, i) * buf.getSample (1, i));
                 win += e - ring[ri]; ring[ri] = e; ri = (ri + 1) % ring.size();
@@ -95,6 +97,35 @@ int main (int argc, char** argv)
                 if (std::abs (x - y) > 1e-5f) std::cout << "  differs " << skyz::paramDefs[i].id << ": reused " << x << " fresh " << y << std::endl; }
             if (q.lanesString() != fresh.lanesString()) std::cout << "  lanes differ" << std::endl; }
         std::cout << play (q, notesFor (q.currentPresetName()), 1.6, 2.4, 0.02).rmsDb << " dB" << std::endl;
+        return 0;
+    }
+    if (argc > 2 && juce::String (argv[1]) == "live") // live <a> <b> ...: like a user, switch presets without restarting and play each
+    {
+        SkyzProcessor q; q.prepareToPlay (rate, blockSize);
+        juce::AudioBuffer<float> buf (2, blockSize);
+        std::vector<juce::String> sets; for (int k = 2; k < argc; ++k) if (juce::String (argv[k]).contains ("=")) sets.push_back (argv[k]); // id=value after every preset
+        for (int k = 2; k < argc; ++k)
+        {
+            if (juce::String (argv[k]).contains ("=")) continue;
+            q.setCurrentProgram (juce::String (argv[k]).getIntValue());
+            for (auto& kv : sets) q.apvts.getParameter (kv.upToFirstOccurrenceOf ("=", false, false))->setValueNotifyingHost (kv.fromFirstOccurrenceOf ("=", false, false).getFloatValue());
+            const auto name = q.currentPresetName();
+            std::vector<double> ring (2400, 0.0); size_t ri = 0; double win = 0, best = 0;
+            const int hold = (int) (1.4 * rate), total = (int) (1.8 * rate);
+            for (int done = 0; done < total; done += blockSize)
+            {
+                juce::MidiBuffer m;
+                if (done == 0) for (int n : notesFor (name)) m.addEvent (juce::MidiMessage::noteOn (1, n, 0.85f), 0);
+                if (hold >= done && hold < done + blockSize) for (int n : notesFor (name)) m.addEvent (juce::MidiMessage::noteOff (1, n), hold - done);
+                q.processBlock (buf, m);
+                for (int i = 0; i < blockSize; ++i)
+                {
+                    const double e = 0.5 * ((double) buf.getSample (0, i) * buf.getSample (0, i) + (double) buf.getSample (1, i) * buf.getSample (1, i));
+                    win += e - ring[ri]; ring[ri] = e; ri = (ri + 1) % ring.size(); best = juce::jmax (best, win / (double) ring.size());
+                }
+            }
+            std::cout << argv[k] << " " << name << ": " << juce::Decibels::gainToDecibels (std::sqrt (best), -200.0) << " dB" << std::endl;
+        }
         return 0;
     }
     if (argc > 3 && juce::String (argv[1]) == "seq") // seq <from> <to>: measure presets one after another in one instance
@@ -383,6 +414,39 @@ int main (int argc, char** argv)
         check (saved && f.existsAsFile() && p.presetNames().contains ("USER // SkyzTest Temp"), "SAVE writes a user preset and lists it");
         f.deleteFile();
         check (p.writeArpMidi().existsAsFile(), "DRAG MIDI writes the arp line as a .mid");
+    }
+
+    // ---- 9. live use: switching presets without a restart plays each one as loud as loading it fresh ----
+    {
+        auto loudest = [&] (SkyzProcessor& q, const juce::String& name)
+        {
+            juce::AudioBuffer<float> buf (2, 256); std::vector<double> ring (2400, 0.0); size_t ri = 0; double win = 0, best = 0;
+            for (int done = 0; done < (int) (1.8 * rate); done += 256)
+            {
+                juce::MidiBuffer m;
+                if (done == 0) for (int n : notesFor (name)) m.addEvent (juce::MidiMessage::noteOn (1, n, 0.85f), 0);
+                if (done == (int) (1.4 * rate) / 256 * 256) for (int n : notesFor (name)) m.addEvent (juce::MidiMessage::noteOff (1, n), 0);
+                q.processBlock (buf, m);
+                for (int i = 0; i < 256; ++i) { const double e = 0.5 * ((double) buf.getSample (0, i) * buf.getSample (0, i) + (double) buf.getSample (1, i) * buf.getSample (1, i));
+                    win += e - ring[ri]; ring[ri] = e; ri = (ri + 1) % ring.size(); best = juce::jmax (best, win / (double) ring.size()); }
+            }
+            return (float) juce::Decibels::gainToDecibels (std::sqrt (best), -200.0);
+        };
+        SkyzProcessor liveP; liveP.prepareToPlay (rate, 256);
+        float worst = 0; juce::String worstName;
+        for (int k = 0; k < 40; ++k)
+        {
+            const int idx = (k * 137) % 555;
+            liveP.setCurrentProgram (idx);
+            const auto name = liveP.currentPresetName();
+            const float a = loudest (liveP, name), b2 = loudest (liveP, name); // played twice in a row, no restart
+            SkyzProcessor fresh; fresh.setCurrentProgram (idx); fresh.prepareToPlay (rate, 256);
+            const float f = loudest (fresh, name);
+            // a tail left by the previous play may add level; a state leak shows up as a sound getting QUIETER
+            const float d = juce::jmax (juce::jmax (f - a, f - b2), juce::jmax (a, b2) - f - 3.0f);
+            if (d > worst) { worst = d; worstName = name; }
+        }
+        check (worst < 4.0f, "40 presets switched live (no restart) are never quieter than a fresh load (worst gap " + juce::String (worst, 1) + " dB: " + worstName + ")");
     }
 
     // CPU: 8 voices of the heaviest kind (64 stars + 16 unison) for 10 s

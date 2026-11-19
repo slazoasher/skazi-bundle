@@ -117,7 +117,8 @@ namespace skyz
             master (buf, p);
             float pl = 0, pr = 0;
             for (int i = 0; i < n; ++i) { pl = juce::jmax (pl, std::abs (l[i])); pr = juce::jmax (pr, std::abs (r[i])); }
-            peakL = juce::jmax (pl, peakL.load() * 0.85f); peakR = juce::jmax (pr, peakR.load() * 0.85f);
+            const float fall = std::exp (-(float) n / (0.25f * sr)); // meter falls over ~0.25 s whatever the block size
+            peakL = juce::jmax (pl, peakL.load() * fall); peakR = juce::jmax (pr, peakR.load() * fall);
         }
 
     private:
@@ -142,17 +143,19 @@ namespace skyz
         }
         void drive (float* l, float* r, int n, const Values& p) noexcept
         {
-            const int type = p.idx (P_xType); const float d = p[P_xDrive], bias = p.bi (P_xBias) * 0.5f, mix = p[P_xMix];
+            // bias shifts the operating point inside the curve (scaled by the drive gain), so it colours the sound but can never pin it flat
+            const int type = p.idx (P_xType); const float d = p[P_xDrive], bias = p.bi (P_xBias) * 0.35f / (1.0f + d * 8.0f), mix = p[P_xMix];
             const float comp = 1.0f / (1.0f + d * 3.0f) * juce::Decibels::decibelsToGain (p.lin (P_xOut, -12, 12));
             preHp[0].setHz (p.ex (P_xPre, 20, 2000), sr); preHp[1].a = preHp[0].a;
             toneLp[0].setHz (p.ex (P_xTone, 500, 20000), sr); toneLp[1].a = toneLp[0].a;
             dcB[0].setHz (12.0f, sr); dcB[1].a = dcB[0].a;
+            const float offset = shape (type, d, bias); // what the bias alone makes: removed so silence stays silent (no DC thump)
             float* ch[2] { l, r };
             for (int c = 0; c < 2; ++c)
                 for (int i = 0; i < n; ++i)
                 {
                     const float x = ch[c][i];
-                    float y = shape (type, d, preHp[c].hp (x) + bias);
+                    float y = shape (type, d, preHp[c].hp (x) + bias) - offset;
                     y = toneLp[c].lp (dcB[c].hp (y)) * comp;
                     ch[c][i] = x + (y - x) * mix;
                 }
