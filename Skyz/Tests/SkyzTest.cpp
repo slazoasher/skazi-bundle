@@ -4,6 +4,13 @@
 #include <iostream>
 #include <set>
 
+// Counts heap allocations while g_countAllocs is set (for the "no allocation on the audio thread" check).
+static std::atomic<bool> g_countAllocs { false };
+static std::atomic<long> g_allocs { 0 };
+void* operator new (std::size_t n) { if (g_countAllocs.load (std::memory_order_relaxed)) g_allocs.fetch_add (1, std::memory_order_relaxed); if (void* p = std::malloc (n ? n : 1)) return p; throw std::bad_alloc(); }
+void operator delete (void* p) noexcept { std::free (p); }
+void operator delete (void* p, std::size_t) noexcept { std::free (p); }
+
 namespace
 {
     const double rate = std::getenv ("SKYZ_RATE") ? std::atof (std::getenv ("SKYZ_RATE")) : 48000.0; // SKYZ_RATE=44100 SkyzTest ... to check another rate
@@ -97,6 +104,89 @@ int main (int argc, char** argv)
                 if (std::abs (x - y) > 1e-5f) std::cout << "  differs " << skyz::paramDefs[i].id << ": reused " << x << " fresh " << y << std::endl; }
             if (q.lanesString() != fresh.lanesString()) std::cout << "  lanes differ" << std::endl; }
         std::cout << play (q, notesFor (q.currentPresetName()), 1.6, 2.4, 0.02).rmsDb << " dB" << std::endl;
+        return 0;
+    }
+    if (argc > 1 && juce::String (argv[1]) == "latency") // latency: reported latency, note->sound offset, worst block time, arp start delay
+    {
+        SkyzProcessor q;
+        q.prepareToPlay (rate, 64);
+        std::cout << "reported latency: " << q.getLatencySamples() << " samples" << std::endl;
+
+        // 1. note -> first sound, arp off, note placed mid-block at varying offsets
+        std::vector<double> onsets; juce::String worstName; double worst = 0;
+        for (int k = 0; k < 60; ++k)
+        {
+            const int idx = (k * 97) % 555;
+            q.setCurrentProgram (idx); q.apvts.getParameter ("arpOn")->setValueNotifyingHost (0.0f);
+            q.prepareToPlay (rate, 64);
+            juce::AudioBuffer<float> b (2, 64);
+            const int noteAt = 640 + (k * 13) % 64; // somewhere inside the 11th block
+            int first = -1;
+            for (int done = 0; done < 64 * 400 && first < 0; done += 64)
+            {
+                juce::MidiBuffer m;
+                if (noteAt >= done && noteAt < done + 64) m.addEvent (juce::MidiMessage::noteOn (1, 60, 0.9f), noteAt - done);
+                q.processBlock (b, m);
+                for (int i = 0; i < 64 && first < 0; ++i) if (std::abs (b.getSample (0, i)) > 1e-6f || std::abs (b.getSample (1, i)) > 1e-6f) first = done + i;
+            }
+            const double ms = first < 0 ? 999.0 : (first - noteAt) * 1000.0 / rate;
+            onsets.push_back (ms);
+            if (ms < 0) std::cout << "  sound with no note: " << q.currentPresetName() << "  (lofi " << q.apvts.getParameter ("onLOFI")->getValue() << ", lofi noise " << q.apvts.getParameter ("lNoise")->getValue()
+                                  << ", reverb freeze " << q.apvts.getParameter ("rFreeze")->getValue() << ", delay freeze " << q.apvts.getParameter ("yFreeze")->getValue() << ", first at " << first << ")" << std::endl;
+            if (ms > worst) { worst = ms; worstName = q.currentPresetName(); }
+        }
+        std::sort (onsets.begin(), onsets.end());
+        std::cout << "note -> first sound (60 presets, arp off): median " << onsets[30] << " ms, 90% under " << onsets[54] << " ms, worst " << worst << " ms (" << worstName << ")" << std::endl;
+        int early = 0; for (double o : onsets) if (o < 0) ++early;
+        std::cout << "  sound before the note (should be 0): " << early << std::endl;
+
+        // 2. worst block time at 64 samples (1.33 ms budget at 48 kHz): heavy patches, 8-note chords, preset switches, RANDOM, arp
+        for (int bs : { 64, 128, 256 })
+        {
+            q.prepareToPlay (rate, bs);
+            juce::AudioBuffer<float> b (2, bs);
+            std::vector<double> times; juce::Random rr (5);
+            const double budget = bs * 1000.0 / rate;
+            for (int blk = 0; blk < (int) (rate * 40 / bs); ++blk)
+            {
+                juce::MidiBuffer m;
+                const int t = blk * bs;
+                if (t % (int) (rate * 2) < bs) // every 2 s: new preset (some with arp), 8-note chord
+                {
+                    q.setCurrentProgram (rr.nextInt (555));
+                    for (int n : { 36, 48, 52, 55, 59, 60, 64, 67 }) m.addEvent (juce::MidiMessage::noteOn (1, n, 0.9f), 0);
+                }
+                if (t % (int) (rate * 2) >= (int) (rate * 1.5) && t % (int) (rate * 2) < (int) (rate * 1.5) + bs) m.addEvent (juce::MidiMessage::allNotesOff (1), 0);
+                const double t0 = juce::Time::getMillisecondCounterHiRes();
+                q.processBlock (b, m);
+                times.push_back (juce::Time::getMillisecondCounterHiRes() - t0);
+            }
+            std::sort (times.begin(), times.end());
+            const double p999 = times[(size_t) (times.size() * 0.999)], mx = times.back();
+            int over = 0; for (double x : times) if (x > budget * 0.7) ++over;
+            std::cout << "block " << bs << " (" << budget << " ms budget): median " << times[times.size() / 2] << " ms, 99.9% " << p999 << " ms, worst " << mx << " ms, blocks over 70% of budget: " << over << " of " << times.size() << std::endl;
+        }
+
+        // 3. arp: how long after the key the first arp note sounds, with and without START QUANTIZE
+        for (float quant : { 0.25f, 0.0f })
+        {
+            double worstArp = 0, sum = 0; int cnt = 0;
+            for (int k = 0; k < 20; ++k)
+            {
+                skyz::Arp arp; skyz::Values v; for (int i = 0; i < skyz::NUM_PARAMS; ++i) v.v[i] = skyz::paramDefs[i].def;
+                v.v[skyz::P_arpOn] = 1; v.v[skyz::P_aQuant] = quant; v.v[skyz::P_aRate] = 3.0f / 16.0f;
+                const auto lanes = skyz::lanesFromPattern (3); // a note on every step
+                const int keyAt = 1000 + k * 977; int firstOut = -1;
+                for (int done = 0; done < 96000 && firstOut < 0; done += 64)
+                {
+                    juce::MidiBuffer m; if (keyAt >= done && keyAt < done + 64) m.addEvent (juce::MidiMessage::noteOn (1, 60, 0.8f), keyAt - done);
+                    arp.process (m, 64, rate, 120.0, -1.0, v, lanes);
+                    for (const auto e : m) if (e.getMessage().isNoteOn() && firstOut < 0) firstOut = done + e.samplePosition;
+                }
+                const double ms = (firstOut - keyAt) * 1000.0 / rate; worstArp = juce::jmax (worstArp, ms); sum += ms; ++cnt;
+            }
+            std::cout << "arp first note after the key, START QUANTIZE " << (quant > 0 ? "1/16 (default)" : "OFF") << ": average " << sum / cnt << " ms, worst " << worstArp << " ms (120 BPM)" << std::endl;
+        }
         return 0;
     }
     if (argc > 2 && juce::String (argv[1]) == "live") // live <a> <b> ...: like a user, switch presets without restarting and play each
@@ -447,6 +537,74 @@ int main (int argc, char** argv)
             if (d > worst) { worst = d; worstName = name; }
         }
         check (worst < 4.0f, "40 presets switched live (no restart) are never quieter than a fresh load (worst gap " + juce::String (worst, 1) + " dB: " + worstName + ")");
+    }
+
+    // ---- 10. arp timing: with the DAW stopped the first note follows the key at once; with it playing, notes sit on the grid ----
+    {
+        double worstFree = 0, worstFreeQ = 0; bool onGrid = true;
+        for (int k = 0; k < 30; ++k)
+            for (float quant : { 0.0f, 0.25f })
+            {
+                Arp arp; arp.reset(); Values v; for (int i = 0; i < NUM_PARAMS; ++i) v.v[i] = paramDefs[i].def;
+                v.v[P_arpOn] = 1; v.v[P_aQuant] = quant; v.v[P_aRate] = (float) (3 + (k % 4) * 2) / 16.0f; v.v[P_aSwing] = (k % 3) * 0.2f;
+                const auto lanes = lanesFromPattern (3);
+                const int keyAt = 777 + k * 1231; int firstOut = -1;
+                juce::MidiBuffer m; m.ensureSize (8192);
+                for (int done = 0; done < 96000 && firstOut < 0; done += 64)
+                {
+                    m.clear(); if (keyAt >= done && keyAt < done + 64) m.addEvent (juce::MidiMessage::noteOn (1, 60, 0.8f), keyAt - done);
+                    arp.process (m, 64, rate, 120.0, -1.0, v, lanes);
+                    for (const auto e : m) if (e.getMessage().isNoteOn() && firstOut < 0) firstOut = done + e.samplePosition;
+                }
+                const double ms = (firstOut - keyAt) * 1000.0 / rate;
+                (quant > 0 ? worstFreeQ : worstFree) = juce::jmax (quant > 0 ? worstFreeQ : worstFree, firstOut < 0 ? 999.0 : ms);
+                // DAW playing: the first note lands on a 1/16 of the song (START QUANTIZE 1/16)
+                Arp a2; a2.reset(); v.v[P_aSwing] = 0; v.v[P_aRate] = 3.0f / 16.0f; int firstHost = -1;
+                for (int done = 0; done < 96000 && firstHost < 0; done += 64)
+                {
+                    m.clear(); if (keyAt >= done && keyAt < done + 64) m.addEvent (juce::MidiMessage::noteOn (1, 60, 0.8f), keyAt - done);
+                    a2.process (m, 64, rate, 120.0, done * 2.0 / rate, v, lanes);
+                    for (const auto e : m) if (e.getMessage().isNoteOn() && firstHost < 0) firstHost = done + e.samplePosition;
+                }
+                const double beatPos = firstHost * 2.0 / rate / 0.25; // in sixteenths
+                if (firstHost < keyAt || std::abs (beatPos - std::round (beatPos)) * 0.25 * rate / 2.0 > 1.5) onGrid = false;
+            }
+        check (worstFree < 1.0 && worstFreeQ < 1.0, "arp, DAW stopped: first note " + juce::String (worstFree, 2) + " ms after the key (with START QUANTIZE on: " + juce::String (worstFreeQ, 2) + " ms)");
+        check (onGrid, "arp, DAW playing: the first note lands on the song's 1/16 grid");
+
+        // no heap allocation in the arp while it plays (allocations on the audio thread cause crackles)
+        Arp arp; arp.reset(); Values v; for (int i = 0; i < NUM_PARAMS; ++i) v.v[i] = paramDefs[i].def;
+        v.v[P_arpOn] = 1; v.v[P_aQuant] = 0; v.v[P_aOct] = 1.0f; v.v[P_aRatchet] = 1.0f / 3.0f;
+        const auto lanes = lanesFromPattern (13);
+        juce::MidiBuffer m; m.ensureSize (16384);
+        long allocs = 0;
+        for (int mode = 0; mode < 12; ++mode)
+        {
+            v.v[P_aMode] = (float) mode / 11.0f;
+            for (int done = 0; done < 48000 * 2; done += 64)
+            {
+                m.clear();
+                if (done == 0) for (int n : { 48, 52, 55, 59, 62 }) m.addEvent (juce::MidiMessage::noteOn (1, n, 0.8f), 0);
+                if (done == 48000) for (int n : { 52, 59 }) m.addEvent (juce::MidiMessage::noteOff (1, n), 0);
+                g_allocs = 0; g_countAllocs = done > 4096; // after the first blocks
+                arp.process (m, 64, rate, 120.0, -1.0, v, lanes);
+                g_countAllocs = false; allocs += g_allocs.load();
+            }
+            juce::MidiBuffer off; off.addEvent (juce::MidiMessage::allNotesOff (1), 0); arp.process (off, 64, rate, 120.0, -1.0, v, lanes);
+        }
+        {   // host stop sends All Notes Off: the arp must stop, even with keys it still thinks are held
+            Arp a3; a3.reset(); v.v[P_aMode] = 0; int after = 0;
+            for (int done = 0; done < 48000; done += 64)
+            {
+                juce::MidiBuffer b2;
+                if (done == 0) b2.addEvent (juce::MidiMessage::noteOn (1, 60, 0.8f), 0);
+                if (done == 24000) b2.addEvent (juce::MidiMessage::allNotesOff (1), 0);
+                a3.process (b2, 64, rate, 120.0, -1.0, v, lanes);
+                if (done > 24000) for (const auto e : b2) after += e.getMessage().isNoteOn() ? 1 : 0;
+            }
+            check (after == 0, "arp stops on All Notes Off (host stop): " + juce::String (after) + " notes after it (want 0)");
+        }
+        check (allocs == 0, "arp, all 12 modes with ratchets: " + juce::String (allocs) + " memory allocations while playing (want 0)");
     }
 
     // CPU: 8 voices of the heaviest kind (64 stars + 16 unison) for 10 s

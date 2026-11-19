@@ -36,12 +36,20 @@ namespace skyz
     class Arp
     {
     public:
-        void reset() { rng.setSeed (12345); noteCounter = 0; orderCounter = 0; held.clear(); offs.clear(); down.clearQuick(); counter = 0; pos = 0; dirSign = 1; beat = 0; anyDown = false; wasOn = false; waitUntil = -1; step = -1; lastBarReset = -1; }
+        // Called from prepareToPlay: reserves every buffer here, so process() never allocates on the audio thread.
+        void reset()
+        {
+            rng.setSeed (12345); noteCounter = 0; orderCounter = 0; held.clear(); offs.clear(); down.clearQuick(); counter = 0; pos = 0; dirSign = 1; beat = 0;
+            anyDown = false; wasOn = false; waitUntil = -1; step = -1; lastBarReset = -1; gridShift = 0; anchor = 0;
+            held.reserve (128); offs.reserve (1024); keys.reserve (512); baseBuf.reserve (128); seqBuf.reserve (2048); tmpBuf.reserve (2048); noteBuf.reserve (512);
+            down.ensureStorageAllocated (128); outBuf.ensureSize (16384);
+        }
         int currentStep() const { return step; }
 
         void process (juce::MidiBuffer& midi, int numSamples, double sampleRate, double bpm, double ppq, const Values& p, const Lanes& lanes)
         {
-            juce::MidiBuffer out;
+            auto& out = outBuf;
+            out.clear();
             const bool on = p.on (P_arpOn);
             if (! on || sampleRate <= 0 || numSamples <= 0) // off: the played notes pass through untouched
             {
@@ -57,31 +65,47 @@ namespace skyz
             const double stepB = divBeats (p.list (P_aRate, numDivs));
             const int length = 1 + (int) std::lround (p[P_aSteps] * 31.0f);
 
-            std::vector<std::pair<int, juce::MidiMessage>> keys;
+            keys.clear();
             for (const auto m : midi)
             {
                 const auto msg = m.getMessage();
+                if (msg.isAllNotesOff() || msg.isAllSoundOff()) // host stop / panic: forget the held keys, release what sounds
+                {
+                    held.clear(); down.clearQuick(); anyDown = false; step = -1;
+                    for (auto& o : offs) out.addEvent (juce::MidiMessage::noteOff (1, o.note), m.samplePosition);
+                    offs.clear();
+                    out.addEvent (msg, m.samplePosition);
+                    continue;
+                }
                 if (msg.isNoteOnOrOff()) { keys.push_back ({ m.samplePosition, msg }); if (p[P_aThru] > 0.001f) { auto t = msg; if (t.isNoteOn()) t.setVelocity (t.getFloatVelocity() * p[P_aThru]); out.addEvent (t, m.samplePosition); } }
                 else out.addEvent (msg, m.samplePosition);
             }
+            // DAW stopped (or standalone): there is no song grid to lock to, so the arp's grid starts on the key you press and
+            // the first note plays at once. With the DAW playing, steps stay on the song's grid (and START QUANTIZE applies).
+            const bool freeMode = ppq < 0;
+            if (! freeMode) gridShift = anchor = 0;
+            else if (! anyDown)
+                for (auto& [pos0, msg] : keys)
+                    if (msg.isNoteOn()) { anchor = start + pos0 * bps; gridShift = std::fmod (anchor, stepB); break; } // swing counts from the key too
+
             size_t nextKey = 0;
-            auto applyKeys = [&] (int sample, double atBeat) { for (; nextKey < keys.size() && keys[nextKey].first <= sample; ++nextKey) key (keys[nextKey].second, p, atBeat, stepB); };
+            auto applyKeys = [&] (int sample, double atBeat) { for (; nextKey < keys.size() && keys[nextKey].first <= sample; ++nextKey) key (keys[nextKey].second, p, atBeat, freeMode); };
 
             // swing pushes steps that start in an odd swing-grid cell; nudge lanes push single steps
             static const double grids[] { 0.5, 0.25, 0.125 };
             const double grid = grids[p.idx (P_aSwGrid)];
             const float swing = p[P_aSwing];
 
-            for (juce::int64 k = (juce::int64) std::floor (start / stepB) - 2;; ++k)
+            for (juce::int64 k = (juce::int64) std::floor ((start - gridShift) / stepB) - 2;; ++k)
             {
-                const double t0 = (double) k * stepB;
+                const double t0 = (double) k * stepB + gridShift;
                 if (t0 - stepB > end) break;
                 const int lanePos = laneIndex (k, length, p);
                 double t = t0;
-                if (((juce::int64) std::floor (t0 / grid + 1e-6) & 1) != 0) t += swing * 0.5 * grid;
+                if (((juce::int64) std::floor ((t0 - anchor) / grid + 1e-6) & 1) != 0) t += swing * 0.5 * grid;
                 t += (lanes.v[Lanes::nudge][lanePos] - 0.5f) * stepB; // +-50 % of a step
                 if (t < start || t >= end) continue;
-                const int sample = juce::jlimit (0, numSamples - 1, (int) ((t - start) / bps));
+                const int sample = juce::jlimit (0, numSamples - 1, (int) std::floor ((t - start) / bps + 1e-6)); // a step on the key's sample sees the key
                 emitOffs (out, t, start, bps, numSamples);
                 applyKeys (sample, t);
                 if (held.empty()) { step = -1; continue; }
@@ -95,7 +119,8 @@ namespace skyz
             applyKeys (numSamples, end);
             emitOffs (out, end, start, bps, numSamples);
             beat = end;
-            midi.swapWith (out);
+            midi.clear(); // copy back (not swap): the arp keeps its own reserved buffer, the host keeps its own
+            midi.addEvents (out, 0, -1, 0);
         }
 
     private:
@@ -108,7 +133,7 @@ namespace skyz
             return (offset + ((pos % length) + length) % length) % 32;
         }
 
-        void key (const juce::MidiMessage& m, const Values& p, double atBeat, double stepB)
+        void key (const juce::MidiMessage& m, const Values& p, double atBeat, bool freeMode)
         {
             const int n = m.getNoteNumber();
             const bool latch = p.on (P_arpLatch);
@@ -120,8 +145,7 @@ namespace skyz
                     if (p.on (P_aKeySync) || p.idx (P_aRetrig) == 0) { pos = 0; counter = 0; dirSign = 1; }
                     static const double q[] { 0, 0.25, 0.5, 1.0, 4.0 };
                     const int qi = p.idx (P_aQuant);
-                    waitUntil = qi > 0 ? std::ceil (atBeat / q[qi] - 1e-6) * q[qi] : -1;
-                    juce::ignoreUnused (stepB);
+                    waitUntil = (qi > 0 && ! freeMode) ? std::ceil (atBeat / q[qi] - 1e-6) * q[qi] : -1;
                 }
                 else if (p.idx (P_aRetrig) == 0 && ! p.on (P_aKeySync)) {} // keep running
                 anyDown = true;
@@ -137,9 +161,9 @@ namespace skyz
             }
         }
 
-        std::vector<Held> sequence (const Values& p) const
+        const std::vector<Held>& sequence (const Values& p)
         {
-            std::vector<Held> base = held;
+            auto& base = baseBuf; base.assign (held.begin(), held.end());
             const int mode = p.idx (P_aMode);
             if (mode != 5) std::sort (base.begin(), base.end(), [] (const Held& a, const Held& b) { return a.note < b.note; });
             else std::sort (base.begin(), base.end(), [] (const Held& a, const Held& b) { return a.order < b.order; });
@@ -148,20 +172,21 @@ namespace skyz
             if (! base.empty()) { const int lo = base.front().note; for (auto& h : base) while (h.note - lo > range) h.note -= 12; }
 
             const int octs = 1 + p.list (P_aOct, 4), om = p.idx (P_aOctMode);
-            std::vector<int> octOrder;
-            for (int o = 0; o < octs; ++o) octOrder.push_back (o);
-            if (om == 1) std::reverse (octOrder.begin(), octOrder.end());
-            if (om == 2) for (int o = octs - 2; o > 0; --o) octOrder.push_back (o);
-            std::vector<Held> seq;
-            for (int o : octOrder) for (auto h : base) seq.push_back ({ h.note + 12 * o, h.vel, h.order });
+            int octOrder[8]; int numOct = 0;
+            for (int o = 0; o < octs; ++o) octOrder[numOct++] = o;
+            if (om == 1) std::reverse (octOrder, octOrder + numOct);
+            if (om == 2) for (int o = octs - 2; o > 0; --o) octOrder[numOct++] = o;
+            auto& seq = seqBuf; seq.clear();
+            for (int k = 0; k < numOct; ++k) for (auto h : base) seq.push_back ({ h.note + 12 * octOrder[k], h.vel, h.order });
+            auto& c = tmpBuf;
 
             switch (mode)
             {
                 case 1: std::reverse (seq.begin(), seq.end()); break;
                 case 2: case 3: if (mode == 3) std::reverse (seq.begin(), seq.end()); if (seq.size() > 2) for (int i = (int) seq.size() - 2; i > 0; --i) seq.push_back (seq[(size_t) i]); break;
-                case 7: case 8: { std::vector<Held> c; int lo = 0, hi = (int) seq.size() - 1; while (lo <= hi) { c.push_back (seq[(size_t) (mode == 7 ? lo : hi)]); if (lo != hi) c.push_back (seq[(size_t) (mode == 7 ? hi : lo)]); ++lo; --hi; } if (mode == 8) std::reverse (c.begin(), c.end()); seq = c; break; }
-                case 10: { if (seq.size() > 1) { std::vector<Held> c; const auto top = seq.back(); for (size_t i = 0; i + 1 < seq.size(); ++i) { c.push_back (seq[i]); c.push_back (top); } seq = c; } break; } // pinky up
-                case 11: { if (seq.size() > 1) { std::vector<Held> c; const auto low = seq.front(); for (size_t i = 1; i < seq.size(); ++i) { c.push_back (low); c.push_back (seq[i]); } seq = c; } break; } // thumb
+                case 7: case 8: { c.clear(); int lo = 0, hi = (int) seq.size() - 1; while (lo <= hi) { c.push_back (seq[(size_t) (mode == 7 ? lo : hi)]); if (lo != hi) c.push_back (seq[(size_t) (mode == 7 ? hi : lo)]); ++lo; --hi; } if (mode == 8) std::reverse (c.begin(), c.end()); seq.swap (c); break; }
+                case 10: { if (seq.size() > 1) { c.clear(); const auto top = seq.back(); for (size_t i = 0; i + 1 < seq.size(); ++i) { c.push_back (seq[i]); c.push_back (top); } seq.swap (c); } break; } // pinky up
+                case 11: { if (seq.size() > 1) { c.clear(); const auto low = seq.front(); for (size_t i = 1; i < seq.size(); ++i) { c.push_back (low); c.push_back (seq[i]); } seq.swap (c); } break; } // thumb
                 default: break;
             }
             return seq;
@@ -206,10 +231,10 @@ namespace skyz
             }
             if (rng.nextFloat() > lanes.v[Lanes::prob][li] * p[P_aChance]) return;
 
-            const auto seq = sequence (p);
+            const auto& seq = sequence (p);
             if (seq.empty()) return;
-            std::vector<Held> notes;
-            if (p.idx (P_aMode) == 6) notes = seq; // chord
+            auto& notes = noteBuf; notes.clear();
+            if (p.idx (P_aMode) == 6) notes.assign (seq.begin(), seq.end()); // chord
             else
             {
                 const int n = (int) seq.size();
@@ -266,7 +291,8 @@ namespace skyz
         std::vector<Held> held; std::vector<Off> offs; juce::Array<int> down;
         bool anyDown = false, wasOn = false;
         int counter = 0, noteCounter = 0, pos = 0, dirSign = 1, orderCounter = 0, step = -1;
-        double beat = 0, waitUntil = -1, srNow = 48000; juce::int64 lastBarReset = -1;
+        double beat = 0, waitUntil = -1, srNow = 48000, gridShift = 0, anchor = 0; juce::int64 lastBarReset = -1;
+        std::vector<std::pair<int, juce::MidiMessage>> keys; std::vector<Held> baseBuf, seqBuf, tmpBuf, noteBuf; juce::MidiBuffer outBuf;
         juce::Random rng;
     };
 }
