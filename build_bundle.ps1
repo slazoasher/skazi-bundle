@@ -51,12 +51,28 @@ $products = @(
     @{ Folder = "Skwide";      Target = "Skwide";     Name = "SKWIDE";         Juce = "4";  Flag = "FETCHCONTENT_SOURCE_DIR_JUCE" },
     @{ Folder = "Skverb";      Target = "Skverb";     Name = "SKAZI REVERB";   Juce = "4";  Flag = "FETCHCONTENT_SOURCE_DIR_JUCE" },
     @{ Folder = "Squalizer";   Target = "Squalizer";  Name = "S-QUALIZER";     Juce = "4";  Flag = "FETCHCONTENT_SOURCE_DIR_JUCE" },
-    @{ Folder = "Skazon";      Target = "Skazon";     Name = "SKAZON";         Juce = "4";  Flag = "FETCHCONTENT_SOURCE_DIR_JUCE" }
+    @{ Folder = "Skazon";      Target = "Skazon";     Name = "SKAZON";         Juce = "4";  Flag = "FETCHCONTENT_SOURCE_DIR_JUCE" },
+    @{ Folder = "Skyz";        Target = "Skyz";       Name = "SKY Z";          Juce = "4";  Flag = "FETCHCONTENT_SOURCE_DIR_JUCE" }
 )
+
+# SKY Z's screen is a web view (WebView2): JUCE finds its SDK in the user's NuGet package folder.
+# The package is a zip; unpack it there directly (no PackageManagement prompts on a fresh machine).
+function Ensure-WebView2 {
+    $pkgs = Join-Path $env:USERPROFILE "AppData\Local\PackageManagement\NuGet\Packages"
+    if (Get-ChildItem $pkgs -Filter "Microsoft.Web.WebView2*" -ErrorAction SilentlyContinue) { return }
+    Write-Host "== Getting the WebView2 SDK"
+    $ver = "1.0.1901.177"
+    $dir = Join-Path $pkgs "Microsoft.Web.WebView2.$ver"
+    $zip = Join-Path $BuildRoot "webview2.zip"
+    New-Item -ItemType Directory -Force $dir, $BuildRoot | Out-Null
+    Invoke-WebRequest -Uri "https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2/$ver" -OutFile $zip -UseBasicParsing
+    Expand-Archive -Path $zip -DestinationPath $dir -Force
+}
 
 $stage = Join-Path $BuildRoot "stage"
 
 if (-not $InstallerOnly) {
+    Ensure-WebView2
     $j4 = Get-Juce $Juce4 "8.0.4"
     $j15 = Get-Juce $Juce15 "8.0.15"
     if (Test-Path $stage) { Remove-Item -Recurse -Force $stage }

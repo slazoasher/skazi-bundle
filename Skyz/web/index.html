@@ -1,0 +1,681 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>SKY Z</title>
+<style>
+  :root { --brass: #c9a35a; --brassL: #f1d999; --ink: #e9dcc0; --dim: #8d8a83; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #020408; color: var(--ink); font-family: "IBM Plex Mono", Consolas, "Courier New", monospace; overflow: hidden; }
+  .serif { font-family: Cinzel, "Trajan Pro", "Palatino Linotype", Georgia, serif; }
+  #app { width: 1240px; height: 900px; position: absolute; left: 0; top: 0; overflow: hidden; transform-origin: top left;
+         background: radial-gradient(ellipse at 50% 30%, #13204a 0%, #0a1129 45%, #04060e 100%); }
+  #sky { position: absolute; inset: 0; pointer-events: none; }
+  .plate { position: absolute; border: 1px solid rgba(201,163,90,.45); border-radius: 4px;
+           background: linear-gradient(180deg, rgba(16,27,62,.82), rgba(8,13,32,.88));
+           box-shadow: inset 0 1px 0 rgba(241,217,153,.10), inset 0 0 30px rgba(0,0,0,.45), 0 6px 18px rgba(0,0,0,.5); }
+  .plate::before, .plate::after { content: ""; position: absolute; width: 14px; height: 14px; border: 1px solid var(--brass); opacity: .7; pointer-events: none; }
+  .plate::before { left: 4px; top: 4px; border-right: 0; border-bottom: 0; }
+  .plate::after { right: 4px; bottom: 4px; border-left: 0; border-top: 0; }
+  .title { position: absolute; left: 14px; top: 6px; font-weight: 700; font-size: 11.5px; letter-spacing: 2.5px; color: var(--brassL); }
+  .title small { font: 400 9px "IBM Plex Mono", Consolas, monospace; color: var(--dim); letter-spacing: 1px; margin-left: 8px; }
+  .knob { position: absolute; text-align: center; user-select: none; cursor: ns-resize; }
+  .knob svg { display: block; margin: 0 auto; overflow: visible; }
+  .knob .l { font-size: 8.5px; letter-spacing: 1px; color: var(--ink); opacity: .8; margin-top: 1px; text-transform: uppercase; white-space: nowrap; }
+  .knob .v { font-size: 9px; color: var(--brassL); height: 11px; white-space: nowrap; }
+  .knob.drop svg { filter: drop-shadow(0 0 6px #ffe3a1); }
+  .knob .mod { position: absolute; right: 2px; top: 0; width: 6px; height: 6px; border-radius: 50%; background: #9fc7ff; display: none; }
+  .knob.modded .mod { display: block; }
+  .sel { position: absolute; display: flex; gap: 3px; }
+  .sel button, .btn { font: 500 9px "IBM Plex Mono", Consolas, monospace; letter-spacing: 1px; color: var(--ink); background: rgba(5,9,20,.7);
+            border: 1px solid rgba(201,163,90,.35); border-radius: 3px; padding: 4px 6px; cursor: pointer; white-space: nowrap; }
+  .sel button.on, .btn.on { color: #1a1206; background: linear-gradient(180deg, var(--brassL), var(--brass)); border-color: var(--brassL); }
+  .dd { position: absolute; font: 500 10px "IBM Plex Mono", Consolas, monospace; color: var(--ink); background: #050914; border: 1px solid rgba(201,163,90,.45);
+        border-radius: 3px; padding: 3px 6px; cursor: pointer; }
+  canvas.disp { position: absolute; border: 1px solid rgba(201,163,90,.3); border-radius: 3px; background: #03060f; }
+  .tag { position: absolute; font-size: 9px; color: var(--dim); letter-spacing: 1px; white-space: nowrap; }
+  .led { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #3a2c12; margin-right: 5px; box-shadow: inset 0 0 2px #000; }
+  .on .led { background: #ffe3a1; box-shadow: 0 0 6px #ffd27a; }
+  #kbd { position: absolute; left: 240px; top: 836px; height: 54px; width: 990px; }
+  .k { position: absolute; top: 0; height: 54px; background: linear-gradient(180deg, #e9e0cc, #b8ab8e); border: 1px solid #2b2414; border-radius: 0 0 3px 3px; }
+  .k.b { height: 33px; background: linear-gradient(180deg, #1d2136, #05070d); z-index: 2; border-color: #000; }
+  .k.down { background: linear-gradient(180deg, #ffe7a8, #c9a35a); }
+  .wheel { position: absolute; top: 836px; width: 34px; height: 56px; cursor: ns-resize; }
+  .wheel .wl { position: absolute; top: 46px; width: 34px; text-align: center; font-size: 7.5px; letter-spacing: 1px; color: var(--brassL); pointer-events: none; }
+  .chip { cursor: grab; }
+  #presetMenu { position: absolute; left: 520px; top: 50px; width: 520px; max-height: 760px; overflow-y: auto; z-index: 50; display: none;
+                background: #050914; border: 1px solid var(--brass); border-radius: 4px; box-shadow: 0 10px 40px rgba(0,0,0,.8); padding: 8px; }
+  #presetMenu .cat { font-size: 10px; color: var(--brassL); letter-spacing: 2px; padding: 6px 4px 2px; cursor: pointer; }
+  #presetMenu .items { display: none; columns: 2; }
+  #presetMenu .cat.open + .items { display: block; }
+  #presetMenu .it { font-size: 10px; padding: 2px 6px; cursor: pointer; color: var(--ink); }
+  #presetMenu .it:hover, #presetMenu .it.cur { background: rgba(201,163,90,.25); }
+  #status { position: absolute; left: 1050px; top: 4px; font-size: 8px; color: var(--dim); letter-spacing: 1px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <canvas id="sky" width="1240" height="900"></canvas>
+</div>
+<script>
+'use strict';
+// =====================================================================================
+// SKY Z by Asher Swissa. Every control registers a parameter here; the plugin builds its parameter list
+// from dumpParams() (normalised 0..1 for everything), so ids and defaults live in one place.
+// =====================================================================================
+const app = document.getElementById('app');
+function fit() { const s = Math.min(innerWidth / 1240, innerHeight / 900); app.style.transform = `scale(${s})`; app.style.left = Math.max(0, (innerWidth - 1240 * s) / 2) + 'px'; }
+addEventListener('resize', fit); fit();
+
+const P = {}; // id -> { kind: 'knob'|'choice'|'bool', v, def, n, views: [fn] }
+const host = window.__JUCE__ ? window.__JUCE__.backend : null;
+function norm(p) { return p.kind === 'knob' ? p.v : p.kind === 'bool' ? (p.v ? 1 : 0) : (p.n > 1 ? p.v / (p.n - 1) : 0); }
+function fromNorm(p, x) { return p.kind === 'knob' ? x : p.kind === 'bool' ? x > .5 : Math.round(x * (p.n - 1)); }
+function reg(id, kind, def, n) { if (!P[id]) P[id] = { id, kind, v: def, def, n, views: [] }; return P[id]; }
+function redraw(id) { P[id].views.forEach(f => f()); }
+let dirty = {}, flushTimer = null;
+function changed(id) {
+  redraw(id);
+  if (onChange[id]) onChange[id]();
+  if (!host) return;
+  dirty[id] = norm(P[id]);
+  if (!flushTimer) flushTimer = setTimeout(() => { host.emitEvent('set', dirty); dirty = {}; flushTimer = null; }, 15);
+}
+function gesture(id, on) { if (host) { if (flushTimer) { clearTimeout(flushTimer); host.emitEvent('set', dirty); dirty = {}; flushTimer = null; } host.emitEvent('gesture', { id, on }); } }
+const onChange = {};
+function send(type, obj) { if (host) host.emitEvent(type, obj || {}); }
+
+// ---------- value mapping (the C++ side mirrors these curves) ----------
+function real(v, o) {
+  if (o.curve === 'exp') return o.min * Math.pow(o.max / o.min, v);
+  if (o.curve === 'pow') return o.min + Math.pow(v, 3) * (o.max - o.min);
+  return o.min + v * (o.max - o.min);
+}
+function fmt(v, o) {
+  if (o.fmt) return o.fmt(v);
+  if (o.list) return o.list[Math.round(v * (o.list.length - 1))];
+  if (o.unit === '%') return Math.round(v * 100) + '%';
+  const x = real(v, o);
+  if (o.unit === 'hz') return x >= 1000 ? (x / 1000).toFixed(1) + 'k' : x < 10 ? x.toFixed(2) + 'Hz' : Math.round(x) + '';
+  if (o.unit === 's') return x < 1 ? Math.round(x * 1000) + 'ms' : x.toFixed(2) + 's';
+  if (o.int) return (x > 0 && o.bi ? '+' : '') + Math.round(x) + (o.unit || '');
+  return (Math.abs(x) < 10 ? x.toFixed(2) : Math.round(x)) + (o.unit || '');
+}
+
+// ---------- building blocks ----------
+function el(tag, cls, parent, css) { const e = document.createElement(tag); if (cls) e.className = cls; if (css) Object.assign(e.style, css); (parent || app).appendChild(e); return e; }
+const pages = {}; let cur = null;
+function page(name) { cur = pages[name] = el('div', '', app, { position: 'absolute', left: 0, top: 0, width: '1240px', height: '830px', display: name === 'OSC' ? 'block' : 'none' }); }
+function showPage(name) { Object.entries(pages).forEach(([n, p]) => p.style.display = n === name ? 'block' : 'none'); document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.textContent === name)); }
+function plate(x, y, w, h, title, sub) { const p = el('div', 'plate', cur || app, { left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px' }); const t = el('div', 'title serif', p); t.innerHTML = title + (sub ? `<small>${sub}</small>` : ''); return p; }
+function tag(parent, x, y, t) { const e = el('div', 'tag', parent, { left: x + 'px', top: y + 'px' }); e.textContent = t; return e; }
+function disp(parent, x, y, w, h) { const c = el('canvas', 'disp', parent, { left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px' }); c.width = w * 2; c.height = h * 2; const g = c.getContext('2d'); g.scale(2, 2); return { c, g, w, h }; }
+
+// Knob: brass astrolabe ring with engraved ticks, a night-sky face and a star as the pointer.
+let uidN = 0;
+function knob(parent, x, y, id, label, v, o = {}) {
+  o = Object.assign({ min: 0, max: 1, unit: '%', size: 44 }, o);
+  const p = reg(id, 'knob', v);
+  p.o = p.o || o;
+  const k = el('div', 'knob', parent, { left: x + 'px', top: y + 'px', width: (o.size + 18) + 'px' });
+  k.dataset.id = id;
+  const s = o.size, r = s / 2, uid = 'g' + (uidN++);
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('width', s); svg.setAttribute('height', s); k.appendChild(svg);
+  let ticks = '';
+  for (let i = 0; i <= 36; i++) { const a = (-135 + i * 7.5) * Math.PI / 180, big = i % 6 === 0, r1 = r - 1.6, r2 = r - (big ? 4.6 : 3.2);
+    ticks += `<line x1="${r + Math.sin(a) * r1}" y1="${r - Math.cos(a) * r1}" x2="${r + Math.sin(a) * r2}" y2="${r - Math.cos(a) * r2}" stroke="#2a1d08" stroke-width="${big ? 1.1 : .6}"/>`; }
+  let dots = '';
+  for (let i = 0; i < 7; i++) { const a = Math.random() * 6.28, d = Math.random() * (r - 10); dots += `<circle cx="${r + Math.cos(a) * d}" cy="${r + Math.sin(a) * d}" r="${.3 + Math.random() * .5}" fill="#fff" opacity="${.3 + Math.random() * .5}"/>`; }
+  const th = o.theme === 'ice' ? { a: '#f2fbff', b: '#7fc4ff', c: '#163a6b', arc: '#bfe6ff', star: '#ffffff' } : { a: '#fff1c4', b: '#c9a35a', c: '#4a3614', arc: '#ffe3a1', star: '#fff6dc' };
+  svg.innerHTML = `<defs>
+      <radialGradient id="${uid}b" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="${th.a}"/><stop offset=".45" stop-color="${th.b}"/><stop offset="1" stop-color="${th.c}"/></radialGradient>
+      <radialGradient id="${uid}f" cx="40%" cy="35%" r="75%"><stop offset="0" stop-color="#22336b"/><stop offset="1" stop-color="#060b1d"/></radialGradient></defs>
+    <circle cx="${r}" cy="${r + 1.5}" r="${r - 1}" fill="rgba(0,0,0,.55)"/><circle cx="${r}" cy="${r}" r="${r - 1}" fill="url(#${uid}b)"/>
+    <circle cx="${r}" cy="${r}" r="${r - 5}" fill="#1b1407"/><circle cx="${r}" cy="${r}" r="${r - 6}" fill="url(#${uid}f)"/>${ticks}${dots}
+    <path class="arc" fill="none" stroke="${th.arc}" stroke-width="${o.size > 50 ? 2.6 : 1.6}" stroke-linecap="round" opacity=".9"/>
+    <g class="ptr"><line x1="${r}" y1="${r}" x2="${r}" y2="9" stroke="rgba(255,227,161,.35)" stroke-width="1"/>
+      <path d="M0,-4 L1.2,-1.2 L4,0 L1.2,1.2 L0,4 L-1.2,1.2 L-4,0 L-1.2,-1.2Z" fill="${th.star}" transform="translate(${r},9) scale(${o.size > 50 ? 1.5 : 1})"/></g>
+    <circle cx="${r}" cy="${r}" r="2.2" fill="#c9a35a"/>`;
+  el('div', 'mod', k);
+  const vEl = el('div', 'v', k); const lEl = el('div', 'l', k); lEl.textContent = label;
+  if (o.theme === 'ice') { vEl.style.color = '#bfe6ff'; vEl.style.fontSize = '11px'; lEl.style.color = '#9fd4ff'; lEl.style.fontSize = '10px'; lEl.style.fontWeight = '700'; lEl.style.opacity = '1'; }
+  const arc = svg.querySelector('.arc'), ptr = svg.querySelector('.ptr');
+  function draw() {
+    const a = -135 + p.v * 270;
+    ptr.setAttribute('transform', `rotate(${a} ${r} ${r})`);
+    const ar = r - 8, a0 = (o.bi ? 0 : -135) * Math.PI / 180, a1 = a * Math.PI / 180;
+    const big = Math.abs(a1 - a0) > Math.PI ? 1 : 0, sw = a1 > a0 ? 1 : 0;
+    arc.setAttribute('d', Math.abs(a1 - a0) < .01 ? '' : `M${r + Math.sin(a0) * ar},${r - Math.cos(a0) * ar} A${ar},${ar} 0 ${big} ${sw} ${r + Math.sin(a1) * ar},${r - Math.cos(a1) * ar}`);
+    vEl.textContent = fmt(p.v, o);
+  }
+  p.views.push(draw);
+  let y0, v0;
+  svg.addEventListener('pointerdown', e => { y0 = e.clientY; v0 = p.v; svg.setPointerCapture(e.pointerId); gesture(id, true); });
+  svg.addEventListener('pointermove', e => { if (y0 === undefined) return; const s = parseFloat(app.style.transform.slice(6)) || 1;
+    p.v = Math.max(0, Math.min(1, v0 + (y0 - e.clientY) / s / (e.shiftKey ? 600 : 150))); changed(id); });
+  svg.addEventListener('pointerup', () => { if (y0 !== undefined) gesture(id, false); y0 = undefined; });
+  svg.addEventListener('dblclick', () => { p.v = p.def; changed(id); });
+  svg.addEventListener('wheel', e => { e.preventDefault(); p.v = Math.max(0, Math.min(1, p.v - Math.sign(e.deltaY) * .02)); changed(id); }, { passive: false });
+  // drop a mod source (planet, envelope, macro) onto the knob
+  k.addEventListener('dragover', e => { if (TARGETS.indexOf(id) > 0) { e.preventDefault(); k.classList.add('drop'); } });
+  k.addEventListener('dragleave', () => k.classList.remove('drop'));
+  k.addEventListener('drop', e => { e.preventDefault(); k.classList.remove('drop'); const src = +e.dataTransfer.getData('text/plain'); if (src > 0) addRoute(src, id); });
+  draw(); return k;
+}
+function row(parent, x, y, items, gap = 66, size = 44) { items.forEach(([id, l, v, o], i) => knob(parent, x + i * gap, y, id, l, v, Object.assign({ size }, o || {}))); }
+function sel(parent, x, y, id, items, on = 0) {
+  const p = reg(id, 'choice', on, items.length);
+  const s = el('div', 'sel', parent, { left: x + 'px', top: y + 'px' });
+  const bs = items.map((t, i) => { const b = el('button', '', s); b.textContent = t; b.onclick = () => { p.v = i; changed(id); }; return b; });
+  p.views.push(() => bs.forEach((b, i) => b.classList.toggle('on', i === p.v)));
+  redraw(id); return s;
+}
+function dd(parent, x, y, w, id, items, on = 0) {
+  const p = reg(id, 'choice', on, items.length);
+  const d = el('select', 'dd', parent, { left: x + 'px', top: y + 'px', width: w + 'px' });
+  items.forEach(t => { el('option', '', d).textContent = t; });
+  d.onchange = () => { p.v = d.selectedIndex; changed(id); };
+  p.views.push(() => d.selectedIndex = p.v); redraw(id); return d;
+}
+function toggle(parent, x, y, id, text, on = true) {
+  const p = reg(id, 'bool', on, 2);
+  const b = el('button', 'btn', parent, { position: 'absolute', left: x + 'px', top: y + 'px' }); b.innerHTML = `<span class="led"></span>${text}`;
+  b.onclick = () => { p.v = !p.v; changed(id); };
+  p.views.push(() => b.classList.toggle('on', !!p.v)); redraw(id); return b;
+}
+
+// ---------- shared lists ----------
+const DIVS = ['1/64', '1/32', '1/32T', '1/16', '1/16T', '1/16D', '1/8', '1/8T', '1/8D', '1/4', '1/4T', '1/4D', '1/2', '1 BAR', '2 BAR', '4 BAR', '8 BAR'];
+const CONS = ['ORION', 'PLEIADES', 'LYRA', 'DRACO', 'CYGNUS', 'FLAT'];
+const SOURCES = ['OFF', 'ORBIT I', 'ORBIT II', 'ORBIT III', 'ORBIT IV', 'MOD ENV', 'FILTER ENV', 'AMP ENV', 'VELOCITY', 'NOTE', 'MOD WHEEL', 'AFTERTOUCH', 'RANDOM', 'MACRO 1', 'MACRO 2', 'MACRO 3', 'MACRO 4'];
+const TARGETS = ['OFF', 'bFine', 'aMorph', 'aTilt', 'aSpread', 'aOdd', 'aBlur', 'aLvl', 'bPw', 'bFm', 'bDet', 'bLvl', 'fCut', 'fRes', 'fDrive', 'f2Cut', 'subLvl', 'noise', 'ring', 'bPan', 'master', 'aShimmer', 'aPart'];
+const TARGET_NAMES = ['OFF', 'PITCH', 'A MORPH', 'A TILT', 'A INHARM', 'A ODD/EVEN', 'A BLUR', 'A LEVEL', 'B SHAPE', 'B FM', 'B DETUNE', 'B LEVEL', 'CUTOFF', 'RESO', 'DRIVE', 'F2 CUTOFF', 'SUB', 'NOISE', 'RING', 'WIDTH', 'VOLUME', 'A TWINKLE', 'A PARTIALS'];
+const ARP_MODES = ['UP', 'DOWN', 'UP-DOWN', 'DOWN-UP', 'RANDOM', 'AS PLAYED', 'CHORD', 'CONVERGE', 'DIVERGE', 'PSY ROLL', 'PINKY UP', 'THUMB'];
+const PATTERNS = [ // name, gate (.=rest x=note A=accent -=tie), pitch per step (0-9 semis, o=+12, d=-12)
+  ['PSY GALLOP', '.xxx.xxx.xxx.xxx', '0000000000000000'], ['PSY GALLOP OCT', '.xxA.xxA.xxA.xxA', '000o000o000o000o'], ['PSY TRIPLET', 'xxxxxxxxxxxxxxxx', '00o00o00o00o00o0'],
+  ['ROLLING 16', 'AxxxAxxxAxxxAxxx', '0000000000000000'], ['OFFBEAT', '..x...x...x...x.', '0000000000000000'], ['OFFBEAT OCT', '..x...A...x...A.', '000000o000000000'],
+  ['TECHNO STAB', 'x..x..x...x..x..', '0000000000000000'], ['TECHNO DRIVE', 'x.xAx.xxx.xAx.xx', '0000000000000000'], ['HOUSE ORGAN', '..x.x..x..x.x..x', '0000000000000000'],
+  ['HOUSE BOUNCE', 'x..xx..x.xx..x.x', '000o0000000o0000'], ['BROKEN', 'x..x..x...x..x..', '0000000000000000'], ['STUTTER', 'xx..xx..xxx.x.x.', '0000000000000000'],
+  ['TRANCE GATE', 'AxxxxxxxAxxxxxxx', '0000000000000000'], ['ACID 1', 'xAxxAx.xAxxAx.xA', '00o0000d00o00000'], ['ACID 2', 'x.Axx.Ax.xAx.Axx', '0o0000d00o000d00'],
+  ['FIFTHS', 'xxxxxxxxxxxxxxxx', '0707070707070707'], ['OCTAVE JUMP', 'xxxxxxxxxxxxxxxx', '0o0o0o0o0o0o0o0o'], ['MINOR WALK', 'xxxxxxxxxxxxxxxx', '0035703570357035'],
+  ['MAJOR WALK', 'xxxxxxxxxxxxxxxx', '0047704770477047'], ['LONG TIES', 'x---x---x-x-x---', '0000000000000000'], ['USER', '', '']];
+
+// =====================================================================================
+// HEADER
+// =====================================================================================
+const head = el('div', '', app, { position: 'absolute', left: 0, top: 0, width: '1240px', height: '58px', borderBottom: '1px solid rgba(201,163,90,.4)', background: 'linear-gradient(180deg, rgba(30,44,90,.6), rgba(6,10,24,.2))', zIndex: 5 });
+el('img', '', head, { position: 'absolute', left: '14px', top: '7px', height: '44px' }).src = 'skazi_logo.png';
+el('div', '', head, { position: 'absolute', left: '106px', top: '10px', width: '1px', height: '38px', background: 'rgba(201,163,90,.5)' });
+el('div', 'serif', head, { position: 'absolute', left: '120px', top: '2px', fontWeight: 700, fontSize: '30px', letterSpacing: '10px', color: '#f1d999', textShadow: '0 0 14px rgba(255,214,130,.25)' }).innerHTML = 'SKY <span style="color:#ffe3a1;font-size:34px">Z</span>';
+el('div', 'serif', head, { position: 'absolute', left: '123px', top: '40px', fontWeight: 700, fontSize: '9.5px', letterSpacing: '3px', color: '#c9a35a' }).textContent = 'BY ASHER SWISSA';
+['OSC', 'MOD', 'FX', 'ARP'].forEach((t, i) => { const b = el('button', 'btn tab' + (i === 0 ? ' on' : ''), head, { position: 'absolute', left: (282 + i * 58) + 'px', top: '16px', width: '52px' }); b.textContent = t; b.onclick = () => showPage(t); });
+const pv = el('div', '', head, { position: 'absolute', left: '520px', top: '10px', width: '360px', height: '38px', border: '1px solid rgba(201,163,90,.5)', borderRadius: '3px', background: '#03060f', cursor: 'pointer' });
+const pvCat = el('div', '', pv, { position: 'absolute', left: '10px', top: '4px', fontSize: '8.5px', color: '#8d8a83', letterSpacing: '2px' });
+const pvName = el('div', 'serif', pv, { position: 'absolute', left: '10px', top: '16px', fontWeight: 700, fontSize: '14px', color: '#f1d999', letterSpacing: '2px', whiteSpace: 'nowrap' });
+el('div', '', pv, { position: 'absolute', right: '10px', top: '12px', fontSize: '10px', color: '#c9a35a' }).textContent = '▼';
+const menu = el('div', '', app); menu.id = 'presetMenu';
+let presetList = [], presetIndex = 0, presetName = 'INIT';
+function showPreset() { const n = presetName.split(' // '); pvCat.textContent = (n.length > 1 ? n[0] : 'USER') + '  ·  ' + String(presetIndex + 1).padStart(3, '0') + ' / ' + presetList.length; pvName.textContent = n.length > 1 ? n[1] : n[0]; }
+function buildMenu() {
+  menu.innerHTML = ''; const cats = {};
+  presetList.forEach((n, i) => { const c = n.includes(' // ') ? n.split(' // ')[0] : 'USER'; (cats[c] = cats[c] || []).push([n, i]); });
+  Object.entries(cats).forEach(([c, items]) => { const h = el('div', 'cat', menu); h.textContent = c + '  (' + items.length + ')'; const box = el('div', 'items', menu);
+    h.onclick = () => h.classList.toggle('open');
+    items.forEach(([n, i]) => { const it = el('div', 'it' + (i === presetIndex ? ' cur' : ''), box); it.textContent = n.split(' // ').pop(); it.onclick = () => { send('preset', { index: i }); menu.style.display = 'none'; }; }); });
+}
+pv.onclick = () => { buildMenu(); menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; };
+[['◀', 886, () => send('preset', { index: (presetIndex + presetList.length - 1) % Math.max(1, presetList.length) })], ['▶', 916, () => send('preset', { index: (presetIndex + 1) % Math.max(1, presetList.length) })],
+ ['RANDOM', 950, () => send('random')], ['MUTATE', 1022, () => send('mutate')], ['SAVE', 1094, () => { const n = prompt('Preset name'); if (n) send('save', { name: n }); }], ['A/B', 1150, () => send('ab')]]
+  .forEach(([t, x, f]) => { const b = el('button', 'btn', head, { position: 'absolute', left: x + 'px', top: '17px' }); b.textContent = t; b.onclick = f; });
+const status = el('div', '', head); status.id = 'status';
+
+// =====================================================================================
+// OSC PAGE
+// =====================================================================================
+page('OSC');
+const star = plate(14, 68, 470, 300, 'STAR FIELD', 'OSC A · ADDITIVE · UP TO 64 STARS');
+const starD = disp(star, 14, 28, 442, 160);
+sel(star, 14, 194, 'cons', CONS, 0);
+toggle(star, 330, 194, 'aFreeze', 'FREEZE', false); toggle(star, 398, 194, 'aOn', 'ON', true);
+row(star, 6, 222, [['aPart', 'Stars', .7, { fmt: v => 8 + Math.round(v * 56) }], ['aTilt', 'Tilt', .45, { bi: 1 }], ['aSpread', 'Inharm', .05], ['aOdd', 'Odd/Even', .5, { bi: 1 }], ['aMorph', 'Morph', .3], ['aBlur', 'Blur', .1], ['aShimmer', 'Twinkle', .35]], 64, 40);
+
+const oscB = plate(492, 68, 360, 300, 'NEBULA', 'OSC B · ANALOG + SUPER');
+const nebD = disp(oscB, 14, 28, 332, 96);
+sel(oscB, 14, 130, 'bWave', ['SAW', 'SQR', 'TRI', 'SINE', 'SUPER', 'PWM', 'HOLLOW'], 4);
+toggle(oscB, 296, 130, 'bOn', 'ON', true);
+row(oscB, 6, 160, [['bOct', 'Octave', .5, { list: ['-3', '-2', '-1', '0', '+1', '+2', '+3'] }], ['bSemi', 'Semi', .5, { min: -12, max: 12, unit: 'st', int: 1, bi: 1 }], ['bFine', 'Fine', .5, { min: -50, max: 50, unit: 'c', bi: 1 }], ['bUni', 'Unison', .4, { fmt: v => 1 + Math.round(v * 15) }], ['bDet', 'Detune', .3]], 68, 40);
+row(oscB, 6, 232, [['bPw', 'Shape', .5], ['bFm', 'FM A>B', 0], ['bSync', 'Sync', 0], ['bPan', 'Width', .7], ['bLvl', 'Level', .6]], 68, 40);
+
+const sub = plate(860, 68, 366, 300, 'MOONS', 'SUB · NOISE · RING · VOICE');
+row(sub, 8, 34, [['subLvl', 'Sub', .3], ['subOct', 'Sub Oct', 0, { list: ['-1', '-2'] }], ['subShape', 'Sub Wave', 0, { list: ['SINE', 'TRI', 'SQR'] }], ['ring', 'Ring A×B', 0], ['aLvl', 'Osc A', .7]], 70, 40);
+row(sub, 8, 108, [['noise', 'Noise', .02], ['nColor', 'Color', .5, { bi: 1 }], ['nType', 'Type', 0, { list: ['WHITE', 'PINK', 'DUST', 'VINYL', 'WIND'] }], ['glide', 'Glide', 0, { min: 0, max: 2, unit: 's', curve: 'pow' }], ['bend', 'Bend', 2 / 24, { min: 0, max: 24, unit: 'st', int: 1 }]], 70, 40);
+toggle(sub, 14, 190, 'mono', 'MONO', false); toggle(sub, 82, 190, 'legato', 'LEGATO', false); toggle(sub, 162, 190, 'retrig', 'RETRIG', true);
+tag(sub, 14, 222, 'VOICES'); dd(sub, 70, 218, 70, 'voices', ['4', '8', '16', '32'], 2);
+tag(sub, 156, 222, 'DRIFT'); dd(sub, 200, 218, 90, 'drift', ['OFF', 'LOW', 'MID', 'HIGH'], 1);
+row(sub, 8, 244, [['velAmt', 'Vel>Amp', .6], ['atAmt', 'Touch>Cut', .3], ['mwAmt', 'Wheel>Vib', .3], ['master', 'Master', .75, { min: -24, max: 6, unit: 'dB' }]], 70, 30);
+
+const flt = plate(14, 376, 380, 230, 'EVENT HORIZON', 'DUAL FILTER');
+const fltD = disp(flt, 14, 28, 352, 56);
+dd(flt, 14, 90, 120, 'f1Type', ['LADDER 24', 'LADDER 12', 'DIODE 18', 'SVF LP', 'SVF BP', 'SVF HP', 'NOTCH', 'COMB +', 'COMB -', 'FORMANT', 'VOWEL A-I', 'PHASER'], 0);
+sel(flt, 142, 90, 'fRoute', ['SER', 'PAR', 'SPLIT'], 0);
+dd(flt, 296, 90, 70, 'f2Type', ['OFF', 'HP 12', 'BP', 'LP 12'], 0);
+knob(flt, 4, 114, 'fCut', 'Cutoff', .6, { min: 20, max: 20000, unit: 'hz', curve: 'exp', size: 66, theme: 'ice' }); // the big ice-blue one
+row(flt, 92, 120, [['fRes', 'Reso', .25], ['fDrive', 'Drive', .1], ['fEnv', 'Env Amt', .65, { bi: 1 }], ['fKey', 'Key Trk', .5], ['f2Cut', 'F2 Cut', .1, { min: 20, max: 20000, unit: 'hz', curve: 'exp' }]], 56, 38);
+
+const env = plate(402, 376, 450, 230, 'ECLIPSE', 'AMP · FILTER · MOD ENVELOPES');
+const envD = disp(env, 14, 28, 422, 64);
+sel(env, 14, 98, 'uiEnv', ['AMP', 'FILTER', 'MOD'], 0);
+const envSets = ['amp', 'flt', 'mod'].map((e, i) => {
+  const box = el('div', '', env, { position: 'absolute', left: 0, top: 0, width: '450px', height: '230px', display: i ? 'none' : 'block', pointerEvents: 'none' });
+  const t = toggle(box, 200, 98, e + 'Loop', 'LOOP', false); t.style.pointerEvents = 'auto';
+  tag(box, 270, 103, 'CURVE'); dd(box, 318, 98, 118, e + 'Curve', ['ANALOG', 'LINEAR', 'PUNCH', 'SWELL'], 0).style.pointerEvents = 'auto';
+  const defs = { amp: [.03, 0, .3, .8, .3], flt: [.02, 0, .35, .35, .35], mod: [.2, 0, .45, .5, .4] }[e];
+  row(box, 4, 128, [[e + 'A', 'Attack', defs[0], { min: 0, max: 10, unit: 's', curve: 'pow' }], [e + 'H', 'Hold', defs[1], { min: 0, max: 2, unit: 's', curve: 'pow' }], [e + 'D', 'Decay', defs[2], { min: 0, max: 10, unit: 's', curve: 'pow' }],
+    [e + 'S', 'Sustain', defs[3]], [e + 'R', 'Release', defs[4], { min: 0, max: 10, unit: 's', curve: 'pow' }], [e + 'Vel', 'Velocity', .5]], 70, 40);
+  box.querySelectorAll('.knob').forEach(k => k.style.pointerEvents = 'auto');
+  return box; });
+onChange.uiEnv = () => envSets.forEach((b, i) => b.style.display = i === P.uiEnv.v ? 'block' : 'none');
+
+const orb = plate(860, 376, 366, 230, 'ORBITS', '4 LFOs · DRAG A PLANET ONTO A KNOB');
+const orbD = disp(orb, 14, 28, 160, 160);
+const orbSel = sel(orb, 186, 28, 'uiLfo', ['I', 'II', 'III', 'IV'], 0);
+[...orbSel.children].forEach((b, i) => { b.draggable = true; b.classList.add('chip'); b.ondragstart = e => e.dataTransfer.setData('text/plain', String(i + 1)); });
+const LFO_SHAPES = ['SINE', 'TRIANGLE', 'SAW UP', 'SAW DOWN', 'SQUARE', 'S&H', 'SMOOTH RND', 'ELLIPSE', 'COMET', 'PULSE 25%'];
+const lfoSets = [0, 1, 2, 3].map(i => {
+  const L = 'lfo' + (i + 1), box = el('div', '', orb, { position: 'absolute', left: 0, top: 0, width: '366px', height: '230px', display: i ? 'none' : 'block', pointerEvents: 'none' });
+  dd(box, 186, 56, 170, L + 'Shape', LFO_SHAPES, [0, 1, 5, 7][i]).style.pointerEvents = 'auto';
+  row(box, 180, 84, [[L + 'Rate', 'Rate', [9, 12, 3, 13][i] / 16, { fmt: v => P[L + 'Sync'] && P[L + 'Sync'].v ? DIVS[Math.round(v * 16)] : (0.02 * Math.pow(1000, v)).toFixed(2) + 'Hz' }],
+    [L + 'Depth', 'Depth', [.6, .5, .5, .5][i]], [L + 'Phase', 'Phase', 0, { min: 0, max: 360, unit: '°', int: 1 }]], 60, 36);
+  [toggle(box, 186, 196, L + 'Sync', 'SYNC', true), toggle(box, 248, 196, L + 'Retrig', 'RETRIG', i === 0)].forEach(t => t.style.pointerEvents = 'auto');
+  box.querySelectorAll('.knob').forEach(k => k.style.pointerEvents = 'auto');
+  onChange[L + 'Sync'] = () => redraw(L + 'Rate');
+  return box; });
+onChange.uiLfo = () => lfoSets.forEach((b, i) => b.style.display = i === P.uiLfo.v ? 'block' : 'none');
+tag(orb, 14, 200, 'ENV:');
+[['MOD', 5], ['FLT', 6], ['M1', 13], ['M2', 14]].forEach(([t, src], i) => { const c = el('button', 'btn chip', orb, { position: 'absolute', left: (46 + i * 34) + 'px', top: '196px', padding: '3px 4px' }); c.textContent = t; c.draggable = true; c.ondragstart = e => e.dataTransfer.setData('text/plain', String(src)); });
+
+// quick FX + quick arp on the main page share their ids with the FX and ARP pages
+const fxq = plate(14, 614, 838, 214, 'GALAXY FX', 'QUICK VIEW · FULL RACK ON THE FX PAGE');
+const quick = [['DRIVE', 'xType', ['TUBE', 'TAPE', 'DIODE', 'FUZZ', 'FOLD', 'BIT CRUSH', 'RECTIFY', 'SCREAM', 'OVERDRIVE', 'HARD CLIP', 'SOFT'], [['xDrive', 'Drive', .2], ['xTone', 'Tone', .7], ['xMix', 'Mix', 1]]],
+  ['CHORUS', 'cType', ['CLASSIC', 'DIMENSION', 'ENSEMBLE', 'VIBRATO', 'ROTARY'], [['cRate', 'Rate', .3, { min: .05, max: 10, unit: 'hz', curve: 'exp' }], ['cDepth', 'Depth', .4], ['cMix', 'Mix', 0]]],
+  ['DELAY', 'yType', ['PING-PONG', 'STEREO', 'TAPE', 'DUB', 'SLAPBACK', 'REVERSE', 'GRAIN'], [['yTimeL', 'Time L', 8 / 16, { list: DIVS }], ['yFb', 'Feedback', .4], ['yMix', 'Mix', .15]]],
+  ['REVERB', 'rType', ['HALL', 'PLATE', 'ROOM', 'CHAMBER', 'CATHEDRAL', 'SPRING', 'SHIMMER', 'REVERSE', 'GATED', 'BLACKHOLE', 'NEBULA'], [['rSize', 'Size', .65], ['rDecay', 'Decay', .3, { min: .2, max: 30, unit: 's', curve: 'pow' }], ['rMix', 'Mix', .2]]],
+  ['DYNAMICS', 'dType', ['OTT', 'GLUE COMP', 'LIMITER', 'PUMP 1/4', 'PUMP 1/8', 'PUMP 1/16'], [['dDepth', 'Depth', 0], ['dTime', 'Time', .5], ['dGain', 'Gain', .5, { bi: 1, min: -12, max: 12, unit: 'dB' }]]],
+  ['EQ', null, null, [['qLo', 'Low', .5, { bi: 1, min: -15, max: 15, unit: 'dB' }], ['qMid', 'Mid', .5, { bi: 1, min: -15, max: 15, unit: 'dB' }], ['qHi', 'High', .5, { bi: 1, min: -15, max: 15, unit: 'dB' }]]]];
+quick.forEach(([name, typeId, types, ks], i) => {
+  const u = el('div', '', fxq, { position: 'absolute', left: (12 + i * 137) + 'px', top: '28px', width: '130px', height: '176px', border: '1px solid rgba(201,163,90,.25)', borderRadius: '3px', background: 'rgba(3,6,15,.45)' });
+  el('div', 'serif', u, { position: 'absolute', left: '8px', top: '6px', fontWeight: 700, fontSize: '9.5px', letterSpacing: '1.5px', color: '#f1d999' }).textContent = name;
+  const t = toggle(u, 106, 4, 'on' + name, '', name !== 'EQ'); t.style.padding = '3px 2px 3px 7px';
+  if (typeId) dd(u, 8, 28, 114, typeId, types, 0);
+  ks.forEach(([id, l, v, o], k) => knob(u, k === 2 ? 34 : 2 + k * 66, k === 2 ? 108 : 54, id, l, v, Object.assign({ size: 34 }, o || {})));
+});
+
+const arpq = plate(860, 614, 366, 214, 'CONSTELLATION ARP', 'FULL EDITOR ON THE ARP PAGE');
+const arpD = disp(arpq, 14, 28, 150, 150);
+toggle(arpq, 176, 28, 'arpOn', 'ARP ON', false); toggle(arpq, 262, 28, 'arpLatch', 'LATCH', false);
+dd(arpq, 176, 56, 86, 'aMode', ARP_MODES, 0);
+dd(arpq, 268, 56, 88, 'aPat', PATTERNS.map(p => p[0]), 0);
+row(arpq, 170, 84, [['aRate', 'Rate', 3 / 16, { list: DIVS }], ['aOct', 'Octaves', 0, { list: ['1', '2', '3', '4'] }], ['aGate', 'Gate', .55]], 62, 34);
+row(arpq, 170, 150, [['aSwing', 'Swing', 0], ['aAcc', 'Accent', .6], ['aChance', 'Chance', 1]], 62, 34);
+
+// =====================================================================================
+// MOD PAGE: 16-slot matrix + macros
+// =====================================================================================
+page('MOD');
+const mm = plate(14, 68, 1212, 600, 'MOD MATRIX', '16 SLOTS · SOURCE → TARGET · DRAG PLANETS ONTO KNOBS TO FILL A SLOT');
+for (let i = 1; i <= 16; i++) {
+  const x = 20 + ((i - 1) >> 3) * 600, y = 40 + ((i - 1) & 7) * 68;
+  tag(mm, x, y + 22, String(i).padStart(2, '0'));
+  dd(mm, x + 30, y + 16, 160, 'm' + i + 'Src', SOURCES, 0);
+  tag(mm, x + 200, y + 22, '→');
+  dd(mm, x + 220, y + 16, 160, 'm' + i + 'Dst', TARGET_NAMES, 0);
+  knob(mm, x + 400, y, 'm' + i + 'Amt', 'Amount', .5, { bi: 1, min: -100, max: 100, unit: '%', fmt: v => Math.round((v - .5) * 200) + '%', size: 40 });
+  onChange['m' + i + 'Dst'] = onChange['m' + i + 'Src'] = markModded;
+}
+const mac = plate(14, 676, 1212, 152, 'MACROS', 'DRAG A MACRO CHIP ONTO ANY KNOB');
+[0, 1, 2, 3].forEach(i => { knob(mac, 80 + i * 280, 30, 'mac' + (i + 1), 'Macro ' + (i + 1), 0, { size: 60 });
+  const c = el('button', 'btn chip', mac, { position: 'absolute', left: (90 + i * 280) + 'px', top: '120px' }); c.textContent = 'DRAG M' + (i + 1); c.draggable = true; c.ondragstart = e => e.dataTransfer.setData('text/plain', String(13 + i)); });
+function addRoute(src, knobId) {
+  const dst = TARGETS.indexOf(knobId); if (dst <= 0) return;
+  for (let i = 1; i <= 16; i++) if (P['m' + i + 'Src'].v === src && P['m' + i + 'Dst'].v === dst) return; // already routed
+  for (let i = 1; i <= 16; i++) if (P['m' + i + 'Src'].v === 0) {
+    P['m' + i + 'Src'].v = src; P['m' + i + 'Dst'].v = dst; P['m' + i + 'Amt'].v = .75;
+    ['Src', 'Dst', 'Amt'].forEach(s => changed('m' + i + s)); markModded(); return; }
+  status.textContent = 'ALL 16 MOD SLOTS USED';
+}
+function markModded() {
+  const used = new Set(); for (let i = 1; i <= 16; i++) if (P['m' + i + 'Src'] && P['m' + i + 'Src'].v > 0 && P['m' + i + 'Dst'].v > 0) used.add(TARGETS[P['m' + i + 'Dst'].v]);
+  document.querySelectorAll('.knob').forEach(k => k.classList.toggle('modded', used.has(k.dataset.id)));
+}
+
+// =====================================================================================
+// FX PAGE
+// =====================================================================================
+page('FX');
+const chain = plate(14, 68, 1212, 44, 'SIGNAL CHAIN', '');
+tag(chain, 1100, 16, 'DRAG TO REORDER');
+const CHAIN = ['DRIVE', 'CHORUS', 'PHASER', 'DELAY', 'REVERB', 'GATE', 'DYNAMICS', 'EQ', 'STEREO', 'LO-FI'];
+let chainOrder = CHAIN.slice();
+const chainRow = el('div', '', chain, { position: 'absolute', left: '160px', top: '9px', display: 'flex', gap: '6px' });
+let dragChip = null;
+function drawChain() {
+  chainRow.innerHTML = '';
+  chainOrder.forEach((n, i) => { const c = el('div', 'btn on', chainRow, { cursor: 'grab', padding: '5px 8px' }); c.draggable = true; c.innerHTML = `<span style="opacity:.6">${i + 1}</span>&nbsp; ${n}`;
+    c.ondragstart = e => { dragChip = n; e.dataTransfer.setData('text/plain', 'chain'); }; c.ondragover = e => e.preventDefault();
+    c.ondrop = e => { e.preventDefault(); if (dragChip && dragChip !== n) { chainOrder.splice(chainOrder.indexOf(dragChip), 1); chainOrder.splice(chainOrder.indexOf(n), 0, dragChip); drawChain(); send('chain', { order: chainOrder.join(',') }); } dragChip = null; }; });
+}
+drawChain();
+function fxUnit(x, y, w, h, name, onId, typeId, types, knobs, dy) {
+  const u = plate(x, y, w, h, name, '');
+  const t = toggle(u, w - 46, 5, onId, 'ON', !['onPHASER', 'onGATE', 'onSTEREO', 'onLOFI', 'onEQ'].includes(onId)); t.style.padding = '2px 6px';
+  if (typeId) dd(u, 14, 28, Math.min(170, w - 28), typeId, types, 0);
+  const perRow = Math.floor((w - 10) / 62);
+  knobs.forEach(([id, l, v, o], i) => knob(u, 6 + (i % perRow) * 62, (typeId ? 58 : 30) + Math.floor(i / perRow) * 74 + (dy || 0), id, l, v, Object.assign({ size: 38 }, o || {})));
+  return u;
+}
+const fxDisp = {};
+const uDrive = fxUnit(14, 120, 300, 230, 'DRIVE', 'onDRIVE', 'xType', quick[0][2],
+  [['xDrive', 'Drive', .2], ['xBias', 'Bias', .5, { bi: 1 }], ['xTone', 'Tone', .7], ['xPre', 'Pre-Cut', 0, { min: 20, max: 2000, unit: 'hz', curve: 'exp' }], ['xMix', 'Mix', 1], ['xOut', 'Out', .5, { bi: 1, min: -12, max: 12, unit: 'dB' }]]);
+fxDisp.drive = disp(uDrive, 194, 26, 92, 26);
+const uDelay = fxUnit(322, 120, 440, 230, 'DELAY', 'onDELAY', 'yType', quick[2][2],
+  [['yTimeL', 'Time L', 8 / 16, { list: DIVS }], ['yTimeR', 'Time R', 9 / 16, { list: DIVS }], ['yFb', 'Feedback', .4], ['yWidth', 'Width', .8], ['yMod', 'Wow', .1], ['yDuck', 'Ducking', .2],
+   ['yLo', 'Low Cut', .15, { min: 20, max: 2000, unit: 'hz', curve: 'exp' }], ['yHi', 'High Cut', .75, { min: 1000, max: 20000, unit: 'hz', curve: 'exp' }], ['ySat', 'Saturate', .2], ['yMix', 'Mix', .15]]);
+toggle(uDelay, 196, 28, 'yFreeze', 'FREEZE', false);
+const uRev = fxUnit(770, 120, 456, 230, 'REVERB', 'onREVERB', 'rType', quick[3][2],
+  [['rSize', 'Size', .65], ['rDecay', 'Decay', .3, { min: .2, max: 30, unit: 's', curve: 'pow' }], ['rPre', 'Pre-Delay', .1, { min: 0, max: 500, unit: 'ms' }], ['rDamp', 'Damping', .4], ['rDiff', 'Diffusion', .8], ['rMod', 'Modulate', .3], ['rEarly', 'Early', .5],
+   ['rWidth', 'Width', .5, { min: 0, max: 200, unit: '%', fmt: v => Math.round(v * 200) + '%' }], ['rLo', 'Low Cut', .1, { min: 20, max: 2000, unit: 'hz', curve: 'exp' }], ['rHi', 'High Cut', .75, { min: 1000, max: 20000, unit: 'hz', curve: 'exp' }], ['rShim', 'Shimmer', 0], ['rDuck', 'Ducking', 0], ['rMix', 'Mix', .2]]);
+toggle(uRev, 196, 28, 'rFreeze', 'FREEZE', false);
+fxUnit(14, 358, 300, 230, 'CHORUS', 'onCHORUS', 'cType', quick[1][2],
+  [['cRate', 'Rate', .3, { min: .05, max: 10, unit: 'hz', curve: 'exp' }], ['cDepth', 'Depth', .4], ['cDelay', 'Delay', .3, { min: 1, max: 40, unit: 'ms' }], ['cFb', 'Feedback', .1], ['cWidth', 'Width', .8], ['cMix', 'Mix', 0]]);
+fxUnit(322, 358, 290, 230, 'PHASER', 'onPHASER', 'pType', ['PHASER 4', 'PHASER 8', 'PHASER 12', 'FLANGER', 'BARBERPOLE'],
+  [['pRate', 'Rate', .3, { min: .03, max: 10, unit: 'hz', curve: 'exp' }], ['pDepth', 'Depth', .6], ['pFb', 'Feedback', .5, { bi: 1 }], ['pFreq', 'Centre', .4, { min: 100, max: 8000, unit: 'hz', curve: 'exp' }], ['pMix', 'Mix', .5]]);
+const uGate = fxUnit(620, 358, 300, 230, 'TRANCE GATE', 'onGATE', null, null,
+  [['gRate', 'Rate', 1 / 3, { list: ['1/32', '1/16', '1/8', '1/4'] }], ['gAtk', 'Attack', .1], ['gRel', 'Release', .3], ['gDepth', 'Depth', .8], ['gMix', 'Mix', 1]], 62);
+fxDisp.gate = disp(uGate, 14, 30, 272, 54);
+for (let i = 0; i < 16; i++) reg('g' + i, 'bool', [1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1][i] === 1, 2);
+fxDisp.gate.c.onclick = e => { const b = fxDisp.gate.c.getBoundingClientRect(); const i = Math.floor((e.clientX - b.left) / b.width * 16); P['g' + i].v = !P['g' + i].v; changed('g' + i); };
+const uEq = fxUnit(928, 358, 298, 230, 'EQ', 'onEQ', null, null,
+  [['qLo', 'Low', .5, { bi: 1, min: -15, max: 15, unit: 'dB' }], ['qLoF', 'Low Hz', .3, { min: 20, max: 500, unit: 'hz', curve: 'exp' }], ['qMid', 'Mid', .5, { bi: 1, min: -15, max: 15, unit: 'dB' }], ['qMidF', 'Mid Hz', .5, { min: 200, max: 8000, unit: 'hz', curve: 'exp' }],
+   ['qQ', 'Mid Q', .3, { min: .3, max: 10, unit: '', curve: 'exp' }], ['qHi', 'High', .5, { bi: 1, min: -15, max: 15, unit: 'dB' }], ['qHiF', 'High Hz', .5, { min: 2000, max: 18000, unit: 'hz', curve: 'exp' }], ['qTilt', 'Tilt', .5, { bi: 1 }]], 62);
+fxDisp.eq = disp(uEq, 14, 30, 270, 54);
+fxUnit(14, 596, 300, 230, 'DYNAMICS', 'onDYNAMICS', 'dType', quick[4][2],
+  [['dDepth', 'Depth', 0], ['dTime', 'Time', .5], ['dUp', 'Upward', .7], ['dDown', 'Down', .7], ['dPump', 'Pump', .6], ['dGain', 'Gain', .5, { bi: 1, min: -12, max: 12, unit: 'dB' }]]);
+fxUnit(322, 596, 290, 230, 'STEREO', 'onSTEREO', null, null,
+  [['sWidth', 'Width', .5, { fmt: v => Math.round(v * 200) + '%' }], ['sHaas', 'Haas', 0, { min: 0, max: 30, unit: 'ms' }], ['sMonoF', 'Mono Bass', 0, { min: 20, max: 500, unit: 'hz', curve: 'exp' }], ['sPan', 'Auto Pan', 0], ['sRate', 'Pan Rate', .4, { list: ['1/16', '1/8', '1/4', '1/2', '1 BAR'] }]]);
+fxUnit(620, 596, 300, 230, 'LO-FI', 'onLOFI', 'lType', ['BITS', 'SAMPLE RATE', 'VINYL', 'CASSETTE', 'RADIO'],
+  [['lBits', 'Bits', .7, { min: 2, max: 16, unit: '', int: 1 }], ['lRate', 'Rate', .8, { min: 1000, max: 48000, unit: 'hz', curve: 'exp' }], ['lNoise', 'Noise', .1], ['lWow', 'Wobble', .1], ['lMix', 'Mix', .5]]);
+const uMaster = fxUnit(928, 596, 298, 230, 'MASTER', 'onMASTER', null, null,
+  [['mClip', 'Soft Clip', .2], ['mLim', 'Limiter', 1, { min: -12, max: 0, unit: 'dB' }], ['master', 'Output', .75, { min: -24, max: 6, unit: 'dB' }]], 62);
+fxDisp.meter = disp(uMaster, 14, 30, 270, 54);
+
+// =====================================================================================
+// ARP PAGE
+// =====================================================================================
+page('ARP');
+const ap = plate(14, 68, 1212, 188, 'CONSTELLATION ARP', 'EVERYTHING YOU NEED TO BUILD A LINE');
+const bigRing = disp(ap, 14, 28, 150, 150);
+toggle(ap, 178, 30, 'arpOn', 'ARP ON', false); toggle(ap, 262, 30, 'arpLatch', 'LATCH', false); toggle(ap, 330, 30, 'aKeySync', 'KEY SYNC', true); toggle(ap, 420, 30, 'aSeq', 'SEQ MODE', false);
+tag(ap, 178, 64, 'MODE'); dd(ap, 178, 78, 120, 'aMode', ARP_MODES, 0);
+tag(ap, 306, 64, 'DIRECTION'); dd(ap, 306, 78, 110, 'aDir', ['FORWARD', 'BACKWARD', 'PING-PONG', 'RANDOM', 'BROWNIAN'], 0);
+tag(ap, 424, 64, 'OCT MODE'); dd(ap, 424, 78, 100, 'aOctMode', ['UP', 'DOWN', 'UP-DOWN', 'RANDOM'], 0);
+tag(ap, 178, 108, 'PATTERN'); dd(ap, 178, 122, 160, 'aPat', PATTERNS.map(p => p[0]), 0);
+tag(ap, 346, 108, 'QUANTIZE START'); dd(ap, 346, 122, 110, 'aQuant', ['OFF', '1/16', '1/8', '1/4', '1 BAR'], 1);
+tag(ap, 464, 108, 'RETRIGGER'); dd(ap, 464, 122, 100, 'aRetrig', ['NEW NOTE', 'EVERY BAR', '2 BARS', 'NEVER'], 0);
+tag(ap, 178, 152, 'SCALE'); dd(ap, 222, 148, 120, 'aScale', ['OFF', 'MINOR', 'MAJOR', 'PHRYGIAN', 'HARM MINOR', 'DORIAN', 'FREYGISH', 'PENTA MIN', 'BLUES'], 0);
+tag(ap, 350, 152, 'ROOT'); dd(ap, 386, 148, 60, 'aRoot', ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'], 4);
+tag(ap, 456, 152, 'SWING GRID'); dd(ap, 530, 148, 60, 'aSwGrid', ['1/8', '1/16', '1/32'], 1);
+row(ap, 604, 26, [['aRate', 'Rate', 3 / 16, { list: DIVS }], ['aOct', 'Octaves', 0, { list: ['1', '2', '3', '4'] }], ['aGate', 'Gate', .55], ['aSwing', 'Swing', 0], ['aSteps', 'Length', 15 / 31, { fmt: v => 1 + Math.round(v * 31) }], ['aOffset', 'Start', 0, { fmt: v => 1 + Math.round(v * 31) }],
+  ['aVel', 'Lane Vel', .7], ['aAcc', 'Accent', .6], ['aChance', 'Chance', 1]], 66, 42);
+row(ap, 604, 104, [['aHumT', 'Human Time', 0, { min: 0, max: 30, unit: 'ms' }], ['aHumV', 'Human Vel', 0], ['aGlide', 'Slide Time', .2, { min: 0, max: 500, unit: 'ms' }], ['aTrans', 'Transpose', .5, { min: -24, max: 24, unit: 'st', int: 1, bi: 1 }], ['aRatchet', 'Ratchet', 0, { list: ['1', '2', '3', '4'] }],
+  ['aFlam', 'Flam', 0, { min: 0, max: 40, unit: 'ms' }], ['aStrum', 'Strum', 0, { min: 0, max: 200, unit: 'ms' }], ['aRange', 'Note Range', 1, { min: 1, max: 48, unit: 'st', int: 1 }], ['aThru', 'Thru', 0]], 66, 42);
+
+const lanesP = plate(14, 264, 1212, 564, 'STEP LANES', 'CLICK OR DRAG TO DRAW  ·  RIGHT-CLICK RESETS A STEP');
+const N = 32;
+const L = {
+  gate:  { name: 'GATE', kind: 'state', h: 34, help: 'REST · NOTE · ACCENT · TIE', d0: 1 },
+  vel:   { name: 'VELOCITY', kind: 'bar', h: 52, d0: .75 },
+  pitch: { name: 'PITCH', kind: 'bi', h: 64, range: 24, d0: .5 },
+  oct:   { name: 'OCTAVE', kind: 'step', steps: 5, labels: ['-2', '-1', '0', '+1', '+2'], h: 30, d0: 2 },
+  len:   { name: 'LENGTH', kind: 'bar', h: 40, d0: 1 },
+  prob:  { name: 'CHANCE', kind: 'bar', h: 40, d0: 1 },
+  rat:   { name: 'RATCHET', kind: 'step', steps: 4, labels: ['1', '2', '3', '4'], h: 30, d0: 0 },
+  slide: { name: 'SLIDE', kind: 'toggle', h: 22, d0: 0 },
+  nudge: { name: 'NUDGE', kind: 'bi', h: 34, range: 50, d0: .5 },
+};
+const LANE_KEYS = Object.keys(L);
+LANE_KEYS.forEach(k => L[k].v = Array(N).fill(L[k].d0));
+function applyPattern(i) {
+  const p = PATTERNS[i]; if (!p || !p[1]) return;
+  for (let s = 0; s < N; s++) { const c = p[1][s % 16], t = p[2][s % 16];
+    L.gate.v[s] = c === '.' ? 0 : c === 'A' ? 2 : c === '-' ? 3 : 1;
+    L.pitch.v[s] = .5 + (t === 'o' ? 12 : t === 'd' ? -12 : +t) / 48; L.vel.v[s] = c === 'A' ? 1 : .75; L.oct.v[s] = 2; L.rat.v[s] = 0; L.slide.v[s] = 0; L.prob.v[s] = 1; L.nudge.v[s] = .5; L.len.v[s] = 1; }
+  sendLanes();
+}
+let laneTimer = null;
+function sendLanes() { if (!host) return; clearTimeout(laneTimer); laneTimer = setTimeout(() => send('lanes', { data: LANE_KEYS.map(k => L[k].v.join(',')).join(';') }), 60); }
+function setLanes(str) { if (!str) return; str.split(';').forEach((row, i) => { const k = LANE_KEYS[i]; if (k) row.split(',').forEach((x, s) => { if (s < N) L[k].v[s] = +x; }); }); }
+onChange.aPat = () => applyPattern(P.aPat.v);
+let ly = 30;
+Object.values(L).forEach(l => {
+  tag(lanesP, 14, ly + l.h / 2 - 6, l.name);
+  if (l.help) { const t = tag(lanesP, 14, ly + l.h / 2 + 5, l.help); t.style.fontSize = '7px'; }
+  l.d = disp(lanesP, 120, ly, 1076, l.h);
+  const edit = (e, reset) => { const b = l.d.c.getBoundingClientRect(); const i = Math.max(0, Math.min(N - 1, Math.floor((e.clientX - b.left) / b.width * N))); const yv = 1 - (e.clientY - b.top) / b.height;
+    if (reset) l.v[i] = l.d0;
+    else if (l.kind === 'state') { if (e.type === 'pointerdown') l.v[i] = (l.v[i] + 1) % 4; }
+    else if (l.kind === 'toggle') { if (e.type === 'pointerdown') l.v[i] = l.v[i] ? 0 : 1; }
+    else if (l.kind === 'step') l.v[i] = Math.max(0, Math.min(l.steps - 1, Math.floor(yv * l.steps)));
+    else l.v[i] = Math.max(0, Math.min(1, yv));
+    sendLanes(); };
+  l.d.c.addEventListener('pointerdown', e => { if (e.button === 2) return; l.drag = true; l.d.c.setPointerCapture(e.pointerId); edit(e); });
+  l.d.c.addEventListener('pointermove', e => { if (l.drag && l.kind !== 'state' && l.kind !== 'toggle') edit(e); });
+  l.d.c.addEventListener('pointerup', () => l.drag = false);
+  l.d.c.addEventListener('contextmenu', e => { e.preventDefault(); edit(e, true); });
+  ly += l.h + 8;
+});
+const tools = el('div', '', lanesP, { position: 'absolute', left: '120px', top: (ly + 4) + 'px', display: 'flex', gap: '6px' });
+['RANDOMIZE', 'MUTATE', 'CLEAR', '◀ SHIFT', 'SHIFT ▶', 'REVERSE', 'COPY 1-16 → 17-32', 'HUMANIZE', 'DRAG MIDI ⇩'].forEach(t => {
+  const b = el('button', 'btn', tools); b.textContent = t;
+  if (t.startsWith('DRAG')) { b.draggable = true; b.ondragstart = e => { e.preventDefault(); send('dragMidi'); }; b.onclick = () => send('dragMidi'); return; }
+  b.onclick = () => {
+    const sh = d => LANE_KEYS.forEach(k => { const v = L[k].v; L[k].v = d > 0 ? [v[N - 1], ...v.slice(0, N - 1)] : [...v.slice(1), v[0]]; });
+    const pick = a => a[Math.floor(Math.random() * a.length)];
+    if (t === 'RANDOMIZE') { L.gate.v = L.gate.v.map(() => pick([0, 1, 1, 1, 2, 3])); L.vel.v = L.vel.v.map(() => .5 + Math.random() * .5); L.pitch.v = L.pitch.v.map(() => .5 + pick([0, 0, 0, 3, 5, 7, 12, -12]) / 48); L.slide.v = L.slide.v.map(() => Math.random() < .12 ? 1 : 0); }
+    if (t === 'MUTATE') { for (let n = 0; n < 3; n++) { const i = Math.floor(Math.random() * N); L.gate.v[i] = pick([0, 1, 2]); L.pitch.v[(i + 5) % N] = .5 + pick([0, 7, 12, -12, 3]) / 48; } }
+    if (t === 'CLEAR') LANE_KEYS.forEach(k => L[k].v.fill(L[k].d0));
+    if (t === '◀ SHIFT') sh(-1); if (t === 'SHIFT ▶') sh(1);
+    if (t === 'REVERSE') LANE_KEYS.forEach(k => L[k].v.reverse());
+    if (t.startsWith('COPY')) LANE_KEYS.forEach(k => { for (let i = 0; i < 16; i++) L[k].v[i + 16] = L[k].v[i]; });
+    if (t === 'HUMANIZE') { L.vel.v = L.vel.v.map(v => Math.max(.1, Math.min(1, v + (Math.random() - .5) * .2))); L.nudge.v = L.nudge.v.map(v => .5 + (Math.random() - .5) * .12); }
+    sendLanes();
+  };
+});
+applyPattern(0);
+
+// =====================================================================================
+// BOTTOM: wheels + keyboard (always visible)
+// =====================================================================================
+cur = null;
+const mq = plate(14, 836, 140, 56, 'MACROS', '');
+[1, 2, 3, 4].forEach(i => knob(mq, 2 + (i - 1) * 32, 22, 'mac' + i, 'M' + i, 0, { size: 22 }));
+mq.querySelectorAll('.knob').forEach(k => { k.style.width = '30px'; k.querySelector('.v').style.display = 'none'; });
+const kbd = el('div', '', app); kbd.id = 'kbd';
+const whites = [0, 2, 4, 5, 7, 9, 11]; let wx = 0; const keyEls = {};
+for (let n = 36; n < 97; n++) { if (!whites.includes(n % 12)) continue; keyEls[n] = el('div', 'k', kbd, { left: wx + 'px', width: '27px' }); wx += 27.5; }
+wx = 0; for (let n = 36; n < 97; n++) { if (whites.includes(n % 12)) { wx += 27.5; continue; } keyEls[n] = el('div', 'k b', kbd, { left: (wx - 8) + 'px', width: '16px' }); }
+const heldUi = new Set();
+Object.entries(keyEls).forEach(([n, k]) => {
+  k.onpointerdown = e => { k.setPointerCapture(e.pointerId); k.classList.add('down'); heldUi.add(+n); send('note', { n: +n, on: true, vel: 100 }); pulses.push({ t: performance.now() / 1000 }); };
+  k.onpointerup = k.onpointercancel = () => { if (heldUi.delete(+n)) send('note', { n: +n, on: false }); k.classList.remove('down'); };
+});
+function wheel(x, label, start, spring, ev) {
+  const w = el('div', 'wheel', app, { left: x + 'px' });
+  const c = el('canvas', '', w, { width: '34px', height: '44px' }); c.width = 68; c.height = 88; const g = c.getContext('2d'); g.scale(2, 2);
+  el('div', 'wl', w).textContent = label;
+  let v = start, y0, v0;
+  function draw() {
+    g.clearRect(0, 0, 34, 44); g.fillStyle = '#c9a35a'; g.fillRect(4, 0, 26, 44); g.fillStyle = '#05070d'; g.fillRect(6, 2, 22, 40);
+    const grd = g.createLinearGradient(8, 0, 26, 0); grd.addColorStop(0, '#0a0d18'); grd.addColorStop(.5, '#2c3558'); grd.addColorStop(1, '#0a0d18'); g.fillStyle = grd; g.fillRect(8, 3, 18, 38);
+    const off = (v - .5) * 30;
+    for (let i = -10; i < 20; i++) { const y = 22 + i * 3.2 - off; if (y < 4 || y > 40) continue; const sh = Math.cos((y - 22) / 18 * 1.5);
+      g.fillStyle = `rgba(0,0,0,${.6 - sh * .3})`; g.fillRect(8, y, 18, 1.2); g.fillStyle = `rgba(160,180,230,${.08 + sh * .12})`; g.fillRect(8, y + 1.2, 18, .6); }
+    g.fillStyle = '#ffe3a1'; g.fillRect(8, Math.max(5, Math.min(39, 22 - off)) - 1, 18, 2);
+    if (spring) { g.fillStyle = 'rgba(241,217,153,.5)'; g.fillRect(2, 21, 3, 2); g.fillRect(29, 21, 3, 2); }
+    g.fillStyle = 'rgba(0,0,0,.5)'; g.fillRect(8, 3, 18, 5); g.fillRect(8, 36, 18, 5);
+  }
+  const post = () => send('wheel', { which: ev, v });
+  c.addEventListener('pointerdown', e => { y0 = e.clientY; v0 = v; c.setPointerCapture(e.pointerId); });
+  c.addEventListener('pointermove', e => { if (y0 === undefined) return; v = Math.max(0, Math.min(1, v0 + (y0 - e.clientY) / 80)); draw(); post(); });
+  c.addEventListener('pointerup', () => { y0 = undefined; if (spring) { const back = () => { v += (.5 - v) * .3; if (Math.abs(v - .5) < .003) v = .5; draw(); post(); if (v !== .5) requestAnimationFrame(back); }; back(); } });
+  draw(); return { set: x => { if (y0 === undefined) { v = x; draw(); } } };
+}
+const pitchW = wheel(162, 'PITCH', .5, true, 'pitch');
+const modW = wheel(200, 'MOD', 0, false, 'mod');
+markModded();
+
+// =====================================================================================
+// HOST BRIDGE
+// =====================================================================================
+let tele = { step: -1, bpm: 120, playing: false, l: 0, r: 0, voices: 0, lfo: [0, 0, 0, 0], hit: 0 };
+function dumpParams() { return Object.values(P).map(p => [p.id, +norm(p).toFixed(6), p.kind === 'knob' ? 0 : p.n]); }
+window.dumpParams = dumpParams;
+if (host) {
+  host.addEventListener('init', o => {
+    Object.entries(o.params || {}).forEach(([id, x]) => { if (P[id]) { P[id].v = fromNorm(P[id], x); redraw(id); if (onChange[id] && !id.startsWith('aPat')) onChange[id](); } });
+    if (o.lanes) setLanes(o.lanes);
+    if (o.chain) { chainOrder = o.chain.split(',').filter(n => CHAIN.includes(n)); CHAIN.forEach(n => { if (!chainOrder.includes(n)) chainOrder.push(n); }); drawChain(); }
+    presetList = o.presets || []; presetIndex = o.preset || 0; presetName = o.presetName || 'INIT'; showPreset(); markModded();
+    status.textContent = 'HOST READY';
+  });
+  host.addEventListener('params', o => { Object.entries(o).forEach(([id, x]) => { if (P[id]) { P[id].v = fromNorm(P[id], x); redraw(id); if (onChange[id] && id !== 'aPat') onChange[id](); } }); markModded(); });
+  host.addEventListener('lanes', o => setLanes(o.data));
+  host.addEventListener('preset', o => { presetIndex = o.index; presetName = o.name; if (o.list) presetList = o.list; showPreset(); });
+  host.addEventListener('telemetry', o => { tele = o; if (o.wheelP !== undefined) { pitchW.set(o.wheelP); modW.set(o.wheelM); } });
+  host.emitEvent('ready', {});
+} else { presetList = ['PSY LEAD // Andromeda Scream']; presetName = presetList[0]; showPreset(); status.textContent = 'PREVIEW (NO HOST)'; }
+
+// =====================================================================================
+// ANIMATION
+// =====================================================================================
+const sky = document.getElementById('sky').getContext('2d');
+const bgStars = Array.from({ length: 420 }, () => ({ x: Math.random() * 1240, y: Math.random() * 900, r: Math.random() * 1.1, t: Math.random() * 6 }));
+let pulses = [];
+const CONS_STARS = [[1, 3, 4, 7, 9, 12, 16], [2, 3, 5, 6, 8], [1, 2, 4, 8, 16, 32], [3, 5, 7, 11, 13, 17, 19], [1, 5, 9, 10, 14, 20], []];
+function partials(time) { // the same formula the engine uses (Engine.h: StarOsc::amps)
+  const n = 8 + Math.round(P.aPart.v * 56), tilt = (P.aTilt.v - .5) * 2, odd = (P.aOdd.v - .5) * 2, cons = CONS_STARS[P.cons.v] || [], morph = P.aMorph.v, out = [];
+  for (let i = 1; i <= n; i++) {
+    let a = Math.pow(i, -1.1 + tilt * .9) * (i % 2 ? 1 + odd * .8 : 1 - odd * .8);
+    if (cons.includes(i)) a *= 1 + morph * 3; else a *= 1 - morph * .5;
+    a *= 1 + .35 * Math.sin(time * (1.3 + i * .17) + i) * P.aShimmer.v;
+    out.push({ f: i * (1 + P.aSpread.v * .02 * i), a: Math.max(0, Math.min(1, a)) });
+  }
+  return out;
+}
+function clr(d) { const { g, w, h } = d; g.clearRect(0, 0, w, h); g.fillStyle = '#03060f'; g.fillRect(0, 0, w, h); return d; }
+function frame(now) {
+  const time = now / 1000;
+  sky.clearRect(0, 0, 1240, 900);
+  for (const s of bgStars) { sky.globalAlpha = .25 + .35 * Math.sin(time * .8 + s.t); sky.fillStyle = '#fff6dc'; sky.beginPath(); sky.arc(s.x, s.y, s.r, 0, 7); sky.fill(); }
+  sky.globalAlpha = 1;
+  pulses = pulses.filter(p => time - p.t < 2);
+  const step = host ? tele.step : Math.floor(time * 8) % 32;
+  const osc = pages.OSC.style.display !== 'none';
+  if (osc) {
+    { const { g, w, h } = clr(starD);
+      g.strokeStyle = 'rgba(201,163,90,.12)'; g.lineWidth = .6;
+      for (let i = 1; i < 6; i++) { g.beginPath(); g.moveTo(0, i * h / 6); g.lineTo(w, i * h / 6); g.stroke(); }
+      for (let i = 0; i <= 8; i++) { g.beginPath(); g.moveTo(i * w / 8, 0); g.lineTo(i * w / 8, h); g.stroke(); }
+      const ps = partials(P.aFreeze.v ? 0 : time), hit = (host ? tele.hit : (pulses.length ? Math.exp(-(time - pulses[pulses.length - 1].t) * 3) : 0)) || 0;
+      const pts = ps.map((p, i) => ({ x: 12 + Math.pow(i / Math.max(1, ps.length - 1), .75) * (w - 24) + (p.f / (i + 1) - 1) * 40, y: h - 10 - Math.sqrt(p.a) * (h - 26) * (1 + hit * .15), a: Math.sqrt(p.a) }));
+      const cons = CONS_STARS[P.cons.v] || [];
+      if (cons.length) { g.strokeStyle = 'rgba(241,217,153,.35)'; g.lineWidth = .8; g.beginPath(); cons.filter(k => k <= pts.length).forEach((k, i) => { const p = pts[k - 1]; i ? g.lineTo(p.x, p.y) : g.moveTo(p.x, p.y); }); g.stroke(); }
+      pts.forEach((p, i) => { const r = .8 + p.a * 4.5;
+        const sg = g.createRadialGradient(p.x, p.y, 0, p.x, p.y, r * 4); sg.addColorStop(0, `rgba(255,240,200,${.35 * p.a + .1})`); sg.addColorStop(1, 'rgba(255,240,200,0)');
+        g.fillStyle = sg; g.beginPath(); g.arc(p.x, p.y, r * 4, 0, 7); g.fill(); g.fillStyle = i % 2 ? '#fff6dc' : '#cfe1ff'; g.beginPath(); g.arc(p.x, p.y, r * .6, 0, 7); g.fill(); });
+      g.fillStyle = 'rgba(201,163,90,.7)'; g.font = '500 8px Consolas'; g.fillText(ps.length + ' STARS  ·  ' + CONS[P.cons.v] + (P.aOn.v ? '' : '  ·  OFF'), 8, 12); }
+    { const { g, w, h } = clr(nebD);
+      const neb = g.createRadialGradient(w * .6, h * .5, 5, w * .6, h * .5, w * .6); neb.addColorStop(0, 'rgba(120,90,200,.25)'); neb.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = neb; g.fillRect(0, 0, w, h);
+      const uni = 1 + Math.round(P.bUni.v * 15), wave = P.bWave.v;
+      for (let u = 0; u < Math.min(uni, 7); u++) { g.strokeStyle = u ? `rgba(159,199,255,${.25 / Math.sqrt(u)})` : '#f1d999'; g.lineWidth = u ? .8 : 1.6; g.beginPath();
+        for (let x = 0; x <= w; x += 2) { const ph = ((x / w) * 2 + time * .2 + u * P.bDet.v * .07) % 1; let y;
+          switch (wave) { case 0: case 4: y = 1 - 2 * ph; break; case 1: y = ph < .5 ? .8 : -.8; break; case 5: y = ph < .05 + P.bPw.v * .9 ? .8 : -.8; break; case 2: y = 1 - 4 * Math.abs(ph - .5); break; case 6: y = Math.sin(ph * 6.283) * .6 + Math.sin(ph * 18.85) * .4 * P.bPw.v; break; default: y = Math.sin(ph * 6.283); }
+          const yy = h / 2 - y * h * .36; x ? g.lineTo(x, yy) : g.moveTo(x, yy); } g.stroke(); } }
+    { const { g, w, h } = clr(fltD);
+      const fc = P.fCut.v, q = P.fRes.v; g.strokeStyle = '#f1d999'; g.lineWidth = 1.6; g.beginPath();
+      const hp = [5].includes(P.f1Type.v);
+      for (let x = 0; x <= w; x += 2) { const t = x / w, d = hp ? fc - t : t - fc; let y = d < 0 ? 0 : -d * 90; y += q * 22 * Math.exp(-d * d * 400); const yy = h * .55 - y * .5; x ? g.lineTo(x, Math.min(h - 2, yy)) : g.moveTo(x, yy); }
+      g.stroke(); g.lineTo(w, h); g.lineTo(0, h); g.fillStyle = 'rgba(241,217,153,.07)'; g.fill();
+      const bx = fc * w, bh = g.createRadialGradient(bx, h * .5, 1, bx, h * .5, 16); bh.addColorStop(0, 'rgba(0,0,0,1)'); bh.addColorStop(.6, 'rgba(255,190,120,.25)'); bh.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = bh; g.beginPath(); g.arc(bx, h * .5, 16, 0, 7); g.fill(); }
+    { const { g, w, h } = clr(envD), e = ['amp', 'flt', 'mod'][P.uiEnv.v];
+      const cv = id => Math.pow(P[e + id].v, 1.5);
+      const A = .02 + cv('A') * .25, Ho = cv('H') * .1, D = .05 + cv('D') * .25, S = P[e + 'S'].v, R = .05 + cv('R') * .3, tot = A + Ho + D + .2 + R, sx = w / tot;
+      const y = v => h - 6 - v * (h - 12);
+      g.strokeStyle = '#f1d999'; g.lineWidth = 1.6; g.beginPath();
+      g.moveTo(0, y(0)); g.quadraticCurveTo(A * sx * .3, y(.9), A * sx, y(1)); g.lineTo((A + Ho) * sx, y(1));
+      g.quadraticCurveTo((A + Ho + D * .2) * sx, y(S), (A + Ho + D) * sx, y(S)); g.lineTo((A + Ho + D + .2) * sx, y(S)); g.quadraticCurveTo((A + Ho + D + .2 + R * .2) * sx, y(0), w, y(0)); g.stroke();
+      g.fillStyle = 'rgba(255,214,140,.5)'; g.beginPath(); g.arc(w - 28, 18, 9, 0, 7); g.fill();
+      g.fillStyle = '#03060f'; g.beginPath(); g.arc(w - 28 + 14 * Math.cos(time * .7), 18, 8, 0, 7); g.fill(); }
+    { const { g, w, h } = clr(orbD), cx = w / 2, cy = h / 2;
+      const sun = g.createRadialGradient(cx, cy, 1, cx, cy, 16); sun.addColorStop(0, '#fff6dc'); sun.addColorStop(.4, '#f1c46a'); sun.addColorStop(1, 'rgba(241,196,106,0)');
+      g.fillStyle = sun; g.beginPath(); g.arc(cx, cy, 16, 0, 7); g.fill();
+      const cols = ['#f1d999', '#9fc7ff', '#e78a74', '#b9a6ff'];
+      for (let i = 0; i < 4; i++) { const Lx = 'lfo' + (i + 1), rr = 26 + i * 15 + P[Lx + 'Depth'].v * 6, a = host && tele.lfo ? tele.lfo[i] * 6.283 : time * (.3 + P[Lx + 'Rate'].v * 2) * (i % 2 ? -1 : 1) + i * 1.7;
+        g.strokeStyle = i === P.uiLfo.v ? 'rgba(241,217,153,.55)' : 'rgba(201,163,90,.18)'; g.lineWidth = .8; g.beginPath(); g.ellipse(cx, cy, rr, rr * .82, 0, 0, 7); g.stroke();
+        const px = cx + Math.cos(a) * rr, py = cy + Math.sin(a) * rr * .82;
+        g.fillStyle = cols[i]; g.beginPath(); g.arc(px, py, i === P.uiLfo.v ? 4.5 : 3, 0, 7); g.fill();
+        g.fillStyle = 'rgba(233,220,192,.7)'; g.font = '500 8px Consolas'; g.fillText(['I', 'II', 'III', 'IV'][i], px + 6, py - 4); } }
+    drawRing(arpD, 58, step, 16);
+  }
+  if (pages.ARP.style.display !== 'none') { drawLanes(step); drawRing(bigRing, 60, step, 1 + Math.round(P.aSteps.v * 31)); }
+  if (pages.FX.style.display !== 'none') drawFx(time);
+  requestAnimationFrame(frame);
+}
+function drawRing(d, R, step, steps) {
+  const { g, w, h } = clr(d), cx = w / 2, cy = h / 2;
+  g.strokeStyle = 'rgba(201,163,90,.25)'; g.beginPath(); g.arc(cx, cy, R, 0, 7); g.stroke();
+  const pts = []; for (let i = 0; i < steps; i++) { const a = -Math.PI / 2 + i / steps * 6.283, gv = L.gate.v[i], rr = R - (L.pitch.v[i] - .5) * 60 - (gv === 2 ? 8 : 0); pts.push({ x: cx + Math.cos(a) * rr, y: cy + Math.sin(a) * rr, gv, i }); }
+  g.strokeStyle = 'rgba(241,217,153,.35)'; g.beginPath(); pts.filter(p => p.gv).forEach((p, k) => k ? g.lineTo(p.x, p.y) : g.moveTo(p.x, p.y)); g.closePath(); g.stroke();
+  const playing = P.arpOn.v ? step % steps : -1;
+  pts.forEach(p => { const now = p.i === playing; g.fillStyle = !p.gv ? 'rgba(141,138,131,.35)' : now ? '#fff6dc' : p.gv === 2 ? '#e78a74' : '#f1d999'; g.beginPath(); g.arc(p.x, p.y, now ? 4.5 : p.gv ? 2.6 : 1.4, 0, 7); g.fill(); });
+  g.fillStyle = 'rgba(201,163,90,.85)'; g.font = '500 8px Consolas'; g.textAlign = 'center';
+  g.fillText(PATTERNS[P.aPat.v][0], cx, cy - 2); g.fillText(P.arpOn.v ? DIVS[Math.round(P.aRate.v * 16)] : 'ARP OFF', cx, cy + 9); g.textAlign = 'left';
+}
+function drawLanes(step) {
+  const steps = 1 + Math.round(P.aSteps.v * 31), swing = P.aSwing.v, playing = P.arpOn.v ? step % steps : -1;
+  Object.values(L).forEach(l => {
+    const { g, w, h } = clr(l.d), cw = w / N;
+    for (let i = 0; i < N; i++) {
+      const x = i * cw, sx = x + (i % 2 ? swing * cw * .5 : 0), now = i === playing, col = now ? '#fff6dc' : '#f1d999', v = l.v[i];
+      g.fillStyle = i % 4 === 0 ? 'rgba(201,163,90,.10)' : 'rgba(201,163,90,.04)'; g.fillRect(x + 1, 1, cw - 2, h - 2);
+      g.globalAlpha = i < steps ? 1 : .25;
+      if (l.kind === 'state') { if (v) { g.fillStyle = v === 2 ? '#e78a74' : v === 3 ? '#9fc7ff' : col; g.fillRect(sx + 3, 5, v === 3 ? cw : cw - 6, h - 10); if (v === 3) { g.fillStyle = '#03060f'; g.font = '500 8px Consolas'; g.fillText('TIE', sx + 6, h / 2 + 3); } } }
+      else if (l.kind === 'bar') { g.fillStyle = col; g.fillRect(sx + 4, h - 3 - v * (h - 6), cw - 8, v * (h - 6)); }
+      else if (l.kind === 'bi') { const y = h / 2, yy = h - 3 - v * (h - 6); g.fillStyle = Math.abs(v - .5) < .01 ? 'rgba(241,217,153,.35)' : col; g.fillRect(sx + 4, Math.min(y, yy), cw - 8, Math.max(2, Math.abs(yy - y)));
+        if (Math.abs(v - .5) >= .01) { g.fillStyle = '#e9dcc0'; g.font = '500 8px Consolas'; g.fillText((v > .5 ? '+' : '') + Math.round((v - .5) * 2 * l.range), sx + 5, 10); } }
+      else if (l.kind === 'step') { const r = (h - 6) / l.steps; g.fillStyle = col; g.fillRect(sx + 4, h - 3 - (v + 1) * r, cw - 8, r - 1); g.fillStyle = 'rgba(233,220,192,.6)'; g.font = '500 8px Consolas'; g.fillText(l.labels[v], sx + 5, h - 5); }
+      else if (l.kind === 'toggle' && v) { g.fillStyle = '#9fc7ff'; g.beginPath(); g.moveTo(sx + 4, h - 4); g.lineTo(sx + cw + 4, 4); g.lineTo(sx + cw + 4, h - 4); g.fill(); }
+      g.globalAlpha = 1;
+      if (now) { g.strokeStyle = 'rgba(255,246,220,.6)'; g.strokeRect(x + .5, .5, cw - 1, h - 1); }
+    }
+    g.fillStyle = 'rgba(0,0,0,.55)'; g.fillRect(steps * cw, 0, w - steps * cw, h);
+  });
+}
+function drawFx(time) {
+  { const { g, w, h } = clr(fxDisp.drive); g.strokeStyle = '#f1d999'; g.lineWidth = 1.2; g.beginPath();
+    const k = 1 + P.xDrive.v * 12, b = P.xBias.v - .5; for (let x = 0; x <= w; x++) { const s = (x / w) * 2 - 1, y = Math.tanh((s + b * .5) * k) - Math.tanh(b * .5 * k); const yy = h / 2 - y * h * .4; x ? g.lineTo(x, yy) : g.moveTo(x, yy); } g.stroke(); }
+  { const { g, w, h } = clr(fxDisp.gate), cw = w / 16, cur = host ? Math.floor((tele.ppq || 0) * 4) % 16 : Math.floor(time * 8) % 16;
+    for (let i = 0; i < 16; i++) { const s = P['g' + i].v; g.fillStyle = s ? (i === cur ? '#fff6dc' : '#f1d999') : 'rgba(141,138,131,.2)'; g.fillRect(i * cw + 2, s ? 6 : h - 10, cw - 4, s ? h - 12 : 4); } }
+  { const { g, w, h } = clr(fxDisp.eq); g.strokeStyle = 'rgba(201,163,90,.2)'; g.beginPath(); g.moveTo(0, h / 2); g.lineTo(w, h / 2); g.stroke();
+    g.strokeStyle = '#f1d999'; g.lineWidth = 1.5; g.beginPath(); const lo = (P.qLo.v - .5) * 2, mid = (P.qMid.v - .5) * 2, hi = (P.qHi.v - .5) * 2, mf = P.qMidF.v, q = .02 + (1 - P.qQ.v) * .08, tilt = P.qTilt.v - .5;
+    for (let x = 0; x <= w; x++) { const t = x / w; const y = lo / (1 + Math.exp((t - P.qLoF.v * .5 - .05) * 30)) + hi / (1 + Math.exp(-(t - .5 - P.qHiF.v * .4) * 30)) + mid * Math.exp(-((t - mf) ** 2) / q) + tilt * (t - .5) * 2; const yy = h / 2 - y * h * .35; x ? g.lineTo(x, yy) : g.moveTo(x, yy); } g.stroke(); }
+  { const { g, w, h } = clr(fxDisp.meter);
+    [tele.l || 0, tele.r || 0].forEach((lv, i) => { g.fillStyle = 'rgba(201,163,90,.15)'; g.fillRect(16, 10 + i * 20, w - 26, 12);
+      const grd = g.createLinearGradient(16, 0, w - 10, 0); grd.addColorStop(0, '#9fc7ff'); grd.addColorStop(.75, '#f1d999'); grd.addColorStop(1, '#e78a74'); g.fillStyle = grd; g.fillRect(16, 10 + i * 20, (w - 26) * Math.min(1, lv), 12);
+      g.fillStyle = '#e9dcc0'; g.font = '500 8px Consolas'; g.fillText(i ? 'R' : 'L', 4, 19 + i * 20); }); }
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

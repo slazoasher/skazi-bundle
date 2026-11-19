@@ -52,6 +52,7 @@ namespace
         if (name == "SKAZI REVERB")   return "Mega reverb machine: 10 algorithms, reverse, tail filter";
         if (name == "S-QUALIZER")     return "6-band dynamic M/S EQ + tube EQ, analyzer";
         if (name == "SKAZON")         return "Wavetable + granular synth, 972 presets";
+        if (name == "SKY Z")          return "Additive star synth, lane arp, 555 presets";
         return "Plugin";
     }
 
