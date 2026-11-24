@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SKATOM</title>
+<link rel="stylesheet" href="skatom.css?v=11">
+</head>
+<body>
+<div id="chassis">
+  <header class="plate" id="header">
+    <img class="skazi" src="skazi_logo.png" alt="SKAZI">
+    <div class="brand">
+      <div class="logo">SKATOM</div>
+      <div class="by">BY ASHER SWISSA</div>
+      <div class="sub">MECHANICAL SPECTRAL &amp; GLITCH FILTER <span class="badge">MK-III</span></div>
+    </div>
+    <div class="presets">
+      <div class="prow">
+        <button id="prev" class="bigbtn sm" aria-label="Previous preset">&#9664;</button>
+        <select id="preset" aria-label="Preset"></select>
+        <button id="next" class="bigbtn sm" aria-label="Next preset">&#9654;</button>
+        <button id="rnd" class="bigbtn sm rnd">RANDOM</button>
+      </div>
+      <div class="status"><span class="led" id="syncLed"></span><span id="status">ENGINE OFFLINE &middot; PRESS PLAY</span></div>
+    </div>
+    <div class="transport">
+      <div class="seg" id="srcSeg"><button data-src="loop" class="on">LOOP</button><button data-src="file">FILE</button><button data-src="mic">MIC</button></div>
+      <button id="play" class="bigbtn">&#9654; PLAY</button>
+      <input type="file" id="file" accept="audio/*" hidden>
+      <label class="bpm">BPM <input id="bpm" type="number" min="60" max="200" value="128"></label>
+    </div>
+    <div class="globals" id="globals"></div>
+  </header>
+  <section id="main">
+    <div class="plate" id="telemetry"><h3>TELEMETRY</h3></div>
+    <div class="plate" id="core"><h3>REACTOR CORE &middot; 16 SNAPSHOTS</h3></div>
+    <div class="plate" id="macro"><h3>MEGA-MACRO &middot; DETONATION</h3></div>
+  </section>
+  <section class="plate" id="fxbar"></section>
+  <section id="rack"></section>
+  <section id="modbar"></section>
+</div>
+<script src="state.js?v=11"></script>
+<script src="presets.js?v=11"></script>
+<script src="audio.js?v=11"></script>
+<script src="host.js?v=11"></script>
+<script src="ui.js?v=11"></script>
+</body>
+</html>

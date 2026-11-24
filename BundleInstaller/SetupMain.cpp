@@ -53,6 +53,7 @@ namespace
         if (name == "S-QUALIZER")     return "6-band dynamic M/S EQ + tube EQ, analyzer";
         if (name == "SKAZON")         return "Wavetable + granular synth, 972 presets";
         if (name == "SKY Z")          return "Additive star synth, lane arp, 555 presets";
+        if (name == "SKATOM")         return "Kinetic reactor filter + multi-FX, risers";
         return "Plugin";
     }
 
