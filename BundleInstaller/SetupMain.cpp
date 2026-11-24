@@ -54,6 +54,7 @@ namespace
         if (name == "SKAZON")         return "Wavetable + granular synth, 972 presets";
         if (name == "SKY Z")          return "Additive star synth, lane arp, 555 presets";
         if (name == "SKATOM")         return "Kinetic reactor filter + multi-FX, risers";
+        if (name == "SKAZILAYZER")    return "Analyser: spectrum notes, meters, loudness";
         return "Plugin";
     }
 

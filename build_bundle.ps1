@@ -53,7 +53,8 @@ $products = @(
     @{ Folder = "Squalizer";   Target = "Squalizer";  Name = "S-QUALIZER";     Juce = "4";  Flag = "FETCHCONTENT_SOURCE_DIR_JUCE" },
     @{ Folder = "Skazon";      Target = "Skazon";     Name = "SKAZON";         Juce = "4";  Flag = "FETCHCONTENT_SOURCE_DIR_JUCE" },
     @{ Folder = "Skyz";        Target = "Skyz";       Name = "SKY Z";          Juce = "4";  Flag = "FETCHCONTENT_SOURCE_DIR_JUCE" },
-    @{ Folder = "Skatom";      Target = "Skatom";     Name = "SKATOM";         Juce = "4";  Flag = "FETCHCONTENT_SOURCE_DIR_JUCE" }
+    @{ Folder = "Skatom";      Target = "Skatom";     Name = "SKATOM";         Juce = "4";  Flag = "FETCHCONTENT_SOURCE_DIR_JUCE" },
+    @{ Folder = "Skazilayzer"; Target = "Skazilayzer"; Name = "SKAZILAYZER";   Juce = "4";  Flag = "FETCHCONTENT_SOURCE_DIR_JUCE" }
 )
 
 # SKY Z's screen is a web view (WebView2): JUCE finds its SDK in the user's NuGet package folder.

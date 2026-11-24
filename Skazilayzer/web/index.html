@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SKAZILAYZER preview</title>
+<style>
+/* every skin is just these variables; the canvases read them too */
+:root,body[data-skin=neon]{--bg:#06070b;--panel:#0d1017;--line:#1b2130;--txt:#d3dbe8;--dim:#66728a;--cy:#00e5ff;--mg:#ff2bd6;--lm:#b6ff00;--yl:#ffd400;--rd:#ff3b3b;
+  --btn:#131826;--btnb:#29324a;--logo:linear-gradient(90deg,#00e5ff,#ff2bd6);--hdr:transparent;
+  --grid:#151a26;--lbl:#4a556b;--g0:#ff3b3b;--g1:#ff2bd6;--g2:#00e5ff;--g3:#0a3d4a;--cv:#00e5ff;--pk:#ffd400;--frz:#ff2bd6;--frzbg:rgba(20,6,20,.9);--frzt:#ff8ae9;
+  --hov:#b6ff00;--tipbg:rgba(8,10,16,.92);--tipt:#e6ecf5;--mbg:#0a0c12;--dot:rgba(0,229,255,.55);--fade:rgba(13,16,23,.28);--m:rgba(0,229,255,.7);--s:#ff2bd6;
+  --keyw:#2a3142;--keyb:#0b0d14;--keyl:#8c97ad;--seg:0;--scan:0;--wf:0;--font:"Segoe UI",system-ui,sans-serif}
+body[data-skin=amber]{--bg:#0b0805;--panel:#130e08;--line:#3b2b14;--txt:#ffcf7a;--dim:#94723f;--cy:#ffb000;--mg:#ff5a1f;--lm:#ffd75e;--yl:#fff1c4;--rd:#ff3b1f;
+  --btn:linear-gradient(#3b3b40,#202024);--btnb:#55555c;--logo:linear-gradient(90deg,#ffd75e,#ff7a00);--hdr:linear-gradient(#34343a,#1b1b1f);
+  --grid:#2a1d0c;--lbl:#94723f;--g0:#ff3b1f;--g1:#ffd75e;--g2:#ffb000;--g3:#4a2c04;--cv:#ffb000;--pk:#fff1c4;--frz:#ff5a1f;--frzbg:rgba(30,12,4,.94);--frzt:#ffb27a;
+  --hov:#ffd75e;--tipbg:rgba(14,10,5,.95);--tipt:#ffe3a8;--mbg:#0a0704;--dot:rgba(255,176,0,.6);--fade:rgba(19,14,8,.3);--m:rgba(255,176,0,.75);--s:#ff5a1f;
+  --keyw:#4a3618;--keyb:#120c05;--keyl:#c9a060;--seg:1;--scan:1;--wf:0;--font:Consolas,"Courier New",monospace}
+body[data-skin=lab]{--bg:#e8ebf0;--panel:#ffffff;--line:#d3d9e2;--txt:#18202c;--dim:#7a8599;--cy:#0a6cff;--mg:#e0245e;--lm:#0a9d58;--yl:#ff8a00;--rd:#e0245e;
+  --btn:#f4f6f9;--btnb:#c9d0db;--logo:linear-gradient(90deg,#18202c,#18202c);--hdr:#ffffff;
+  --grid:#eceff4;--lbl:#9aa3b3;--g0:#e0245e;--g1:#0a6cff;--g2:#4d9bff;--g3:#d6e6ff;--cv:#0a6cff;--pk:#ff8a00;--frz:#e0245e;--frzbg:rgba(255,255,255,.97);--frzt:#e0245e;
+  --hov:#0a9d58;--tipbg:rgba(255,255,255,.97);--tipt:#18202c;--mbg:#f1f3f7;--dot:rgba(10,108,255,.45);--fade:rgba(255,255,255,.3);--m:rgba(10,108,255,.55);--s:#e0245e;
+  --keyw:#ffffff;--keyb:#2a3142;--keyl:#6b7486;--seg:0;--scan:0;--wf:0;--font:"Segoe UI",system-ui,sans-serif}
+body[data-skin=lava]{--bg:#050203;--panel:#0c0506;--line:#2c1114;--txt:#f5ddd5;--dim:#86545a;--cy:#ff6a00;--mg:#00f0ff;--lm:#ffe14d;--yl:#ffe14d;--rd:#ff2a2a;
+  --btn:#1a0b0d;--btnb:#4a1d22;--logo:linear-gradient(90deg,#ffe14d,#ff6a00,#ff1f3d);--hdr:linear-gradient(90deg,#1a0606,#050203);
+  --grid:rgba(255,255,255,.06);--lbl:#86545a;--g0:#ffffff;--g1:#ffe14d;--g2:#ff6a00;--g3:#3a0508;--cv:#ffe14d;--pk:#ffffff;--frz:#00f0ff;--frzbg:rgba(0,20,26,.92);--frzt:#8ff8ff;
+  --hov:#00f0ff;--tipbg:rgba(10,4,5,.92);--tipt:#ffe9e0;--mbg:#080304;--dot:rgba(255,140,0,.6);--fade:rgba(12,5,6,.28);--m:rgba(255,106,0,.75);--s:#ffe14d;
+  --keyw:#3a1c1f;--keyb:#0a0304;--keyl:#b07a7f;--seg:0;--scan:0;--wf:1;--font:"Segoe UI",system-ui,sans-serif}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:12px/1.35 var(--font)}
+header{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap;background:var(--hdr)}
+.logo{font-weight:900;letter-spacing:5px;font-size:22px;background:var(--logo);-webkit-background-clip:text;background-clip:text;color:transparent;margin-right:14px}
+button,select{background:var(--btn);color:var(--txt);border:1px solid var(--btnb);border-radius:4px;padding:5px 10px;font:inherit;cursor:pointer}
+button.on{border-color:var(--cy);color:var(--cy);box-shadow:0 0 8px color-mix(in srgb,var(--cy) 40%,transparent)}
+button.frz.on{border-color:var(--frz);color:var(--frz);box-shadow:0 0 12px color-mix(in srgb,var(--frz) 50%,transparent)}
+button.auto.on{border-color:var(--rd);color:var(--rd)}
+main{display:grid;grid-template-columns:.85fr 1fr 1.5fr;gap:10px;padding:10px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px;position:relative;min-width:0}
+body[data-skin=amber] .panel{border:2px solid #3b3b40;border-radius:3px;box-shadow:inset 0 0 40px #000,0 0 0 4px #1d1d21,0 0 0 5px #45454c}
+body[data-skin=amber] main{gap:16px;padding:16px}
+body[data-skin=lab] .panel{border-radius:12px;box-shadow:0 2px 10px rgba(20,30,50,.07)}
+body[data-skin=lava] .panel{border-radius:0;border-color:transparent;border-top:2px solid #ff3d1f}
+.ana{grid-column:1/4}
+.bar{font-size:10px;letter-spacing:1.5px;color:var(--dim);margin-bottom:6px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.bar b{color:var(--txt);letter-spacing:2px}
+.ctl{display:flex;gap:5px;align-items:center}
+.ctl output{color:var(--cy);min-width:44px}
+input[type=range]{width:90px;accent-color:var(--cy)}
+canvas{display:block;width:100%}
+#spec{height:max(240px,calc(100vh - 650px));cursor:crosshair}
+#gonio,#hist{height:230px}
+#meters{height:196px}
+.nums.five{grid-template-columns:repeat(auto-fit,minmax(70px,1fr))}
+.nums.five .num span{white-space:nowrap}
+.nums.five .num div{font-size:13px}
+.legend{font-size:9px;letter-spacing:1px;color:var(--dim);display:flex;gap:10px;margin-top:4px;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:8px;margin-right:3px;vertical-align:middle}
+#wave{height:110px}
+#corr{height:22px;margin-top:6px}
+.readout{margin-left:auto;font:600 13px Consolas,monospace;color:var(--lm)}
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:6px}
+.num{background:var(--mbg);border:1px solid var(--line);border-radius:4px;padding:4px 6px}
+.num span{display:block;font-size:9px;letter-spacing:1.5px;color:var(--dim)}
+.num div{font:700 16px Consolas,monospace}
+.num.click{cursor:pointer}
+#hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--dim);pointer-events:none;letter-spacing:2px}
+#err{color:var(--rd)}
+body.host .src{display:none}
+@media (max-width:900px){main{grid-template-columns:1fr}.ana{grid-column:auto}}
+</style>
+</head>
+<body data-skin="neon">
+<header>
+  <div class="logo">SKAZILAYZER</div>
+  <span style="color:var(--dim)">SKIN</span>
+  <select id="skin"><option value="neon">1 · NEON</option><option value="amber">2 · AMBER RACK</option><option value="lab">3 · WHITE LAB</option><option value="lava">4 · LAVA WATERFALL</option></select>
+  <span class="src" style="color:var(--dim);margin-left:10px">SOURCE</span>
+  <button class="src" id="bDemo">▶ DEMO LOOP</button>
+  <button class="src" id="bFile">♫ AUDIO FILE</button>
+  <button class="src" id="bMic">🎤 INPUT / MIC</button>
+  <button class="src" id="bStop">■ STOP</button>
+  <input type="file" id="file" accept="audio/*" hidden>
+  <span id="err"></span>
+  <span style="margin-left:auto;color:var(--dim)">Keys: <b>F</b> freeze · <b>R</b> reset · <b>1-4</b> skin · click analyser = freeze</span>
+</header>
+
+<main>
+  <section class="panel ana">
+    <div class="bar">
+      <b>ANALYSER</b>
+      <span class="ctl">RES <button id="resDn" title="coarser">−</button><select id="res"><option value="1">1 oct</option><option value="2">1/2 oct</option><option value="3" selected>1/3 oct</option><option value="6">1/6 oct</option><option value="12">1/12 oct</option><option value="24">1/24 oct</option><option value="48">1/48 oct</option><option value="96">1/96 oct</option></select><button id="resUp" title="finer">+</button></span>
+      <span class="ctl" title="bigger FFT = sharper lows and notes, smaller = faster">FFT <select id="fft"><option value="4096">4K FAST</option><option value="8192">8K</option><option value="16384" selected>16K</option><option value="32768">32K HI-RES</option></select></span>
+      <span class="ctl">VIEW <select id="view"><option>BLOCKS THIN</option><option>BLOCKS WIDE</option><option>BARS</option><option>CURVE</option><option>WAVEFORM</option></select></span>
+      <span class="ctl">ATTACK <input type="range" id="att" min="1" max="500" value="5"><output id="attO"></output></span>
+      <span class="ctl">RELEASE <input type="range" id="rel" min="20" max="3000" value="220"><output id="relO"></output></span>
+      <span class="ctl">PEAK HOLD <input type="range" id="hold" min="0" max="10" step=".5" value="2"><output id="holdO"></output></span>
+      <button id="bFreeze" class="frz">❄ FREEZE PEAKS</button>
+      <button id="bAuto" class="auto">AUTO FREEZE</button>
+      <span class="ctl">AT <input type="range" id="thr" min="-40" max="0" value="-8"><output id="thrO"></output></span>
+      <button id="bReset">RESET</button>
+      <span class="readout" id="peakRead">PEAK —</span>
+    </div>
+    <canvas id="spec"></canvas>
+    <div id="hint">PRESS ▶ DEMO LOOP, LOAD A FILE OR USE YOUR INPUT</div>
+  </section>
+
+  <section class="panel ana">
+    <div class="bar"><b>WAVEFORM</b> scrolling · lines at 0 / -6 / -12 / -18 dB</div>
+    <canvas id="wave"></canvas>
+  </section>
+
+  <section class="panel">
+    <div class="bar"><b>LEVEL</b> <span class="ctl">VU REF <select id="vuref"><option value="-14">-14 dBFS</option><option value="-18" selected>-18 dBFS</option><option value="-20">-20 dBFS</option></select></span></div>
+    <canvas id="meters"></canvas>
+    <div class="legend"><span><i style="background:var(--g2);opacity:.45"></i>PEAK</span><span><i style="background:var(--g2)"></i>RMS</span><span><i style="background:var(--lm);height:3px"></i>VU</span><span><i style="background:var(--s)"></i>M LUFS</span></div>
+    <div class="nums five">
+      <div class="num click" id="nPk" title="click to reset"><span>MAX PEAK</span><div>—</div></div>
+      <div class="num"><span>RMS L/R</span><div id="nRms">—</div></div>
+      <div class="num"><span>VU L/R</span><div id="nVu">—</div></div>
+      <div class="num"><span>CREST</span><div id="nCrest">—</div></div>
+      <div class="num"><span>OVERS</span><div id="nOver">0</div></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="bar"><b>GONIOMETER</b> auto-gain</div>
+    <canvas id="gonio"></canvas>
+    <canvas id="corr"></canvas>
+  </section>
+
+  <section class="panel">
+    <div class="bar"><b>LOUDNESS</b> EBU R128 · 60 s history</div>
+    <canvas id="hist"></canvas>
+    <div class="nums">
+      <div class="num"><span>MOMENTARY</span><div id="nM" style="color:var(--cy)">—</div></div>
+      <div class="num"><span>SHORT-TERM</span><div id="nS" style="color:var(--s)">—</div></div>
+      <div class="num click" id="nIbox" title="click to reset"><span>INTEGRATED</span><div id="nI" style="color:var(--lm)">—</div></div>
+      <div class="num"><span>LRA</span><div id="nLRA">—</div></div>
+    </div>
+  </section>
+</main>
+
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const NN = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const FMIN = 20, FMAX = 20000, DBTOP = 0, DBBOT = -90;
+const CAL = 13.55;          // Blackman coherent gain: a 0 dBFS sine reads 0 dB
+const ENBW = 2.37;          // Blackman noise bandwidth (dB) for power-summed bands
+const dpr = Math.max(1, window.devicePixelRatio || 1);
+// inside the plugin the audio comes from the DAW (window.__JUCE__); in a browser from Web Audio
+const HOST = !!(window.__JUCE__ && window.__JUCE__.backend), be = HOST ? window.__JUCE__.backend : null;
+let live = false, SR = 48000, FFTN = 16384;
+let gL = new Float32Array(0), gR = gL, gStep = 1;   // goniometer samples
+const UI_IDS = ['res','fft','view','att','rel','hold','thr','vuref'];
+function saveUi(){ if (!HOST) return; const s = { skin: document.body.dataset.skin, auto: autoArm };
+  UI_IDS.forEach(id => s[id] = $('#'+id).value); be.emitEvent('state', { json: JSON.stringify(s) }); }
+function applyUi(s){
+  UI_IDS.forEach(id => { if (s[id] !== undefined){ $('#'+id).value = s[id]; $('#'+id).dispatchEvent(new Event('input')); } });
+  if (s.fft) setFft(+s.fft);
+  if (s.skin) setSkin(s.skin);
+  if (s.auto && !autoArm) $('#bAuto').click();
+  if (live) buildBands();
+}
+function ensureBuffers(N){
+  fdb = new Float32Array(N).fill(-150); binHold = new Float32Array(N).fill(-150); binHoldT = new Float32Array(N);
+  frozen = null; $('#bFreeze').classList.remove('on'); buildBands();
+}
+
+function note(f){
+  const m = 69 + 12*Math.log2(f/440), r = Math.round(m), c = Math.round((m-r)*100);
+  return NN[(r%12+12)%12] + (Math.floor(r/12)-1) + (c>=0?' +':' ') + c + 'c';
+}
+function fmtF(f){ return f>=1000 ? (f/1000).toFixed(f>=10000?1:2)+' kHz' : f.toFixed(f<100?1:0)+' Hz'; }
+const fmtDb = (d, n=1) => d <= -99 ? '-∞' : d.toFixed(n);
+const db = x => x > 0 ? 20*Math.log10(x) : -150;
+
+// ---------- skin ----------
+let T = {};
+const SK = ['grid','lbl','g0','g1','g2','g3','cv','pk','frz','frzbg','frzt','hov','tipbg','tipt','mbg','dot','fade','m','s','keyw','keyb','keyl','panel','rd','yl','lm','seg','scan','wf'];
+function setSkin(name){
+  document.body.dataset.skin = name; $('#skin').value = name;
+  try{ localStorage.setItem('skz-skin', name); }catch(e){}
+  const cs = getComputedStyle(document.body); SK.forEach(k => T[k] = cs.getPropertyValue('--'+k).trim());
+  T.seg = T.seg === '1'; T.scan = T.scan === '1'; T.wf = T.wf === '1';
+  for (const k in cv) cv[k].g.clearRect(0,0,cv[k].w,cv[k].h);
+  if (wf.g) wf.g.clearRect(0,0,wf.el.width,wf.el.height);
+  saveUi();
+}
+const HEAT = [[0,0,0],[60,0,10],[170,10,20],[255,80,0],[255,190,30],[255,250,200]];
+function heat(t){ t = Math.max(0, Math.min(.999, t)) * (HEAT.length-1); const i = Math.floor(t), f = t-i, a = HEAT[i], b = HEAT[i+1];
+  return `rgb(${a[0]+(b[0]-a[0])*f|0},${a[1]+(b[1]-a[1])*f|0},${a[2]+(b[2]-a[2])*f|0})`; }
+
+// ---------- audio graph ----------
+let ac, input, monitor, anMix, anL, anR, kL, kR, src = null, demoTimer = null;
+let fbuf, fdb, binHold, binHoldT, tdL, tdR, kbL, kbR;
+
+function initAudio(){
+  if (ac) return;
+  ac = new AudioContext();
+  input = ac.createGain();
+  input.channelCount = 2; input.channelCountMode = 'explicit'; input.channelInterpretation = 'speakers'; // mono in -> L+R
+  monitor = ac.createGain(); input.connect(monitor).connect(ac.destination);
+
+  anMix = ac.createAnalyser(); anMix.fftSize = +$('#fft').value; anMix.smoothingTimeConstant = 0;
+  anMix.minDecibels = -160; anMix.maxDecibels = 0; input.connect(anMix);
+
+  const split = ac.createChannelSplitter(2); input.connect(split);
+  const mk = n => { const a = ac.createAnalyser(); a.fftSize = n; a.smoothingTimeConstant = 0; return a; };
+  anL = mk(4096); anR = mk(4096); split.connect(anL, 0); split.connect(anR, 1);
+  // K-weighting (BS.1770): high shelf +4 dB @1682 Hz, high-pass 38 Hz
+  const kw = ch => { const sh = ac.createBiquadFilter(); sh.type='highshelf'; sh.frequency.value=1681.97; sh.gain.value=4;
+    const hp = ac.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=38.13; hp.Q.value=0.5003;
+    const a = mk(32768); split.connect(sh, ch); sh.connect(hp).connect(a); return a; };
+  kL = kw(0); kR = kw(1);
+
+  const N = anMix.frequencyBinCount;
+  SR = ac.sampleRate; FFTN = anMix.fftSize; live = true;
+  fbuf = new Float32Array(N); ensureBuffers(N);
+  tdL = new Float32Array(4096); tdR = new Float32Array(4096);
+  kbL = new Float32Array(32768); kbR = new Float32Array(32768);
+}
+
+function stopSource(){
+  if (demoTimer){ clearInterval(demoTimer); demoTimer = null; }
+  if (src){ try{ src.stop && src.stop(); }catch(e){} try{ src.disconnect(); }catch(e){}
+    if (src.mediaStream) src.mediaStream.getTracks().forEach(t=>t.stop()); src = null; }
+  ['bDemo','bFile','bMic'].forEach(id => $('#'+id).classList.remove('on'));
+}
+function started(btn){ $('#hint').style.display='none'; $('#err').textContent=''; $(btn).classList.add('on'); resetLoud(); }
+
+// ---------- demo: 145 BPM psy loop (kick, rolling bass, hats, stereo lead) ----------
+function startDemo(){
+  initAudio(); ac.resume(); stopSource(); monitor.gain.value = 1;
+  const bus = ac.createGain(); bus.gain.value = 0.8; bus.connect(input);
+  const noise = ac.createBuffer(1, ac.sampleRate, ac.sampleRate); const nd = noise.getChannelData(0);
+  for (let i=0;i<nd.length;i++) nd[i] = Math.random()*2-1;
+  const dly = ac.createDelay(1); dly.delayTime.value = 60/145*0.75; const fb = ac.createGain(); fb.gain.value = .35;
+  dly.connect(fb).connect(dly); const dlyPan = ac.createStereoPanner(); dlyPan.pan.value = -.7; dly.connect(dlyPan).connect(bus);
+  const st = 60/145/4; let t = ac.currentTime + .1, step = 0;
+  const lead = [66,69,73,76,78,76,73,69];
+  const hz = m => 440*2**((m-69)/12);
+  function sched(){
+    while (t < ac.currentTime + .15){
+      const s = step % 16, bar = Math.floor(step/16) % 4;
+      if (s % 4 === 0){
+        const o = ac.createOscillator(), g = ac.createGain();
+        o.frequency.setValueAtTime(160, t); o.frequency.exponentialRampToValueAtTime(46, t+.09);
+        g.gain.setValueAtTime(1, t); g.gain.exponentialRampToValueAtTime(.001, t+.35);
+        o.connect(g).connect(bus); o.start(t); o.stop(t+.36);
+      } else {
+        const o = ac.createOscillator(), f = ac.createBiquadFilter(), g = ac.createGain();
+        o.type='sawtooth'; o.frequency.value = hz(bar===3 && s>12 ? 33 : 30);
+        f.type='lowpass'; f.Q.value=6; f.frequency.setValueAtTime(900, t); f.frequency.exponentialRampToValueAtTime(140, t+st*.9);
+        g.gain.setValueAtTime(.45, t); g.gain.exponentialRampToValueAtTime(.001, t+st*.95);
+        o.connect(f).connect(g).connect(bus); o.start(t); o.stop(t+st);
+      }
+      if (s % 4 === 2){
+        const n = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain(), p = ac.createStereoPanner();
+        n.buffer = noise; f.type='highpass'; f.frequency.value=8000; p.pan.value = .3;
+        g.gain.setValueAtTime(.25, t); g.gain.exponentialRampToValueAtTime(.001, t+.08);
+        n.connect(f).connect(g).connect(p).connect(bus); n.start(t, Math.random()*.5); n.stop(t+.09);
+      }
+      if (s % 2 === 0 && bar >= 2){
+        const o = ac.createOscillator(), f = ac.createBiquadFilter(), g = ac.createGain(), p = ac.createStereoPanner();
+        o.type='square'; o.frequency.value = hz(lead[(s/2)%8] + (bar===3?3:0));
+        f.type='lowpass'; f.frequency.value=3500; p.pan.value = (s/2)%2 ? .6 : -.6;
+        g.gain.setValueAtTime(.09, t); g.gain.exponentialRampToValueAtTime(.001, t+st*1.8);
+        o.connect(f).connect(g).connect(p); p.connect(bus); g.connect(dly); o.start(t); o.stop(t+st*2);
+      }
+      t += st; step++;
+    }
+  }
+  sched(); demoTimer = setInterval(sched, 25);
+  src = { stop(){ bus.gain.setTargetAtTime(0, ac.currentTime, .02); setTimeout(()=>bus.disconnect(), 300); }, disconnect(){} };
+  started('#bDemo');
+}
+
+async function startFile(file){
+  initAudio(); ac.resume(); stopSource(); monitor.gain.value = 1;
+  try{
+    const buf = await ac.decodeAudioData(await file.arrayBuffer());
+    const s = ac.createBufferSource(); s.buffer = buf; s.loop = true; s.connect(input); s.start();
+    src = s; started('#bFile');
+  }catch(e){ $('#err').textContent = 'Could not decode that file'; }
+}
+
+async function startMic(){
+  initAudio(); ac.resume(); stopSource(); monitor.gain.value = 0; // no feedback
+  try{
+    const ms = await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false,channelCount:2}});
+    const s = ac.createMediaStreamSource(ms); s.connect(input); src = s; started('#bMic');
+  }catch(e){ $('#err').textContent = 'Input blocked: ' + e.message; }
+}
+
+// ---------- analyser state ----------
+let bands = [], disp, pk, pkT, frozen = null, autoArm = false, autoPending = 0, rearmAt = 0;
+function buildBands(){
+  const r = +$('#res').value, out = [], binHz = SR/FFTN, len = fdb.length;
+  for (let i = Math.ceil(r*Math.log2(FMIN/1000)); i <= Math.floor(r*Math.log2(FMAX/1000)); i++){
+    const f = 1000*2**(i/r), lo = f*2**(-.5/r), hi = f*2**(.5/r);
+    out.push({f, lo, hi, k0: Math.min(len-1, Math.ceil(lo/binHz)), k1: Math.min(len-1, Math.ceil(hi/binHz)), x: Math.min(len-2, f/binHz)});
+  }
+  bands = out; disp = new Float32Array(out.length).fill(-150);
+  pk = new Float32Array(out.length).fill(-150); pkT = new Float32Array(out.length);
+}
+function bandDb(arr, b){
+  if (b.k1 - b.k0 >= 3){ let s = 0, m = -150; for (let k=b.k0;k<b.k1;k++){ s += 10**(arr[k]/10); if (arr[k] > m) m = arr[k]; } return Math.max(10*Math.log10(s) - ENBW, m); } // a tone near a band edge still shows at its level
+  const i = Math.floor(b.x), t = b.x - i; return arr[i]*(1-t) + arr[i+1]*t;
+}
+function refineFreq(bins, lo, hi){ // loudest FFT bin in range + parabolic interpolation
+  const binHz = SR/FFTN; let k0 = Math.max(1, Math.floor(lo/binHz)), k1 = Math.min(bins.length-2, Math.ceil(hi/binHz)), best = k0;
+  for (let k=k0;k<=k1;k++) if (bins[k] > bins[best]) best = k;
+  const a = bins[best-1], b = bins[best], c = bins[best+1], den = a - 2*b + c;
+  const q = den ? Math.max(-.5, Math.min(.5, .5*(a-c)/den)) : 0; return { f: (best + q)*binHz, db: b - .25*(a-c)*q }; // parabolic peak: frequency and level
+}
+
+function doFreeze(){
+  if (!live) return;
+  const pts = bands.map((b,i) => ({f:b.f, db:pk[i]}));
+  const r = +$('#res').value, w = Math.max(1, Math.round(r/3)), cand = [];
+  for (let i=0;i<pts.length;i++){
+    let isMax = pts[i].db > -80 && i > 0 && i < pts.length-1; // edge bands are not real peaks
+    for (let j=Math.max(0,i-w); j<=Math.min(pts.length-1,i+w) && isMax; j++) if (j!==i && pts[j].db > pts[i].db) isMax = false;
+    if (isMax) cand.push(i);
+  }
+  cand.sort((a,b) => pts[b].db - pts[a].db);
+  const bins = binHold.slice();
+  const labels = cand.slice(0,6).map(i => { const b = bands[i], m = refineFreq(bins, b.lo*2**(-1/r), b.hi*2**(1/r)); return {f:m.f, db:Math.max(pts[i].db, m.db)}; });
+  frozen = { pts, labels };
+  $('#bFreeze').classList.add('on');
+}
+function unFreeze(){ frozen = null; $('#bFreeze').classList.remove('on'); rearmAt = performance.now() + 1000; }
+function toggleFreeze(){ frozen ? unFreeze() : doFreeze(); }
+function resetPeaks(){ if (!live) return; pk.fill(-150); binHold.fill(-150); maxPk = -150; overs = 0; }
+
+function updateSpectrum(dt, now){ // fdb already holds this frame's calibrated dB per FFT bin
+  const hold = +$('#hold').value, att = +$('#att').value/1000, rel = +$('#rel').value/1000;
+  for (let k=0;k<fdb.length;k++){
+    const v = fdb[k];
+    if (v >= binHold[k]){ binHold[k] = v; binHoldT[k] = 0; }
+    else if ((binHoldT[k] += dt) > hold) binHold[k] -= 20*dt;
+  }
+  const aA = 1 - Math.exp(-dt/att), aR = 1 - Math.exp(-dt/rel); let top = -150;
+  for (let i=0;i<bands.length;i++){
+    const v = Math.max(-150, bandDb(fdb, bands[i])); top = Math.max(top, v);
+    disp[i] += (v - disp[i]) * (v > disp[i] ? aA : aR);
+    if (v >= pk[i]){ pk[i] = v; pkT[i] = 0; } else if ((pkT[i] += dt) > hold) pk[i] -= 20*dt;
+  }
+  if (autoArm && !frozen && now > rearmAt){
+    if (!autoPending && top > +$('#thr').value) autoPending = now + 200; // wait 200 ms to catch the whole hit
+    if (autoPending && now >= autoPending){ autoPending = 0; doFreeze(); }
+  }
+}
+
+// ---------- meters ----------
+const waveCols = []; // one [min,max] column per frame
+let vu1 = [0,0], vu2 = [0,0];
+let pkDisp = [-150,-150], pkHold = [-150,-150], pkHoldT = [0,0], rmsPow = [0,0], maxPk = -150, overs = 0, corr = 0, gonioPeak = .1;
+function browserStats(dt){
+  anL.getFloatTimeDomainData(tdL); anR.getFloatTimeDomainData(tdR); gL = tdL; gR = tdR; gStep = 2;
+  const n = Math.min(tdL.length, Math.ceil(SR*dt) + 256);
+  let pL=0,pR=0,sL=0,sR=0,sLR=0,mn=0,mx=0,aL=0,aR=0;
+  for (let i=tdL.length-n;i<tdL.length;i++){ const l=tdL[i], r=tdR[i];
+    pL=Math.max(pL,Math.abs(l)); pR=Math.max(pR,Math.abs(r)); sL+=l*l; sR+=r*r; sLR+=l*r; aL+=Math.abs(l); aR+=Math.abs(r); mn = Math.min(mn,l,r); mx = Math.max(mx,l,r); }
+  return {pL,pR,sL,sR,sLR,aL,aR,n,mn,mx};
+}
+function updateMeters(dt, st){
+  const {pL, pR, sL, sR, sLR} = st, n = st.n || 1;
+  waveCols.push([st.mn, st.mx]); if (waveCols.length > 4000) waveCols.shift();
+  [pL,pR].forEach((p,c) => {
+    const d = db(p); if (d >= -0.01) overs++;
+    pkDisp[c] = d > pkDisp[c] ? d : pkDisp[c] - 13.3*dt;
+    if (d >= pkHold[c]){ pkHold[c] = d; pkHoldT[c] = 0; } else if ((pkHoldT[c] += dt) > 2) pkHold[c] -= 20*dt;
+    maxPk = Math.max(maxPk, d);
+  });
+  const a = 1 - Math.exp(-dt/.3); rmsPow[0] += (sL/n - rmsPow[0])*a; rmsPow[1] += (sR/n - rmsPow[1])*a;
+  // VU: average-rectified, sine-calibrated (x1.1107), two cascaded poles = about 300 ms to 99%
+  const kv = 1 - Math.exp(-dt/.045);
+  [st.aL, st.aR].forEach((s,c) => { const x = (s||0)/n*1.1107; vu1[c] += (x - vu1[c])*kv; vu2[c] += (vu1[c] - vu2[c])*kv; });
+  const den = Math.sqrt(sL*sR); corr += ((den > 1e-9 ? sLR/den : 0) - corr) * (1 - Math.exp(-dt/.15));
+  gonioPeak += (Math.max(.05, pL, pR) - gonioPeak) * (Math.max(pL,pR) > gonioPeak ? .5 : .02);
+}
+
+// ---------- loudness (100 ms blocks) ----------
+let blocks = [], momList = [], stList = [], histM = [], histS = [], lastBlock = 0;
+const lufs = p => p > 0 ? -0.691 + 10*Math.log10(p) : -150;
+function resetLoud(){ blocks = []; momList = []; stList = []; histM = []; histS = []; lastBlock = ac ? ac.currentTime : 0;
+  if (HOST) be.emitEvent('resetLoud', {}); }
+function showLoud(M, S, I, LRA){
+  const f = v => v === undefined || v === null || v <= -149 ? '—' : fmtDb(v);
+  $('#nM').textContent = f(M); $('#nS').textContent = f(S); $('#nI').textContent = f(I);
+  $('#nLRA').textContent = LRA ? LRA.toFixed(1) : '—';
+}
+function hostLoud(o){ // the DAW side measures every sample (BS.1770-4), even while this window is closed
+  for (const [m, s] of o.lb){ histM.push(m); histS.push(s); }
+  while (histM.length > 600) histM.shift(); while (histS.length > 600) histS.shift();
+  showLoud(o.M, o.S, o.I, o.LRA);
+}
+function gated(list, relGate){
+  const abs = 10**((-70 + .691)/10); let s=0,n=0; for (const p of list) if (p > abs){ s+=p; n++; }
+  if (!n) return null; const thr = s/n * 10**(relGate/10); return list.filter(p => p > abs && p > thr);
+}
+function updateLoud(){
+  if (ac.currentTime - lastBlock > 2) lastBlock = ac.currentTime;
+  while (ac.currentTime - lastBlock >= .1){
+    lastBlock += .1;
+    kL.getFloatTimeDomainData(kbL); kR.getFloatTimeDomainData(kbR);
+    const N = Math.round(ac.sampleRate*.1); let s = 0;
+    for (let i=kbL.length-N;i<kbL.length;i++) s += kbL[i]*kbL[i] + kbR[i]*kbR[i];
+    blocks.push(s/N); if (blocks.length > 30) blocks.shift();
+    if (blocks.length >= 4){ const m = blocks.slice(-4).reduce((a,b)=>a+b)/4; momList.push(m); histM.push(lufs(m)); }
+    if (blocks.length >= 30){ const st = blocks.reduce((a,b)=>a+b)/30; stList.push(st); histS.push(lufs(st)); }
+    if (momList.length > 36000) momList.shift(); if (stList.length > 36000) stList.shift();
+    if (histM.length > 600) histM.shift(); if (histS.length > 600) histS.shift();
+  }
+  const gi = gated(momList, -10), gs = gated(stList, -20);
+  let lra = null;
+  if (gs && gs.length > 10){ const v = gs.map(lufs).sort((a,b)=>a-b); lra = v[Math.floor(v.length*.95)] - v[Math.floor(v.length*.1)]; }
+  showLoud(histM.at(-1), histS.at(-1), gi && gi.length ? lufs(gi.reduce((a,b)=>a+b)/gi.length) : undefined, lra);
+}
+
+// ---------- drawing ----------
+const cv = {}; ['spec','wave','meters','gonio','hist','corr'].forEach(id => cv[id] = { el: $('#'+id), g: $('#'+id).getContext('2d'), w:0, h:0 });
+const wf = { el: document.createElement('canvas') }; wf.g = wf.el.getContext('2d');
+function fit(){ for (const k in cv){ const c = cv[k], r = c.el.getBoundingClientRect();
+  c.el.width = Math.round(r.width*dpr); c.el.height = Math.round(r.height*dpr); c.w = r.width; c.h = r.height; c.g.setTransform(dpr,0,0,dpr,0,0); }
+  wf.el.width = Math.max(1, Math.round(cv.spec.w - PL - PR)); wf.el.height = Math.max(1, Math.round(cv.spec.h - PT - PB)); }
+const PL = 36, PR = 8, PT = 8, PB = 34;
+window.addEventListener('resize', fit); fit();
+
+const fx = (f, w) => PL + (w-PL-PR) * Math.log(f/FMIN)/Math.log(FMAX/FMIN);
+const xf = (x, w) => FMIN * (FMAX/FMIN) ** ((x-PL)/(w-PL-PR));
+const dy = (d, h) => PT + (h-PT-PB) * (DBTOP - Math.max(DBBOT, Math.min(DBTOP, d))) / (DBTOP-DBBOT);
+let hoverX = null;
+
+function ledGaps(g, x, y0, w, y1){ g.fillStyle = T.panel; for (let y = y1; y > y0; y -= 4) g.fillRect(x, y-1.2, w, 1.2); }
+function scanlines(g, w, h){ g.fillStyle = 'rgba(0,0,0,.22)'; for (let y = 0; y < h; y += 3) g.fillRect(0, y, w, 1); }
+
+function drawWaterfall(){ // scroll down 1px, paint newest row on top
+  const W = wf.el.width, H = wf.el.height, g = wf.g, pw = cv.spec.w;
+  g.drawImage(wf.el, 0, 0, W, H-1, 0, 1, W, H-1);
+  bands.forEach((b,i) => { const x0 = fx(Math.max(FMIN,b.lo),pw) - PL, x1 = fx(Math.min(FMAX,b.hi),pw) - PL;
+    g.fillStyle = heat((disp[i] - DBBOT) / (DBTOP - DBBOT)); g.fillRect(x0, 0, x1-x0+1, 1); });
+}
+
+function drawWave(c){ // scrolling min/max waveform, newest on the right
+  const {g, w, h} = c, mid = h/2, amp = h/2 - 4, x0 = PL; g.clearRect(0,0,w,h);
+  g.font = '10px Consolas'; g.textAlign = 'right';
+  for (const [a, lab] of [[1,'0'],[.5,'-6'],[.25,'-12'],[.125,'-18']]) for (const s of [-1,1]){
+    const y = mid - s*a*amp; g.fillStyle = T.grid; g.fillRect(x0, y, w-x0-PR, 1);
+    if (s > 0 && (a > .125 || h > 200)){ g.fillStyle = T.lbl; g.fillText(lab, x0-5, y+3); } }
+  g.fillStyle = T.lbl; g.fillRect(x0, mid, w-x0-PR, 1);
+  const cols = Math.floor(w-x0-PR), start = waveCols.length - cols;
+  for (let j=0;j<cols;j++){ const col = waveCols[start+j]; if (!col) continue;
+    const p = Math.max(-col[0], col[1]);
+    g.fillStyle = p > .89 ? T.rd : p > .5 ? T.yl : T.cv;   // red above -1 dB, yellow above -6 dB
+    g.fillRect(x0+j, mid - Math.min(1,col[1])*amp, 1, Math.max(1, (Math.min(1,col[1]) - Math.max(-1,col[0]))*amp)); }
+  if (T.scan) scanlines(g,w,h);
+}
+
+function drawSpectrum(){
+  const {g, w, h} = cv.spec, ph = h - PB;
+  if ($('#view').value === 'WAVEFORM'){ drawWave(cv.spec); return; }
+  g.clearRect(0,0,w,h);
+  if (live && T.wf){ drawWaterfall(); g.globalAlpha = .85; g.drawImage(wf.el, PL, PT, w-PL-PR, ph-PT); g.globalAlpha = 1; }
+  g.font = '10px Consolas,monospace'; g.textAlign = 'right';
+  for (let d = DBTOP; d >= DBBOT; d -= 10){ const y = dy(d,h);
+    g.strokeStyle = T.grid; g.beginPath(); g.moveTo(PL,y); g.lineTo(w-PR,y); g.stroke(); g.fillStyle = T.lbl; g.fillText(d, PL-5, y+3); }
+  g.textAlign = 'center';
+  for (const f of [20,30,50,100,200,300,500,1000,2000,3000,5000,10000,20000]){ const x = fx(f,w);
+    g.strokeStyle = T.grid; g.beginPath(); g.moveTo(x,PT); g.lineTo(x,ph); g.stroke();
+    g.fillStyle = T.lbl; g.fillText(f>=1000 ? f/1000+'k' : f, x, ph+11); }
+  const ky = ph + 15, kh = 12;
+  for (let m = 16; m <= 135; m++){ const f0 = 440*2**((m-69.5)/12), f1 = 440*2**((m-68.5)/12); if (f1 < FMIN || f0 > FMAX) continue;
+    const x0 = fx(Math.max(FMIN,f0),w), x1 = fx(Math.min(FMAX,f1),w), blk = [1,3,6,8,10].includes(m%12);
+    g.fillStyle = blk ? T.keyb : T.keyw; g.fillRect(x0, ky, Math.max(1,x1-x0-.5), kh);
+    if (m%12 === 0 && x1-x0 > 2){ g.fillStyle = T.keyl; g.font='9px Consolas'; g.textAlign='left'; g.fillText('C'+(m/12-1), x0+1, ky+kh+9); } }
+  if (!live){ if (T.scan) scanlines(g,w,h); return; }
+
+  const grad = g.createLinearGradient(0, dy(DBTOP,h), 0, dy(DBBOT,h));
+  grad.addColorStop(0,T.g0); grad.addColorStop(.08,T.g1); grad.addColorStop(.35,T.g2); grad.addColorStop(1,T.g3);
+  const view = $('#view').value;
+  const blocks = view.startsWith('BLOCKS'), thin = view === 'BLOCKS THIN';
+  if (blocks){ // RME-style: separate bars built from stacked blocks that jump a whole block at a time
+    const step = 2, bpx = (ph-PT)*step/(DBTOP-DBBOT), gap = Math.max(1, bpx*.25);
+    const many = bands.length > 150; // fine resolutions: one rect per bar, block gaps cut afterwards
+    bands.forEach((b,i) => {
+      const x0 = fx(Math.max(FMIN,b.lo),w), x1 = fx(Math.min(FMAX,b.hi),w), inset = many ? Math.min(.6, (x1-x0)*.2) : Math.max(1, (x1-x0)*(thin ? .32 : .12)), bw = Math.max(.8, x1-x0-2*inset);
+      const n = Math.floor((disp[i]-DBBOT)/step); g.fillStyle = grad;
+      if (many){ if (n > 0) g.fillRect(x0+inset, ph-n*bpx, bw, n*bpx); }
+      else for (let k=0;k<n;k++) g.fillRect(x0+inset, ph-(k+1)*bpx, bw, bpx-gap);
+      const pn = Math.floor((pk[i]-DBBOT)/step);
+      if (pn > 0){ g.fillStyle = T.pk; g.fillRect(x0+inset, ph-pn*bpx, bw, bpx-gap); }
+    });
+    if (many){ g.fillStyle = T.panel; for (let k=1;k*bpx<ph-PT;k++) g.fillRect(PL, ph-k*bpx-gap, w-PL-PR, gap); }
+  } else if (view === 'CURVE'){
+    if (!T.wf){ g.beginPath(); g.moveTo(fx(bands[0].f,w), ph);
+      bands.forEach((b,i) => g.lineTo(fx(b.f,w), dy(disp[i],h))); g.lineTo(fx(bands.at(-1).f,w), ph);
+      g.fillStyle = T.cv; g.globalAlpha = .13; g.fill(); g.globalAlpha = 1; }
+    g.beginPath(); bands.forEach((b,i) => g[i?'lineTo':'moveTo'](fx(b.f,w), dy(disp[i],h)));
+    g.strokeStyle = T.cv; g.lineWidth = 1.8; g.shadowColor = T.cv; g.shadowBlur = 8; g.stroke(); g.shadowBlur = 0; g.lineWidth = 1;
+  } else {
+    g.fillStyle = grad;
+    bands.forEach((b,i) => { const x0 = fx(Math.max(FMIN,b.lo),w), x1 = fx(Math.min(FMAX,b.hi),w), y = dy(disp[i],h);
+      g.fillRect(x0+.5, y, Math.max(1, x1-x0-1.2), ph-y); });
+    if (T.seg) ledGaps(g, PL, PT, w-PL-PR, ph);
+  }
+  g.fillStyle = T.pk;
+  if (!blocks) bands.forEach((b,i) => { if (pk[i] < DBBOT) return; const x0 = fx(Math.max(FMIN,b.lo),w), x1 = fx(Math.min(FMAX,b.hi),w); g.fillRect(x0+.5, dy(pk[i],h)-1, Math.max(1,x1-x0-1.2), 2); });
+
+  if (autoArm && !frozen){ const y = dy(+$('#thr').value,h); g.setLineDash([6,4]); g.strokeStyle = T.rd; g.beginPath(); g.moveTo(PL,y); g.lineTo(w-PR,y); g.stroke(); g.setLineDash([]);
+    g.fillStyle = T.rd; g.textAlign = 'left'; g.font = '10px Consolas'; g.fillText('AUTO FREEZE ' + $('#thr').value + ' dB', PL+4, y-4); }
+
+  if (frozen){
+    g.beginPath(); frozen.pts.forEach((p,i) => g[i?'lineTo':'moveTo'](fx(p.f,w), dy(p.db,h)));
+    g.strokeStyle = T.frz; g.lineWidth = 2; g.shadowColor = T.frz; g.shadowBlur = 12; g.stroke(); g.shadowBlur = 0; g.lineWidth = 1;
+    g.font = 'bold 11px Consolas,monospace';
+    frozen.labels.forEach((L, n) => {
+      const x = fx(L.f,w), y = dy(L.db,h);
+      g.fillStyle = T.frz; g.beginPath(); g.arc(x, y, 4, 0, 7); g.fill();
+      const txt1 = fmtF(L.f) + '  ' + fmtDb(L.db) + ' dB', txt2 = note(L.f);
+      const tw = Math.max(g.measureText(txt1).width, g.measureText(txt2).width) + 10;
+      let bx = Math.min(w-PR-tw, Math.max(PL, x - tw/2)), by = y - 40 - (n%2)*30; if (by < PT) by = y + 10;
+      g.strokeStyle = T.frz; g.beginPath(); g.moveTo(x,y); g.lineTo(bx+tw/2, by+30); g.stroke();
+      g.fillStyle = T.frzbg; g.fillRect(bx, by, tw, 30); g.strokeRect(bx, by, tw, 30);
+      g.textAlign = 'left'; g.fillStyle = T.tipt; g.fillText(txt1, bx+5, by+12); g.fillStyle = T.frzt; g.fillText(txt2, bx+5, by+25);
+    });
+    g.fillStyle = T.frz; g.textAlign = 'right'; g.fillText('❄ FROZEN — click to release', w-PR-4, PT+12);
+  }
+
+  if (hoverX !== null && hoverX >= PL && hoverX <= w-PR){
+    const f = xf(hoverX, w), i = bands.findIndex(b => f >= b.lo && f < b.hi);
+    g.strokeStyle = T.hov; g.globalAlpha = .6; g.beginPath(); g.moveTo(hoverX, PT); g.lineTo(hoverX, ph+27); g.stroke(); g.globalAlpha = 1;
+    const m = Math.round(69 + 12*Math.log2(f/440)), k0 = fx(440*2**((m-69.5)/12),w), k1 = fx(440*2**((m-68.5)/12),w);
+    g.fillStyle = T.hov; g.fillRect(k0, ky, Math.max(2,k1-k0-.5), kh);
+    const lines = [fmtF(f), note(f), i>=0 ? 'live ' + fmtDb(disp[i]) + ' dB' : ''];
+    if (frozen && i >= 0){ const p = frozen.pts.reduce((a,b) => Math.abs(Math.log(b.f/f)) < Math.abs(Math.log(a.f/f)) ? b : a); lines.push('frozen ' + fmtDb(p.db) + ' dB'); }
+    g.font = 'bold 12px Consolas,monospace'; const tw = Math.max(...lines.map(s => g.measureText(s).width)) + 12, th = lines.length*15 + 6;
+    const bx = hoverX + 12 + tw > w ? hoverX - 12 - tw : hoverX + 12;
+    g.fillStyle = T.tipbg; g.strokeStyle = T.hov; g.fillRect(bx, PT+4, tw, th); g.strokeRect(bx, PT+4, tw, th);
+    g.textAlign = 'left'; lines.forEach((s,n) => { g.fillStyle = n===1 ? T.hov : T.tipt; g.fillText(s, bx+6, PT+19+n*15); });
+  }
+  if (T.scan) scanlines(g,w,h);
+}
+
+function drawMeters(){
+  const {g, w, h} = cv.meters; g.clearRect(0,0,w,h);
+  const top = 6, bot = h-14, lo = -60, y = d => top + (bot-top) * (0 - Math.max(lo, Math.min(0,d))) / -lo;
+  const sc = 26, mW = Math.max(14, w*.09), gw = (w - sc - mW - 38) / 2;   // scale | L | R | M
+  const xs = [sc + 4, sc + 8 + gw], xm = w - mW - 4;
+  g.font = '9px Consolas'; g.textAlign = 'right';
+  for (const d of [0,-3,-6,-9,-12,-18,-24,-30,-40,-50,-60]){ g.fillStyle = T.lbl; g.fillText(d, sc-2, y(d)+3);
+    g.fillStyle = T.grid; g.fillRect(sc+2, y(d), w-sc-6, 1); }
+  g.textAlign = 'center'; g.fillStyle = T.keyl;
+  g.fillText('L', xs[0]+gw/2, h-3); g.fillText('R', xs[1]+gw/2, h-3); g.fillText('M', xm+mW/2, h-3);
+  if (!live) return;
+  const grad = g.createLinearGradient(0, bot, 0, top);
+  grad.addColorStop(0,T.g3); grad.addColorStop(.7,T.g2); grad.addColorStop(.9,T.yl); grad.addColorStop(1,T.g0);
+  const ref = +$('#vuref').value;
+  xs.forEach((x,c) => {
+    g.fillStyle = T.mbg; g.fillRect(x, top, gw, bot-top);
+    g.fillStyle = grad; g.globalAlpha = .45; const yp = y(pkDisp[c]); g.fillRect(x, yp, gw, bot-yp); g.globalAlpha = 1;  // peak
+    const yr = y(10*Math.log10(rmsPow[c]+1e-15)); g.fillRect(x+gw*.22, yr, gw*.56, bot-yr);                         // RMS
+    if (T.seg) ledGaps(g, x, top, gw, bot);
+    const yv = y(db(vu2[c]));                                                                                         // VU needle
+    g.fillStyle = T.lm; g.shadowColor = T.lm; g.shadowBlur = 6; g.fillRect(x, yv-1.5, gw, 3); g.shadowBlur = 0;
+    g.fillStyle = pkHold[c] > -0.1 ? T.rd : T.tipt; g.fillRect(x, y(pkHold[c])-1, gw, 2);                           // peak hold
+  });
+  g.fillStyle = T.lm; g.globalAlpha = .5; g.fillRect(sc+2, y(ref), w-sc-6, 1); g.globalAlpha = 1;                    // 0 VU line
+  g.textAlign = 'left'; g.fillStyle = T.lm; g.fillText('0VU', xs[1]+gw+2, y(ref)-2);
+  // momentary loudness on the same scale (LUFS)
+  const M = histM.length ? histM[histM.length-1] : -150;
+  g.fillStyle = T.mbg; g.fillRect(xm, top, mW, bot-top);
+  g.fillStyle = T.s; const ym = y(M); g.fillRect(xm, ym, mW, bot-ym);
+  if (T.seg) ledGaps(g, xm, top, mW, bot);
+  $('#nPk').lastElementChild.textContent = fmtDb(maxPk);
+  $('#nPk').lastElementChild.style.color = maxPk > -0.1 ? 'var(--rd)' : '';
+  const rL = 10*Math.log10(rmsPow[0]+1e-15), rR = 10*Math.log10(rmsPow[1]+1e-15);
+  $('#nRms').textContent = fmtDb(rL,0) + '/' + fmtDb(rR,0);
+  const vL = db(vu2[0]) - ref, vR = db(vu2[1]) - ref, fv = v => v < -40 ? '-∞' : (v > 0 ? '+' : '') + v.toFixed(0);
+  $('#nVu').textContent = fv(vL) + '/' + fv(vR);
+  $('#nVu').style.color = Math.max(vL, vR) > 3 ? 'var(--rd)' : Math.max(vL, vR) > 0 ? 'var(--yl)' : '';
+  $('#nCrest').textContent = fmtDb(Math.max(pkHold[0],pkHold[1]) - Math.max(rL,rR));
+  $('#nOver').textContent = overs; $('#nOver').style.color = overs ? 'var(--rd)' : '';
+}
+
+function drawGonio(){
+  const {g, w, h} = cv.gonio, s = Math.min(w,h), cx = w/2, cy = h/2, R = s*.46;
+  g.fillStyle = T.fade; g.fillRect(0,0,w,h);  // phosphor fade
+  g.strokeStyle = T.grid; g.beginPath();
+  g.moveTo(cx-R,cy); g.lineTo(cx+R,cy); g.moveTo(cx,cy-R); g.lineTo(cx,cy+R);
+  g.moveTo(cx-R*.7,cy-R*.7); g.lineTo(cx+R*.7,cy+R*.7); g.moveTo(cx+R*.7,cy-R*.7); g.lineTo(cx-R*.7,cy+R*.7); g.stroke();
+  g.fillStyle = T.lbl; g.font = '10px Consolas'; g.textAlign = 'center';
+  g.fillText('M', cx, cy-R+9); g.fillText('L', cx-R*.72, cy-R*.72); g.fillText('R', cx+R*.72, cy-R*.72); g.fillText('+S', cx+R-8, cy-4); g.fillText('-S', cx-R+8, cy-4);
+  if (!live) return;
+  const k = R / (gonioPeak*1.414); g.fillStyle = T.dot;
+  for (let i=0;i<gL.length;i+=gStep){ const l = gL[i], r = gR[i];
+    g.fillRect(cx + (r-l)*.7071*k, cy - (l+r)*.7071*k, 1.3, 1.3); }
+  const c = cv.corr, cg = c.g; cg.clearRect(0,0,c.w,c.h);
+  cg.fillStyle = T.mbg; cg.fillRect(0,0,c.w,c.h);
+  const zx = c.w/2, px = zx + corr*(c.w/2-2);
+  cg.fillStyle = corr < 0 ? T.rd : corr < .3 ? T.yl : T.lm;
+  cg.fillRect(Math.min(zx,px), 4, Math.abs(px-zx), c.h-8);
+  cg.fillStyle = T.lbl; cg.font = '10px Consolas'; cg.textAlign='left'; cg.fillText('-1', 3, c.h-7); cg.textAlign='right'; cg.fillText('+1', c.w-3, c.h-7);
+  cg.textAlign = 'center'; cg.fillStyle = T.tipt; cg.fillText('CORR ' + corr.toFixed(2), zx, c.h-7);
+}
+
+function drawHist(){
+  const {g, w, h} = cv.hist; g.clearRect(0,0,w,h);
+  const lo = -40, hi = 0, y = v => 6 + (h-20) * (hi - Math.max(lo, Math.min(hi, v))) / (hi-lo);
+  g.font = '10px Consolas'; g.textAlign = 'right';
+  for (let v = hi; v >= lo; v -= 5){ g.fillStyle = T.grid; g.fillRect(30, y(v), w-34, 1); g.fillStyle = T.lbl; g.fillText(v, 26, y(v)+3); }
+  [[-14,'-14 streaming'],[-8,'-8 club']].forEach(([v,t]) => { g.setLineDash([4,4]); g.strokeStyle = T.lbl; g.beginPath(); g.moveTo(30,y(v)); g.lineTo(w-4,y(v)); g.stroke(); g.setLineDash([]);
+    g.fillStyle = T.lbl; g.textAlign = 'left'; g.fillText(t, 34, y(v)-3); });
+  g.textAlign = 'center'; g.fillStyle = T.lbl; g.fillText('-60 s', 40, h-2); g.fillText('now', w-14, h-2);
+  const line = (arr, col) => { if (arr.length < 2) return; g.beginPath();
+    arr.forEach((v,i) => g[i?'lineTo':'moveTo'](30 + (w-34) * (1 - (arr.length-1-i)/599), y(v))); g.strokeStyle = col; g.lineWidth = 1.5; g.stroke(); g.lineWidth = 1; };
+  line(histM, T.m); line(histS, T.s);
+  if (T.scan) scanlines(g,w,h);
+}
+
+// ---------- UI wiring ----------
+const out = (id, f) => { const el = $('#'+id), o = $('#'+id+'O'); const u = () => o.textContent = f(+el.value); el.oninput = u; u(); };
+out('att', v => v + ' ms'); out('rel', v => v + ' ms'); out('hold', v => v ? v + ' s' : 'off'); out('thr', v => v + ' dB');
+$('#res').onchange = () => live && buildBands();
+const stepRes = d => { const el = $('#res'); el.selectedIndex = Math.max(0, Math.min(el.options.length-1, el.selectedIndex + d)); if (live) buildBands(); saveUi(); };
+$('#resDn').onclick = () => stepRes(-1); $('#resUp').onclick = () => stepRes(1);
+function setFft(n){
+  $('#fft').value = n;
+  if (HOST) be.emitEvent('fft', { size: n });   // the new size arrives with the next frame
+  else if (anMix){ anMix.fftSize = n; fbuf = new Float32Array(anMix.frequencyBinCount); FFTN = n; ensureBuffers(anMix.frequencyBinCount); }
+}
+$('#fft').onchange = e => setFft(+e.target.value);
+$('#skin').onchange = e => setSkin(e.target.value);
+$('#bDemo').onclick = startDemo;
+$('#bFile').onclick = () => $('#file').click();
+$('#file').onchange = e => e.target.files[0] && startFile(e.target.files[0]);
+$('#bMic').onclick = startMic;
+$('#bStop').onclick = () => { if (ac){ stopSource(); } };
+$('#bFreeze').onclick = toggleFreeze;
+$('#bAuto').onclick = () => { autoArm = !autoArm; $('#bAuto').classList.toggle('on', autoArm); autoPending = 0; saveUi(); };
+UI_IDS.forEach(id => $('#'+id).addEventListener('change', saveUi));
+$('#bReset').onclick = resetPeaks;
+$('#nPk').onclick = () => { maxPk = -150; overs = 0; };
+$('#nIbox').onclick = () => live && resetLoud();
+cv.spec.el.addEventListener('pointermove', e => hoverX = e.offsetX);
+cv.spec.el.addEventListener('pointerleave', () => hoverX = null);
+cv.spec.el.addEventListener('click', toggleFreeze);
+addEventListener('keydown', e => { if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  if (e.key === 'f' || e.key === 'F') toggleFreeze(); if (e.key === 'r' || e.key === 'R') resetPeaks();
+  const sk = ['neon','amber','lab','lava'][+e.key - 1]; if (sk) setSkin(sk); });
+
+let saved = 'neon'; try{ saved = localStorage.getItem('skz-skin') || 'neon'; }catch(e){}
+setSkin(saved);
+
+let last = performance.now(), peakTick = 0;
+function analyse(dt, now, st){
+  updateSpectrum(dt, now); updateMeters(dt, st);
+  if (now - peakTick > 120){ peakTick = now; // live loudest note, readable rate
+    const m = refineFreq(fdb, FMIN, FMAX);
+    $('#peakRead').textContent = m.db > -80 ? 'PEAK ' + fmtF(m.f) + ' · ' + note(m.f) + ' · ' + fmtDb(m.db) + ' dB' : 'PEAK —'; }
+}
+
+if (HOST){
+  document.body.classList.add('host');
+  $('#hint').textContent = 'WAITING FOR AUDIO FROM THE DAW';
+  const i16 = s => { const b = atob(s), u = new Uint8Array(b.length); for (let i=0;i<b.length;i++) u[i] = b.charCodeAt(i); return new Int16Array(u.buffer); };
+  let lastTele = 0;
+  be.addEventListener('init', o => { try{ applyUi(JSON.parse(o.ui || '{}')); }catch(e){} });
+  be.addEventListener('tele', o => {
+    const now = performance.now(), dt = lastTele ? Math.min(.2, (now - lastTele)/1000) : 1/30; lastTele = now;
+    const sp = i16(o.spec);
+    if (!live || o.sr !== SR || o.fft !== FFTN || fdb.length !== sp.length){
+      SR = o.sr; FFTN = o.fft; ensureBuffers(sp.length); live = true; $('#hint').style.display = 'none'; }
+    for (let k=0;k<sp.length;k++) fdb[k] = sp[k] / 100;
+    const g = i16(o.g);
+    if (gL.length !== g.length/2){ gL = new Float32Array(g.length/2); gR = new Float32Array(g.length/2); }
+    for (let i=0;i<gL.length;i++){ gL[i] = g[2*i] / 32767; gR[i] = g[2*i+1] / 32767; }
+    gStep = 1;
+    analyse(dt, now, o); hostLoud(o);
+  });
+  be.emitEvent('ready', {});
+}
+function frame(now){
+  const dt = Math.min(.1, (now - last)/1000); last = now;
+  if (!HOST && ac && ac.state === 'running'){
+    anMix.getFloatFrequencyData(fbuf);
+    for (let k=0;k<fbuf.length;k++) fdb[k] = Math.max(-150, fbuf[k] + CAL);
+    analyse(dt, now, browserStats(dt)); updateLoud();
+  }
+  drawSpectrum(); drawWave(cv.wave); drawMeters(); drawGonio(); drawHist();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
