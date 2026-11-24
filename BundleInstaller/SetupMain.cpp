@@ -237,7 +237,8 @@ public:
         for (auto* b : { &installBtn, &uninstallBtn, &closeBtn })
             addAndMakeVisible (b);
 
-        setSize (660, 140 + 44 * jmax (1, payload.products.size()) + 210);
+        // two columns of plugins, so the window stays wide and short instead of running off the screen
+        setSize (1000, 140 + kRowH * jmax (1, (payload.products.size() + 1) / 2) + 210);
         refreshState();
         if (startUninstall)
             MessageManager::callAsync ([this] { uninstall(); });
@@ -275,7 +276,7 @@ public:
             g.setColour (skin::textDim);
             g.setFont (skin::font (11.0f, false));
             g.drawText (describe (name) + (payload.hasApp (name) ? String::fromUTF8 ("  \xc2\xb7  VST3 + standalone app") : "  \xc2\xb7  VST3"),
-                        t->getRight() + 10, t->getY() + 15, 400, 16, Justification::left);
+                        t->getRight() + 10, t->getY() + 15, colW() - 70, 16, Justification::left);
         }
 
         g.setColour (skin::line);
@@ -299,12 +300,10 @@ public:
     {
         faceplate = skin::renderBrushedMetal (getWidth(), getHeight());
         panel = { 30, 92, getWidth() - 60, getHeight() - 92 - 70 };
-        int y = panel.getY() + 48;
-        for (auto* t : toggles)
-        {
-            t->setBounds (panel.getX() + 20, y, 36, 20);
-            y += 44;
-        }
+        const int rows = jmax (1, (toggles.size() + 1) / 2), top = panel.getY() + 48;
+        for (int i = 0; i < toggles.size(); ++i) // left column first, then the right one
+            toggles[i]->setBounds (panel.getX() + 20 + (i / rows) * colW(), top + (i % rows) * kRowH, 36, 20);
+        const int y = top + rows * kRowH;
         optApps.setBounds (panel.getX() + 20, y + 14, 36, 20);
         optDesktop.setBounds (panel.getX() + 20, y + 44, 36, 20);
         const int by = getHeight() - 56;
@@ -312,6 +311,9 @@ public:
         closeBtn.setBounds (getWidth() - 250, by, 90, 34);
         installBtn.setBounds (getWidth() - 150, by, 120, 34);
     }
+
+    static constexpr int kRowH = 40;
+    int colW() const { return (panel.getWidth() - 40) / 2; }
 
     bool install()
     {
