@@ -148,6 +148,10 @@ SynthPanel::SynthPanel (Skazi303Processor& p)
     knob ("post_drive", "POST DRIVE", false);
     knob ("dist_tone", "TONE", false);
     knob ("dist_mix", "MIX", false);
+    selector ("drive2_type", "DRIVE 2 TYPE", false);
+    knob ("drive2", "DRIVE 2", false);
+    knob ("ott_depth", "OTT", false);
+    knob ("ott_time", "OTT TIME", false);
 
     knob ("fine", "FINE", false, true);
     knob ("drift", "DRIFT", false);
@@ -269,6 +273,13 @@ SynthPanel::SynthPanel (Skazi303Processor& p)
     addAndMakeVisible (seqOnBtn);
     seqOnAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment> (processor.apvts, "seq_on", seqOnBtn);
 
+    turboBtn.setClickingTogglesState (true);
+    turboBtn.getProperties().set ("hot", true);
+    turboBtn.setColour (juce::TextButton::textColourOffId, skin::ink);
+    turboBtn.setTooltip ("TURBO: DRIVE 2 and OTT slammed on at once for instant power, level-matched so it hits harder, not just louder");
+    addAndMakeVisible (turboBtn);
+    turboAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment> (processor.apvts, "turbo", turboBtn);
+
     // Tabs: LED buttons, one lit at a time.
     for (auto* b : { &synthTabBtn, &modsTabBtn, &fxTabBtn, &seqTabBtn })
     {
@@ -323,9 +334,11 @@ SynthPanel::SynthPanel (Skazi303Processor& p)
     // Which controls live on which tab.
     for (auto id : { "wave", "tune", "cutoff", "reso", "envmod", "decay", "accent", "slide_time",
                      "pre_type", "pre_drive", "post_type", "post_drive", "dist_tone", "dist_mix",
+                     "drive2_type", "drive2", "ott_depth", "ott_time",
                      "fine", "drift", "sub_level", "sub_wave", "f2_type", "f2_cutoff", "f2_reso", "f2_vowel", "f2_mix",
                      "vca_decay", "fat", "volume" })
         synthItems.push_back (controls[id].get());
+    synthItems.push_back (&turboBtn);
     for (auto id : { "mod_mode", "mod_rate", "mod_depth", "mod_mix", "dly_sync", "dly_fb", "dly_tone", "dly_mix",
                      "rev_size", "rev_damp", "rev_mix", "width" })
         fxItems.push_back (controls[id].get());
@@ -487,18 +500,21 @@ void SynthPanel::resized()
         auto out = addSection ("VCA  /  FAT TUBE  /  OUTPUT", { 874, y2, 332, 132 }, 0);
         placeRow (out, { "vca_decay", "fat", "volume" }, 106);
 
-        // Drive gets its own full row: pick any of the 10 types before and after the filter.
+        // Drive gets its own full row: PRE > FILTER > POST > DRIVE 2 > OTT, then TURBO.
         const int y3 = y2 + 140;
-        auto drive = addSection ("DRIVE  /  PRE > FILTER > POST  /  14 TYPES EACH", { 14, y3, contentW - 28, 108 }, 0);
-        drive.removeFromLeft (40);
+        auto drive = addSection ("DRIVE  /  PRE > FILTER > POST > DRIVE 2 > OTT  /  TURBO", { 14, y3, contentW - 28, 108 }, 0);
+        drive.removeFromLeft (6);
         for (auto [id, isSelector] : { std::pair<const char*, bool> { "pre_type", true }, { "pre_drive", false },
                                        { "post_type", true }, { "post_drive", false },
-                                       { "dist_tone", false }, { "dist_mix", false } })
+                                       { "dist_tone", false }, { "dist_mix", false },
+                                       { "drive2_type", true }, { "drive2", false },
+                                       { "ott_depth", false }, { "ott_time", false } })
         {
-            auto cell = drive.removeFromLeft (isSelector ? 170 : 150);
-            controls[id]->setBounds (isSelector ? cell.withSizeKeepingCentre (150, 50) : cell);
-            drive.removeFromLeft (isSelector ? 10 : 30);
+            auto cell = drive.removeFromLeft (isSelector ? 128 : 86);
+            controls[id]->setBounds (isSelector ? cell.withSizeKeepingCentre (122, 50) : cell);
+            drive.removeFromLeft (isSelector ? 4 : 8);
         }
+        turboBtn.setBounds (drive.withSizeKeepingCentre (juce::jmin (120, drive.getWidth() - 8), 44));
     }
 
     // ---- MODS tab: circuit-level tweaks, like the hardware mods people did to their 303s

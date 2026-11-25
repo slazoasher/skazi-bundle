@@ -151,6 +151,13 @@ juce::AudioProcessorValueTreeState::ParameterLayout Skazi303Processor::createLay
         ps.push_back (std::make_unique<AudioParameterBool> (ParameterID { ids::step (i, "sld"), 1 }, n + "Slide", defSld[i]));
     }
 
+    // POWER (added in 1.3, kept last so old projects and presets load unchanged; all off by default)
+    choice ("drive2_type", "Drive 2 Type", distTypes, 5); // Distortion
+    pct ("drive2", "Drive 2", 0.0f);
+    pct ("ott_depth", "OTT Depth", 0.0f);
+    pct ("ott_time", "OTT Time", 0.3f);
+    ps.push_back (std::make_unique<AudioParameterBool> (ParameterID { "turbo", 1 }, "Turbo", false));
+
     return { ps.begin(), ps.end() };
 }
 
@@ -191,6 +198,8 @@ Skazi303Processor::Skazi303Processor()
     p.intBpm = get ("int_bpm");
     p.genScale = get ("gen_scale"); p.genDensity = get ("gen_density"); p.genAccent = get ("gen_accent");
     p.genSlide = get ("gen_slide"); p.genOctave = get ("gen_octave");
+    p.drive2Type = get ("drive2_type"); p.drive2 = get ("drive2");
+    p.ottDepth = get ("ott_depth");     p.ottTime = get ("ott_time");   p.turbo = get ("turbo");
 
     for (int i = 0; i < s303::kMaxSteps; ++i)
     {
@@ -229,6 +238,12 @@ void Skazi303Processor::prepareToPlay (double sampleRate, int samplesPerBlock)
     delay.prepare (sr);
     width.prepare (sr);
     fatStage.prepare (sr);
+    drive2.prepare (sr * 2.0);
+    ott.prepare (sr);
+    powerMatch.reset();
+    powerGain.reset (sr, 0.05);
+    powerGain.setCurrentAndTargetValue (1.0f);
+    powerWasOn = false;
     reverb.setSampleRate (sr);
     reverb.reset();
 
@@ -510,6 +525,23 @@ void Skazi303Processor::renderChunk (float* left, float* right, int numSamples, 
 
     const double ppqPerSample = bpm / (60.0 * sr);
 
+    // POWER section settings. TURBO = DRIVE 2 and OTT pushed hard at once.
+    const bool turbo = p.turbo->load() > 0.5f;
+    const auto d2Type = (s303::DistType) (int) p.drive2Type->load();
+    const float d2Amt = turbo ? juce::jmax (p.drive2->load(), 0.5f) : p.drive2->load();
+    const float ottAmt = turbo ? juce::jmax (p.ottDepth->load(), 0.8f) : p.ottDepth->load();
+    const float ottTime = p.ottTime->load();
+    const bool powerOn = d2Amt > 0.0001f || ottAmt > 0.0001f;
+    if (powerOn != powerWasOn)
+    {
+        drive2.reset();
+        ott.reset();
+        powerMatch.reset();
+        powerGain.setCurrentAndTargetValue (1.0f);
+        powerWasOn = powerOn;
+    }
+    double powerIn = 0.0, powerOut = 0.0;
+
     // Run the voice at 2x: upsample a silent block, overwrite it, then downsample.
     monoBuffer.clear();
     juce::dsp::AudioBlock<float> block (monoBuffer.getArrayOfWritePointers(), 1, (size_t) numSamples);
@@ -540,12 +572,34 @@ void Skazi303Processor::renderChunk (float* left, float* right, int numSamples, 
                 internalPpq += ppqPerSample;
         }
 
-        os[2 * i] = voice.render (vp);
-        os[2 * i + 1] = voice.render (vp);
+        float a = voice.render (vp), b = voice.render (vp);
+        if (powerOn)
+        {
+            powerIn += (double) a * a + (double) b * b;
+            a = drive2.process (a, d2Type, d2Amt);
+            b = drive2.process (b, d2Type, d2Amt);
+        }
+        os[2 * i] = a;
+        os[2 * i + 1] = b;
     }
 
     oversampling->processSamplesDown (block);
-    const float* mono = monoBuffer.getReadPointer (0);
+    float* mono = monoBuffer.getWritePointer (0);
+
+    if (powerOn)
+    {
+        for (int i = 0; i < numSamples; ++i)
+        {
+            mono[i] = ott.process (mono[i], ottAmt, ottTime);
+            powerOut += (double) mono[i] * mono[i];
+        }
+        const bool wasSilent = ! powerMatch.isPrimed();
+        const auto g = (float) powerMatch.update (powerIn / (2.0 * numSamples), powerOut / numSamples, numSamples / sr);
+        if (wasSilent) powerGain.setCurrentAndTargetValue (g); // first block after switching on: no ramp from unity
+        else powerGain.setTargetValue (g);
+        for (int i = 0; i < numSamples; ++i)
+            mono[i] *= powerGain.getNextValue();
+    }
 
     currentStep.store (seqActive ? sequencer.getCurrentIndex() : -1);
     filterActivity.store ((float) voice.getFilterEnv());

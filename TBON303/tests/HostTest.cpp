@@ -36,6 +36,9 @@ void setParam (juce::AudioPluginInstance& p, const juce::String& name, float nor
         check (false, "parameter not found: " + name);
 }
 
+double lastPeak = 0.0;
+bool lastFinite = true;
+
 /** Renders `seconds` of audio, sending a note-on at the start (and note-off half way) if note >= 0. */
 double render (juce::AudioPluginInstance& p, double seconds, int note, int velocity = 100)
 {
@@ -55,6 +58,13 @@ double render (juce::AudioPluginInstance& p, double seconds, int note, int veloc
 
         buf.clear();
         p.processBlock (buf, midi);
+        for (int c = 0; c < 2; ++c)
+            for (int i = 0; i < block; ++i)
+            {
+                const float v = buf.getSample (c, i);
+                if (! std::isfinite (v)) lastFinite = false;
+                lastPeak = juce::jmax (lastPeak, (double) std::abs (v));
+            }
 
         // Measure only while the note is held.
         if (note < 0 || pos < total / 2)
@@ -205,7 +215,47 @@ int main (int argc, char** argv)
                      plugin->getProgramName (200).toRawUTF8(), plugin->getProgramName (n - 1).toRawUTF8());
     }
 
-    // 6. Editor opens.
+    // 6. POWER: TURBO and DRIVE 2 + OTT keep the level (within 3 dB), never clip, never NaN.
+    {
+        double worstDb = 0.0, worstPeak = 0.0;
+        juce::String worstName;
+        bool allFinite = true;
+        int tested = 0;
+        for (int i = 0; i < plugin->getNumPrograms(); i += 7)
+        {
+            plugin->setCurrentProgram (i);
+            juce::MessageManager::getInstance()->runDispatchLoopUntil (5);
+            for (auto name : { "Delay Mix", "Reverb Mix", "Mod Mix" })
+                setParam (*plugin, name, 0.0f);
+
+            // settings: off, TURBO, max DRIVE 2 + OTT, TURBO + max everything (incl. Super Dist type)
+            struct Set { float turbo, d2, ott, type; } sets[] = { { 0, 0, 0, 5 }, { 1, 0, 0, 5 }, { 0, 1, 1, 5 }, { 1, 1, 1, 6 } };
+            double ref = 0.0;
+            for (auto& st : sets)
+            {
+                setParam (*plugin, "Turbo", st.turbo);
+                setParam (*plugin, "Drive 2", st.d2);
+                setParam (*plugin, "OTT Depth", st.ott);
+                setParam (*plugin, "Drive 2 Type", st.type / 13.0f);
+                render (*plugin, 0.3, -1);
+                lastPeak = 0.0; lastFinite = true;
+                render (*plugin, 0.5, 45, 90);                  // settle the level match
+                const double rms = render (*plugin, 1.2, 45, 120); // accented held note
+                allFinite = allFinite && lastFinite && std::isfinite (rms);
+                if (&st == &sets[0]) { ref = rms; continue; }
+                const double db = 20.0 * std::log10 (juce::jmax (1.0e-9, rms) / juce::jmax (1.0e-9, ref));
+                if (std::abs (db) > std::abs (worstDb)) { worstDb = db; worstName = plugin->getProgramName (i); }
+                worstPeak = juce::jmax (worstPeak, lastPeak);
+            }
+            setParam (*plugin, "Turbo", 0.0f); setParam (*plugin, "Drive 2", 0.0f); setParam (*plugin, "OTT Depth", 0.0f);
+            ++tested;
+        }
+        check (allFinite, "POWER: no NaN/inf over " + juce::String (tested) + " presets x 3 settings");
+        check (std::abs (worstDb) < 3.0, juce::String::formatted ("POWER level change vs off, worst %+.1f dB (", worstDb) + worstName + ")");
+        check (worstPeak < 1.0, juce::String::formatted ("POWER peak %.3f, under 0 dBFS", worstPeak));
+    }
+
+    // 7. Editor opens.
     std::unique_ptr<juce::AudioProcessorEditor> editor (plugin->createEditorIfNeeded());
     check (editor != nullptr && editor->getWidth() > 400, "editor opens");
     editor.reset();

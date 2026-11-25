@@ -256,7 +256,8 @@ public:
     void drawButtonBackground (juce::Graphics& g, juce::Button& b, const juce::Colour&, bool over, bool down) override
     {
         auto r = b.getLocalBounds().toFloat().reduced (1.0f);
-        const bool hot = b.getProperties()["hot"]; // RANDOM / GENERATE: hot pink
+        // RANDOM / GENERATE: hot pink. A hot toggle (TURBO) only glows while it is on.
+        const bool hot = b.getProperties()["hot"] && (! b.getClickingTogglesState() || b.getToggleState());
         auto top = hot ? juce::Colour (0xffff5cd0) : juce::Colour (0xfff6effa);
         auto bot = hot ? juce::Colour (0xffc4007f) : juce::Colour (0xffcdbfe0);
         if (over) { top = top.brighter (0.15f); bot = bot.brighter (0.1f); }
@@ -278,7 +279,7 @@ public:
                 g.setColour (pink.withAlpha (0.45f));
                 g.fillEllipse (led.expanded (4.0f));
             }
-            g.setColour (on ? pink : juce::Colour (0xff4a1a3c));
+            g.setColour (on ? (hot ? juce::Colours::white : pink) : juce::Colour (0xff4a1a3c));
             g.fillEllipse (led);
             g.setColour (juce::Colours::black.withAlpha (0.5f));
             g.drawEllipse (led, 0.8f);
@@ -291,7 +292,8 @@ public:
         if (b.getClickingTogglesState())
             r.removeFromLeft (22);
         g.setFont (labelFont (13.5f));
-        g.setColour (b.findColour (juce::TextButton::textColourOffId));
+        const bool hotOn = b.getProperties()["hot"] && b.getClickingTogglesState() && b.getToggleState();
+        g.setColour (hotOn ? juce::Colours::white : b.findColour (juce::TextButton::textColourOffId));
         g.drawFittedText (b.getButtonText(), r, juce::Justification::centred, 1);
     }
 };

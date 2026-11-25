@@ -94,6 +94,7 @@ private:
         std::atomic<float> *dlySync, *dlyFb, *dlyTone, *dlyMix, *revSize, *revDamp, *revMix, *width, *volume;
         std::atomic<float> *seqOn, *seqMode, *seqLen, *seqRate, *swing, *gateLen, *root, *intBpm;
         std::atomic<float> *genScale, *genDensity, *genAccent, *genSlide, *genOctave;
+        std::atomic<float> *drive2Type, *drive2, *ottDepth, *ottTime, *turbo;
         std::array<std::atomic<float>*, s303::kMaxSteps> note, octave, gate, acc, slide;
     } p {};
 
@@ -104,6 +105,12 @@ private:
     s303::BBDDelay delay;
     s303::StereoWidth width;
     s303::FatStage fatStage;
+    // POWER section: DRIVE 2 (at 2x, after the voice) -> OTT, level-matched. TURBO forces both up.
+    s303::Distortion drive2;
+    s303::OTT ott;
+    s303::LevelMatch powerMatch;
+    juce::LinearSmoothedValue<float> powerGain;
+    bool powerWasOn = false;
     juce::Reverb reverb;
 
     std::unique_ptr<juce::dsp::Oversampling<float>> oversampling;

@@ -100,6 +100,8 @@ private:
 
     juce::TextButton seqOnBtn { "SEQ ON" };
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> seqOnAttachment;
+    juce::TextButton turboBtn { "TURBO" };
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> turboAttachment;
     juce::MidiKeyboardComponent keyboard;
     Wheel pitchWheel { "PITCH" }, modWheel { "MOD" }; // on-screen wheels; the pitch wheel springs back to the middle
     juce::Rectangle<int> wheelFrame;

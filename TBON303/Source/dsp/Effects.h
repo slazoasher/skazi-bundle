@@ -211,4 +211,92 @@ public:
 private:
     double coeff = 0.0, lowSide = 0.0;
 };
+/**
+    OTT: 3-band upward + downward compressor. Each band is pulled up when quiet and
+    pushed down when loud, so the line gets dense and in-your-face. The bands are split
+    by subtraction, so with depth 0 (or no gain change) they sum back to the input exactly.
+*/
+class OTT
+{
+public:
+    void prepare (double sampleRate)
+    {
+        sr = sampleRate;
+        lowC = 1.0 - std::exp (-kTwoPi * 160.0 / sr);
+        highC = 1.0 - std::exp (-kTwoPi * 2500.0 / sr);
+        gainC = 1.0 - std::exp (-1.0 / (0.003 * sr));
+        reset();
+    }
+
+    void reset()
+    {
+        lp1 = lp2 = hp1 = hp2 = 0.0;
+        for (int b = 0; b < 3; ++b) { env[b] = 0.0; gain[b] = 1.0; }
+    }
+
+    /** depth 0..1, time 0..1 (fast..slow). */
+    float process (float x, float depth, float time)
+    {
+        if (depth <= 0.0001f)
+            return x;
+
+        const double rel = std::exp (-1.0 / ((0.03 + 0.4 * time) * sr));
+
+        lp1 += (x - lp1) * lowC;
+        lp2 += (lp1 - lp2) * lowC;
+        const double rest = x - lp2;
+        hp1 += (rest - hp1) * highC;
+        hp2 += (hp1 - hp2) * highC;
+        const double band[3] = { lp2, hp2, rest - hp2 };
+
+        double wet = 0.0;
+        for (int b = 0; b < 3; ++b)
+        {
+            const double lv = std::abs (band[b]);
+            env[b] = lv > env[b] ? lv : rel * env[b] + (1.0 - rel) * lv; // peak attack: hits are caught at once
+            const double db = 20.0 * std::log10 (std::max (env[b], 1.0e-5));
+            double gdb = 0.0;
+            if (db > -14.0) gdb -= (db + 14.0) * 0.75;                                       // loud: pushed down
+            else if (db > -75.0 && db < -30.0) gdb += std::min (12.0, (-30.0 - db) * 0.6);  // quiet: pulled up
+            // Gain drops at once (a hit never rides a boosted band), recovers smoothly.
+            const double target = std::pow (10.0, gdb / 20.0);
+            gain[b] = target < gain[b] ? target : gain[b] + (target - gain[b]) * gainC;
+            wet += band[b] * gain[b];
+        }
+        return (float) (x + (wet - x) * depth);
+    }
+
+private:
+    double sr = 44100.0, lowC = 0.0, highC = 0.0, gainC = 0.0;
+    double lp1 = 0.0, lp2 = 0.0, hp1 = 0.0, hp2 = 0.0;
+    double env[3] {}, gain[3] { 1.0, 1.0, 1.0 };
+};
+
+/**
+    Keeps the DRIVE 2 + OTT section at the level of what goes into it, so TURBO and the
+    extra drive add density and grit, not just volume. Fed once per block with the
+    energy before and after the section; returns the gain to apply to the section output.
+*/
+class LevelMatch
+{
+public:
+    void reset() { inPow = outPow = 0.0; gain = 1.0; primed = false; }
+    bool isPrimed() const { return primed; }
+
+    double update (double blockInPow, double blockOutPow, double blockSeconds)
+    {
+        // The first block with signal sets the level directly, so switching on never jumps up.
+        const double a = primed ? std::exp (-blockSeconds / 0.25) : 0.0;
+        primed = primed || blockInPow > 1.0e-8;
+        inPow = a * inPow + (1.0 - a) * blockInPow;
+        outPow = a * outPow + (1.0 - a) * blockOutPow;
+        if (inPow > 1.0e-8 && outPow > 1.0e-10) // hold the last gain through silence
+            gain = std::clamp (std::sqrt (inPow / outPow), 0.02, 4.0);
+        return gain;
+    }
+
+private:
+    double inPow = 0.0, outPow = 0.0, gain = 1.0;
+    bool primed = false;
+};
 } // namespace s303
