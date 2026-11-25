@@ -69,6 +69,7 @@ build Skazon      Skazon     "SKAZON"         FETCHCONTENT_SOURCE_DIR_JUCE "$J4"
 build Skyz        Skyz       "SKY Z"          FETCHCONTENT_SOURCE_DIR_JUCE "$J4"
 build Skatom      Skatom     "SKATOM"         FETCHCONTENT_SOURCE_DIR_JUCE "$J4"
 build Skazilayzer Skazilayzer "SKAZILAYZER"  FETCHCONTENT_SOURCE_DIR_JUCE "$J4"
+build Skabotic    Skabotic   "SKABOTIC"       FETCHCONTENT_SOURCE_DIR_JUCE "$J4"
 
 cp "$ROOT/mac/Uninstall SKAZI Bundle.command" "$STAGE/Applications/SKAZI/"
 chmod +x "$STAGE/Applications/SKAZI/Uninstall SKAZI Bundle.command"

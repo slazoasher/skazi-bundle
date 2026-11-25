@@ -55,6 +55,7 @@ namespace
         if (name == "SKY Z")          return "Additive star synth, lane arp, 555 presets";
         if (name == "SKATOM")         return "Kinetic reactor filter + multi-FX, risers";
         if (name == "SKAZILAYZER")    return "Analyser: spectrum notes, meters, loudness";
+        if (name == "SKABOTIC")       return "Robot voice: vocoder, talk box, MIDI, sci-fi FX";
         return "Plugin";
     }
 
