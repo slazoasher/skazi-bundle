@@ -94,8 +94,8 @@ private:
     void showPresetMenu();
     void stepPreset (int delta);
 
-    juce::TextButton synthTabBtn { "SYNTH" }, modsTabBtn { "ENV" }, fxTabBtn { "FX" }, seqTabBtn { "SEQ" };
-    std::vector<juce::Component*> synthItems, modsItems, fxItems, seqItems;
+    juce::TextButton synthTabBtn { "SYNTH" }, modsTabBtn { "ENV" }, fxTabBtn { "FX" }, seqTabBtn { "SEQ" }, lfoTabBtn { "MOD" };
+    std::vector<juce::Component*> synthItems, modsItems, fxItems, seqItems, lfoItems;
     int currentTab = 0;
 
     juce::TextButton seqOnBtn { "SEQ ON" };

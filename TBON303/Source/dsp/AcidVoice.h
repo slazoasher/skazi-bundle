@@ -35,6 +35,11 @@ struct VoiceParams
     float softAttackSec = 0.003f; // VCA attack on normal notes; accents always snap
     float sweepSpeed = 1.0f;      // accent sweep charge speed multiplier
     float pulseWidth = 0.0f;      // 0..1, square wave duty
+    float oscBLevel = 0.0f;       // second oscillator, same wave, own tuning
+    float oscBSemis = 0.0f, oscBFine = 0.0f;
+    int unisonVoices = 1;         // 1..7 detuned copies of the main oscillator
+    float unisonDetune = 0.3f;    // 0..1 = up to +-50 cents at the edges
+    int filterModel = 0;          // 0 = diode (303), 1 = transistor ladder
     float noise = 0.0f;           // analog hiss into the filter
 
     Filter2Type f2Type = Filter2Type::Off;
@@ -53,6 +58,10 @@ public:
     {
         sr = sampleRate;
         osc.prepare (sr);
+        oscB.prepare (sr);
+        for (auto& u : uni)
+            u.prepare (sr);
+        ladder.prepare (sr);
         drift.prepare (sr, 0x1234567u);
         diode.prepare (sr);
         moog.prepare (sr);
@@ -65,6 +74,13 @@ public:
     void reset()
     {
         osc.reset();
+        oscB.reset();
+        for (int k = 0; k < kMaxUnison - 1; ++k)
+        {
+            uni[k].reset();
+            uni[k].setPhase (0.137 + 0.271 * k); // spread start phases, so unison doesn't start as one wave
+        }
+        ladder.reset();
         diode.reset();
         moog.reset();
         formant.reset();
@@ -146,6 +162,30 @@ public:
 
         float mainOsc = 0.0f, subOsc = 0.0f;
         osc.process (freq, p.wave, p.pulseWidth, p.subWave, p.subOctaves, mainOsc, subOsc);
+
+        // Unison: extra detuned copies, alternating up / down, summed at the same RMS.
+        const int voices = std::clamp (p.unisonVoices, 1, kMaxUnison);
+        if (voices > 1)
+        {
+            float sum = mainOsc, unused = 0.0f;
+            const double half = std::max (1.0, (voices - 1) * 0.5);
+            for (int k = 1; k < voices; ++k)
+            {
+                const double side = (k & 1) ? 1.0 : -1.0;
+                const double cent = side * p.unisonDetune * 50.0 * ((k + 1) / 2) / half;
+                float o = 0.0f;
+                uni[k - 1].process (freq * std::exp2 (cent / 1200.0), p.wave, p.pulseWidth, 0, 1, o, unused);
+                sum += o;
+            }
+            mainOsc = sum / std::sqrt ((float) voices);
+        }
+
+        if (p.oscBLevel > 0.0001f)
+        {
+            float b = 0.0f, unused = 0.0f;
+            oscB.process (freq * std::exp2 ((p.oscBSemis + p.oscBFine / 100.0) / 12.0), p.wave, p.pulseWidth, 0, 1, b, unused);
+            mainOsc += b * p.oscBLevel;
+        }
         if (p.noise > 0.0001f)
             mainOsc += hiss.next() * p.noise * 0.12f;
 
@@ -200,7 +240,8 @@ public:
 
         // --- audio path
         float x = preDist.process (mainOsc, p.preType, p.preDrive);
-        x = diode.process (x, cutoff, p.resonance);
+        x = p.filterModel == 1 ? ladder.process (x, cutoff, p.resonance * 0.95) // unity gain lands within ~3 dB of the diode
+                               : diode.process (x, cutoff, p.resonance);
 
         if (p.f2Type == Filter2Type::Ladder24)
         {
@@ -259,7 +300,10 @@ public:
 
 private:
     double sr = 44100.0;
-    AcidOscillator osc;
+    static constexpr int kMaxUnison = 7;
+    AcidOscillator osc, oscB;
+    AcidOscillator uni[kMaxUnison - 1];
+    MoogLadder ladder;
     Drift drift;
     Noise hiss;
     DiodeLadder diode;

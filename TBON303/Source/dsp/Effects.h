@@ -299,4 +299,40 @@ private:
     double inPow = 0.0, outPow = 0.0, gain = 1.0;
     bool primed = false;
 };
+/**
+    Tempo-synced LFO, -1..1. PUMP shapes dip to -1 on every cycle start and swell back:
+    on VOLUME that's a sidechain duck with no sidechain input.
+*/
+class Lfo
+{
+public:
+    enum Shape { Sine = 0, Triangle, SawUp, SawDown, Square, SampleHold, Pump, PumpSoft };
+
+    float value (double beat, double cycleBeats, int shape)
+    {
+        const double cycles = beat / std::max (1.0e-3, cycleBeats);
+        const double ph = cycles - std::floor (cycles);
+        switch (shape)
+        {
+            case Triangle:   return (float) (1.0 - 4.0 * std::abs (ph - 0.5));
+            case SawUp:      return (float) (2.0 * ph - 1.0);
+            case SawDown:    return (float) (1.0 - 2.0 * ph);
+            case Square:     return ph < 0.5 ? 1.0f : -1.0f;
+            case SampleHold:
+            {
+                const auto cycle = (long long) std::floor (cycles);
+                if (cycle != lastCycle) { lastCycle = cycle; held = noise.next(); }
+                return held;
+            }
+            case Pump:       { const double r = 1.0 - std::min (1.0, ph * 2.5); return (float) (1.0 - 2.0 * r * r); }
+            case PumpSoft:   return (float) -std::cos (kTwoPi * std::min (1.0, ph * 1.4) * 0.5);
+            default:         return (float) std::sin (kTwoPi * ph);
+        }
+    }
+
+private:
+    Noise noise;
+    long long lastCycle = -1;
+    float held = 0.0f;
+};
 } // namespace s303

@@ -203,6 +203,21 @@ SynthPanel::SynthPanel (Skazi303Processor& p)
     modWheel.setRange (0.0, 1.0);
     modWheel.setTooltip ("MOD wheel: opens the filter and/or adds vibrato (MOD WHEEL on the ENV page)");
     modWheel.onValueChange = [this] { processor.wheelMod.store ((float) modWheel.getValue()); };
+    // MOD tab: OSC B, unison, filter model, LFOs
+    knob ("osc_b_level", "OSC B LEVEL", false);
+    knob ("osc_b_semi", "OSC B SEMI", false, true);
+    knob ("osc_b_fine", "OSC B FINE", false, true);
+    knob ("uni_voices", "UNISON", false);
+    knob ("uni_detune", "DETUNE", false);
+    selector ("flt_model", "FILTER MODEL", false);
+    for (auto l : { "1", "2" })
+    {
+        const juce::String n (l);
+        selector ("lfo" + n + "_shape", "SHAPE", false);
+        selector ("lfo" + n + "_dest", "DESTINATION", false);
+        knob ("lfo" + n + "_rate", "RATE (SYNC)", false).showValue();
+        knob ("lfo" + n + "_amt", "AMOUNT", false, true);
+    }
     knob ("fat", "FAT (TUBE)", false);
     knob ("width", "WIDTH", false);
     knob ("volume", "VOLUME", false);
@@ -281,7 +296,7 @@ SynthPanel::SynthPanel (Skazi303Processor& p)
     turboAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment> (processor.apvts, "turbo", turboBtn);
 
     // Tabs: LED buttons, one lit at a time.
-    for (auto* b : { &synthTabBtn, &modsTabBtn, &fxTabBtn, &seqTabBtn })
+    for (auto* b : { &synthTabBtn, &modsTabBtn, &fxTabBtn, &seqTabBtn, &lfoTabBtn })
     {
         b->setClickingTogglesState (true);
         b->setRadioGroupId (303);
@@ -292,6 +307,7 @@ SynthPanel::SynthPanel (Skazi303Processor& p)
     modsTabBtn.onClick = [this] { if (modsTabBtn.getToggleState()) showTab (1); };
     fxTabBtn.onClick = [this] { if (fxTabBtn.getToggleState()) showTab (2); };
     seqTabBtn.onClick = [this] { if (seqTabBtn.getToggleState()) showTab (3); };
+    lfoTabBtn.onClick = [this] { if (lfoTabBtn.getToggleState()) showTab (4); };
 
     for (auto* b : { &generateBtn, &mutateBtn, &clearBtn, &shiftLeftBtn, &shiftRightBtn })
     {
@@ -346,6 +362,9 @@ SynthPanel::SynthPanel (Skazi303Processor& p)
                      "env_vca_decay", "amp_sus", "amp_rel", "flt_att", "env_decay", "flt_sus", "flt_rel",
                      "bend_up", "bend_down", "mw_dest", "mw_amt" })
         modsItems.push_back (controls[id].get());
+    for (auto id : { "osc_b_level", "osc_b_semi", "osc_b_fine", "uni_voices", "uni_detune", "flt_model",
+                     "lfo1_shape", "lfo1_dest", "lfo1_rate", "lfo1_amt", "lfo2_shape", "lfo2_dest", "lfo2_rate", "lfo2_amt" })
+        lfoItems.push_back (controls[id].get());
     for (auto id : { "seq_mode", "int_bpm", "seq_rate", "root", "gen_scale", "seq_len", "swing", "gate_len",
                      "gen_density", "gen_accent", "gen_slide", "gen_octave" })
         seqItems.push_back (controls[id].get());
@@ -363,12 +382,14 @@ SynthPanel::SynthPanel (Skazi303Processor& p)
 
 void SynthPanel::showTab (int tab)
 {
-    currentTab = juce::jlimit (0, 3, tab);
+    currentTab = juce::jlimit (0, 4, tab);
     processor.apvts.state.setProperty ("uiTab", currentTab, nullptr);
     for (auto* c : synthItems) c->setVisible (currentTab == 0);
     for (auto* c : modsItems) c->setVisible (currentTab == 1);
     for (auto* c : fxItems) c->setVisible (currentTab == 2);
     for (auto* c : seqItems) c->setVisible (currentTab == 3);
+    for (auto* c : lfoItems) c->setVisible (currentTab == 4);
+    lfoTabBtn.setToggleState (currentTab == 4, juce::dontSendNotification);
     synthTabBtn.setToggleState (currentTab == 0, juce::dontSendNotification);
     modsTabBtn.setToggleState (currentTab == 1, juce::dontSendNotification);
     fxTabBtn.setToggleState (currentTab == 2, juce::dontSendNotification);
@@ -461,7 +482,7 @@ void SynthPanel::resized()
         auto bar = juce::Rectangle<int> (318, 16, 570, 36);
         presetPrevBtn.setBounds (bar.removeFromLeft (34));
         bar.removeFromLeft (4);
-        presetDisplay.setBounds (bar.removeFromLeft (296));
+        presetDisplay.setBounds (bar.removeFromLeft (272));
         bar.removeFromLeft (4);
         presetNextBtn.setBounds (bar.removeFromLeft (34));
         bar.removeFromLeft (10);
@@ -469,10 +490,12 @@ void SynthPanel::resized()
         bar.removeFromLeft (6);
         saveBtn.setBounds (bar.removeFromLeft (70));
 
-        synthTabBtn.setBounds (890, 16, 80, 36);
-        modsTabBtn.setBounds (974, 16, 74, 36);
-        fxTabBtn.setBounds (1052, 16, 58, 36);
-        seqTabBtn.setBounds (1114, 16, 72, 36);
+        // SYNTH  ENV  MOD  FX  SEQ (MOD is tab 4, so saved "uiTab" values keep their meaning)
+        synthTabBtn.setBounds (868, 16, 72, 36);
+        modsTabBtn.setBounds (944, 16, 60, 36);
+        lfoTabBtn.setBounds (1008, 16, 62, 36);
+        fxTabBtn.setBounds (1074, 16, 52, 36);
+        seqTabBtn.setBounds (1130, 16, 58, 36);
         ledArea = { 1194, 34, 12, 12 };
     }
 
@@ -553,6 +576,27 @@ void SynthPanel::resized()
 
         auto wide = addSection ("STEREO WIDENER  /  BASS STAYS MONO", { 616, y2, 590, 200 }, 2);
         controls["width"]->setBounds (wide.withSizeKeepingCentre (200, wide.getHeight()));
+    }
+
+    // ---- MOD tab: second oscillator, unison, filter model, two tempo-synced LFOs
+    {
+        const int y = tabTop;
+        auto osc = addSection ("OSC B  /  UNISON  /  UP TO 7 VOICES", { 14, y, 780, 196 }, 4);
+        placeRow (osc.withTrimmedLeft (15), { "osc_b_level", "osc_b_semi", "osc_b_fine", "uni_voices", "uni_detune" }, 150);
+        auto model = addSection ("FILTER MODEL", { 804, y, contentW - 818, 196 }, 4);
+        controls["flt_model"]->setBounds (model.withSizeKeepingCentre (220, 50));
+
+        const int y2 = y + 206;
+        for (int l = 0; l < 2; ++l)
+        {
+            const juce::String n (l + 1);
+            auto lfo = addSection ("LFO " + n + "  /  TEMPO SYNCED  /  PUMP = SIDECHAIN DUCK ON VOLUME",
+                                   { 14 + l * 602, y2, 590, 200 }, 4);
+            lfo.removeFromLeft (8);
+            controls["lfo" + n + "_shape"]->setBounds (lfo.removeFromLeft (140).withSizeKeepingCentre (130, 50));
+            controls["lfo" + n + "_dest"]->setBounds (lfo.removeFromLeft (150).withSizeKeepingCentre (140, 50));
+            placeRow (lfo, { "lfo" + n + "_rate", "lfo" + n + "_amt" }, 140);
+        }
     }
 
     // ---- SEQUENCER tab
@@ -706,6 +750,7 @@ void SynthPanel::paint (juce::Graphics& g)
         g.setFont (labelFont (13.0f));
         g.drawText (currentTab == 0 ? "ACID BASS LINE  /  DIODE LADDER  /  ACCENT  /  SLIDE  /  14 DRIVE TYPES"
                     : currentTab == 1 ? "AMP + FILTER ENVELOPES (ADSR)  /  CIRCUIT MODS  /  TRACKING  /  ACCENT  /  SWEEP  /  PULSE  /  NOISE  /  SUB"
+                    : currentTab == 4 ? "OSC B  /  UNISON  /  DIODE OR TRANSISTOR FILTER  /  2 LFOS  /  PUMP  /  MIDI CC 74 71 76 75 77 78"
                     : currentTab == 2 ? "EFFECTS  /  CHORUS  /  FLANGER  /  BBD DELAY  /  REVERB  /  STEREO WIDENER"
                                       : "COMPUTER CONTROLLED  /  16 STEPS  /  PITCH  /  ACCENT  /  SLIDE  /  GENERATOR",
                     strip, juce::Justification::centred);

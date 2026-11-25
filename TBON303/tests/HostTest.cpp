@@ -255,7 +255,51 @@ int main (int argc, char** argv)
         check (worstPeak < 1.0, juce::String::formatted ("POWER peak %.3f, under 0 dBFS", worstPeak));
     }
 
-    // 7. Editor opens.
+    // 7. MOD page: OSC B, unison, ladder filter, LFOs. Every combination stays finite and under 0 dBFS,
+    //    and the ladder sits near the diode's level.
+    {
+        bool allFinite = true;
+        double worstPeak = 0.0, worstLadderDb = 0.0;
+        for (int i = 0; i < plugin->getNumPrograms(); i += 17)
+        {
+            plugin->setCurrentProgram (i);
+            juce::MessageManager::getInstance()->runDispatchLoopUntil (5);
+            for (auto name : { "Delay Mix", "Reverb Mix", "Mod Mix" })
+                setParam (*plugin, name, 0.0f);
+
+            render (*plugin, 0.3, -1);
+            const double diodeRms = render (*plugin, 1.0, 45, 90);
+            setParam (*plugin, "Filter Model", 1.0f);
+            render (*plugin, 0.3, -1);
+            lastPeak = 0.0; lastFinite = true;
+            const double ladderRms = render (*plugin, 1.0, 45, 90);
+            const double ladderDb = 20.0 * std::log10 (juce::jmax (1.0e-9, ladderRms) / juce::jmax (1.0e-9, diodeRms));
+            if (std::abs (ladderDb) > std::abs (worstLadderDb)) worstLadderDb = ladderDb;
+
+            setParam (*plugin, "Osc B Level", 1.0f);
+            setParam (*plugin, "Unison Voices", 1.0f);     // 7 voices
+            setParam (*plugin, "Unison Detune", 1.0f);
+            setParam (*plugin, "LFO 1 Destination", 1.0f / 9.0f);  // cutoff
+            setParam (*plugin, "LFO 1 Shape", 5.0f / 7.0f);        // S&H
+            setParam (*plugin, "LFO 1 Amount", 1.0f);
+            setParam (*plugin, "LFO 2 Destination", 5.0f / 9.0f);  // volume
+            setParam (*plugin, "LFO 2 Shape", 6.0f / 7.0f);        // pump
+            setParam (*plugin, "Turbo", 1.0f);
+            render (*plugin, 1.0, 45, 120);
+            allFinite = allFinite && lastFinite;
+            worstPeak = juce::jmax (worstPeak, lastPeak);
+
+            for (auto name : { "Filter Model", "Osc B Level", "Unison Voices", "LFO 1 Destination", "LFO 2 Destination", "Turbo" })
+                setParam (*plugin, name, 0.0f);
+            setParam (*plugin, "Unison Detune", 0.3f);
+            setParam (*plugin, "LFO 1 Amount", 0.75f);
+        }
+        check (allFinite, "MOD: no NaN/inf with OSC B + 7 voices + ladder + 2 LFOs + TURBO");
+        check (worstPeak < 1.0, juce::String::formatted ("MOD peak %.3f, under 0 dBFS", worstPeak));
+        check (std::abs (worstLadderDb) < 6.0, juce::String::formatted ("ladder vs diode level, worst %+.1f dB", worstLadderDb));
+    }
+
+    // 8. Editor opens.
     std::unique_ptr<juce::AudioProcessorEditor> editor (plugin->createEditorIfNeeded());
     check (editor != nullptr && editor->getWidth() > 400, "editor opens");
     editor.reset();

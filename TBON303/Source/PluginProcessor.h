@@ -70,6 +70,7 @@ public:
     juce::AudioProcessorValueTreeState apvts;
     juce::MidiKeyboardState keyboardState; // on-screen keyboard
 
+    static const juce::StringArray lfoShapes, lfoRates, lfoDests;
     static const juce::StringArray distTypes, filter2Types, modModes, delaySyncs, seqRates, seqModes, noteNames;
 
 private:
@@ -95,6 +96,8 @@ private:
         std::atomic<float> *seqOn, *seqMode, *seqLen, *seqRate, *swing, *gateLen, *root, *intBpm;
         std::atomic<float> *genScale, *genDensity, *genAccent, *genSlide, *genOctave;
         std::atomic<float> *drive2Type, *drive2, *ottDepth, *ottTime, *turbo;
+        std::atomic<float> *oscBLevel, *oscBSemi, *oscBFine, *uniVoices, *uniDetune, *fltModel;
+        std::array<std::atomic<float>*, 2> lfoShape, lfoRate, lfoDest, lfoAmt;
         std::array<std::atomic<float>*, s303::kMaxSteps> note, octave, gate, acc, slide;
     } p {};
 
@@ -111,6 +114,9 @@ private:
     s303::LevelMatch powerMatch;
     juce::LinearSmoothedValue<float> powerGain;
     bool powerWasOn = false;
+    std::array<s303::Lfo, 2> lfos;
+    double lfoBeat = 0.0;
+    std::vector<float> lfoGain; // per-sample VOLUME modulation
     juce::Reverb reverb;
 
     std::unique_ptr<juce::dsp::Oversampling<float>> oversampling;

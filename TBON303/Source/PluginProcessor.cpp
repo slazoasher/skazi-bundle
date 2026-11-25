@@ -5,6 +5,10 @@
 const juce::StringArray Skazi303Processor::distTypes { "Tube", "Fuzz", "Crush", "Fold", "Overdrive", "Distortion",
                                                        "Super Dist", "Ring Mod", "Rectifier", "Diode",
                                                        "Tape", "Transistor", "Germanium", "Crunch" };
+const juce::StringArray Skazi303Processor::lfoShapes { "Sine", "Triangle", "Saw Up", "Saw Down", "Square", "S&H", "Pump", "Pump Soft" };
+const juce::StringArray Skazi303Processor::lfoRates { "1/32", "1/16", "1/8", "1/4", "1/2", "1 Bar", "2 Bars", "4 Bars" };
+const juce::StringArray Skazi303Processor::lfoDests { "Off", "Cutoff", "Resonance", "Env Mod", "Pitch", "Volume",
+                                                      "Drive", "Pulse Width", "Osc B Level", "Decay" };
 const juce::StringArray Skazi303Processor::filter2Types { "Off", "Ladder 24", "Formant" };
 const juce::StringArray Skazi303Processor::modModes { "Off", "Chorus", "Flanger" };
 const juce::StringArray Skazi303Processor::delaySyncs { "1/64", "1/32 T", "1/32", "1/16 T", "1/16", "1/16 D", "1/8 T", "1/8",
@@ -19,6 +23,11 @@ namespace
 constexpr double delayBeats[] = { 1.0 / 16.0, 1.0 / 12.0, 0.125, 1.0 / 6.0, 0.25, 0.375, 1.0 / 3.0, 0.5,
                                   0.75, 2.0 / 3.0, 1.0, 1.5, 2.0, 3.0, 4.0 };
 constexpr double stepsPerBeat[] = { 8.0, 4.0, 6.0, 2.0 };
+constexpr double lfoBeats[] = { 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0 }; // matches lfoRates
+
+// MIDI CCs for the main knobs (CC 1 is the mod wheel).
+constexpr std::pair<int, const char*> ccMap[] = { { 74, "cutoff" }, { 71, "reso" }, { 76, "envmod" },
+                                                  { 75, "decay" }, { 77, "accent" }, { 78, "tune" } };
 
 // A classic-sounding default line so the plugin plays something on first load.
 constexpr int defNote[16]  = { 0, 0, 12, 0, 3, 0, 7, 10, 0, 0, 12, 3, 5, 0, 7, 0 };
@@ -158,6 +167,24 @@ juce::AudioProcessorValueTreeState::ParameterLayout Skazi303Processor::createLay
     pct ("ott_time", "OTT Time", 0.3f);
     ps.push_back (std::make_unique<AudioParameterBool> (ParameterID { "turbo", 1 }, "Turbo", false));
 
+    // OSC B, unison, filter model, 2 LFOs (also 1.3, all neutral by default)
+    pct ("osc_b_level", "Osc B Level", 0.0f);
+    flt ("osc_b_semi", "Osc B Semi", { -24.0f, 24.0f, 1.0f }, 12.0f, "st");
+    flt ("osc_b_fine", "Osc B Fine", { -50.0f, 50.0f }, 7.0f, "ct");
+    ps.push_back (std::make_unique<AudioParameterInt> (ParameterID { "uni_voices", 1 }, "Unison Voices", 1, 7, 1));
+    pct ("uni_detune", "Unison Detune", 0.3f);
+    choice ("flt_model", "Filter Model", StringArray { "Diode (303)", "Transistor Ladder" }, 0);
+    for (int l = 1; l <= 2; ++l)
+    {
+        const String n = "LFO " + String (l) + " ";
+        const String id = "lfo" + String (l) + "_";
+        ps.push_back (std::make_unique<AudioParameterChoice> (ParameterID { id + "shape", 1 }, n + "Shape", lfoShapes, l == 1 ? 0 : 6));
+        ps.push_back (std::make_unique<AudioParameterChoice> (ParameterID { id + "rate", 1 }, n + "Rate", lfoRates, l == 1 ? 5 : 3));
+        ps.push_back (std::make_unique<AudioParameterChoice> (ParameterID { id + "dest", 1 }, n + "Destination", lfoDests, 0));
+        ps.push_back (std::make_unique<AudioParameterFloat> (ParameterID { id + "amt", 1 }, n + "Amount",
+                                                             NormalisableRange<float> (-1.0f, 1.0f), 0.5f));
+    }
+
     return { ps.begin(), ps.end() };
 }
 
@@ -200,6 +227,14 @@ Skazi303Processor::Skazi303Processor()
     p.genSlide = get ("gen_slide"); p.genOctave = get ("gen_octave");
     p.drive2Type = get ("drive2_type"); p.drive2 = get ("drive2");
     p.ottDepth = get ("ott_depth");     p.ottTime = get ("ott_time");   p.turbo = get ("turbo");
+    p.oscBLevel = get ("osc_b_level");  p.oscBSemi = get ("osc_b_semi"); p.oscBFine = get ("osc_b_fine");
+    p.uniVoices = get ("uni_voices");   p.uniDetune = get ("uni_detune"); p.fltModel = get ("flt_model");
+    for (size_t l = 0; l < 2; ++l)
+    {
+        const juce::String n = "lfo" + juce::String ((int) l + 1) + "_";
+        p.lfoShape[l] = get (n + "shape"); p.lfoRate[l] = get (n + "rate");
+        p.lfoDest[l] = get (n + "dest");   p.lfoAmt[l] = get (n + "amt");
+    }
 
     for (int i = 0; i < s303::kMaxSteps; ++i)
     {
@@ -231,6 +266,8 @@ void Skazi303Processor::prepareToPlay (double sampleRate, int samplesPerBlock)
         1, 1, juce::dsp::Oversampling<float>::filterHalfBandPolyphaseIIR, true);
     oversampling->initProcessing ((size_t) maxBlock);
     monoBuffer.setSize (1, maxBlock);
+    lfoGain.assign ((size_t) maxBlock, 1.0f);
+    lfoBeat = 0.0;
     setLatencySamples ((int) std::ceil (oversampling->getLatencyInSamples()));
 
     voice.prepare (sr * 2.0);
@@ -296,6 +333,12 @@ s303::VoiceParams Skazi303Processor::readVoiceParams() const
     v.postDrive = p.postDrive->load();
     v.postToneHz = p.distTone->load();
     v.postMix = p.distMix->load();
+    v.oscBLevel = p.oscBLevel->load();
+    v.oscBSemis = p.oscBSemi->load();
+    v.oscBFine = p.oscBFine->load();
+    v.unisonVoices = (int) p.uniVoices->load();
+    v.unisonDetune = p.uniDetune->load();
+    v.filterModel = (int) p.fltModel->load();
     return v;
 }
 
@@ -403,6 +446,14 @@ void Skazi303Processor::handleMidi (const juce::MidiMessage& m, bool sequencerAc
     {
         wheelMod.store ((float) m.getControllerValue() / 127.0f);
         applyWheels();
+        return;
+    }
+    if (m.isController())
+    {
+        for (auto& [cc, id] : ccMap)
+            if (cc == m.getControllerNumber())
+                if (auto* prm = apvts.getParameter (id))
+                    prm->setValueNotifyingHost ((float) m.getControllerValue() / 127.0f);
         return;
     }
 
@@ -542,6 +593,22 @@ void Skazi303Processor::renderChunk (float* left, float* right, int numSamples, 
     }
     double powerIn = 0.0, powerOut = 0.0;
 
+    // LFOs follow the host's beat while it plays, otherwise they run on their own at the tempo.
+    if (hostPlaying)
+        lfoBeat = ppq0;
+    int lfoShape[2], lfoDest[2];
+    double lfoCycle[2];
+    float lfoAmt[2];
+    bool lfoOn = false;
+    for (size_t l = 0; l < 2; ++l)
+    {
+        lfoShape[l] = (int) p.lfoShape[l]->load();
+        lfoDest[l] = (int) p.lfoDest[l]->load();
+        lfoCycle[l] = lfoBeats[juce::jlimit (0, 7, (int) p.lfoRate[l]->load())];
+        lfoAmt[l] = p.lfoAmt[l]->load();
+        lfoOn = lfoOn || lfoDest[l] != 0;
+    }
+
     // Run the voice at 2x: upsample a silent block, overwrite it, then downsample.
     monoBuffer.clear();
     juce::dsp::AudioBlock<float> block (monoBuffer.getArrayOfWritePointers(), 1, (size_t) numSamples);
@@ -572,7 +639,42 @@ void Skazi303Processor::renderChunk (float* left, float* right, int numSamples, 
                 internalPpq += ppqPerSample;
         }
 
-        float a = voice.render (vp), b = voice.render (vp);
+        float gainMod = 1.0f;
+        float a, b;
+        if (lfoOn)
+        {
+            auto mv = vp;
+            const double beat = lfoBeat + i * ppqPerSample;
+            for (size_t l = 0; l < 2; ++l)
+            {
+                if (lfoDest[l] == 0)
+                    continue;
+                const float v = lfos[l].value (beat, lfoCycle[l], lfoShape[l]);
+                const float m = v * lfoAmt[l];
+                switch (lfoDest[l])
+                {
+                    case 1: mv.cutoffHz = juce::jlimit (20.0f, 18000.0f, mv.cutoffHz * std::exp2 (4.0f * m)); break;
+                    case 2: mv.resonance = juce::jlimit (0.0f, 1.0f, mv.resonance + 0.5f * m); break;
+                    case 3: mv.envMod = juce::jlimit (0.0f, 1.0f, mv.envMod + m); break;
+                    case 4: mv.tuneSemis += 12.0f * m; break;
+                    // VOLUME: ducks by up to AMOUNT at the LFO's low point (negative AMOUNT flips it)
+                    case 5: gainMod *= 1.0f - std::abs (lfoAmt[l]) * (1.0f - (lfoAmt[l] >= 0.0f ? v : -v)) * 0.5f; break;
+                    case 6: mv.postDrive = juce::jlimit (0.0f, 1.0f, mv.postDrive + m); break;
+                    case 7: mv.pulseWidth = juce::jlimit (0.0f, 1.0f, mv.pulseWidth + m); break;
+                    case 8: mv.oscBLevel = juce::jlimit (0.0f, 1.0f, mv.oscBLevel + m); break;
+                    case 9: mv.decaySec = juce::jlimit (0.05f, 4.0f, mv.decaySec * std::exp2 (2.0f * m)); break;
+                    default: break;
+                }
+            }
+            a = voice.render (mv);
+            b = voice.render (mv);
+        }
+        else
+        {
+            a = voice.render (vp);
+            b = voice.render (vp);
+        }
+        lfoGain[(size_t) i] = gainMod;
         if (powerOn)
         {
             powerIn += (double) a * a + (double) b * b;
@@ -585,6 +687,7 @@ void Skazi303Processor::renderChunk (float* left, float* right, int numSamples, 
 
     oversampling->processSamplesDown (block);
     float* mono = monoBuffer.getWritePointer (0);
+    lfoBeat += numSamples * ppqPerSample;
 
     if (powerOn)
     {
@@ -600,6 +703,9 @@ void Skazi303Processor::renderChunk (float* left, float* right, int numSamples, 
         for (int i = 0; i < numSamples; ++i)
             mono[i] *= powerGain.getNextValue();
     }
+    if (lfoOn) // VOLUME / PUMP after the drive, like a sidechain duck
+        for (int i = 0; i < numSamples; ++i)
+            mono[i] *= lfoGain[(size_t) i];
 
     currentStep.store (seqActive ? sequencer.getCurrentIndex() : -1);
     filterActivity.store ((float) voice.getFilterEnv());

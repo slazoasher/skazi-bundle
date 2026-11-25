@@ -58,6 +58,8 @@ public:
         reset();
     }
 
+    void setPhase (double p) { phase = p - std::floor (p); }
+
     void reset()
     {
         phase = 0.0;
