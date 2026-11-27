@@ -21,6 +21,7 @@ fn edges(block: usize, bpm: f64, host: bool, triplet: bool) -> Vec<usize> {
     clock.set_triplet(triplet);
     if host {
         clock.set_source(ClockSource::Host);
+        clock.start(); // RUN
     } else {
         clock.start();
     }
@@ -69,6 +70,7 @@ fn sample_edges_do_not_depend_on_block_partition() {
 fn host_mid_step_start_loop_seek_stop_and_tempo_change() {
     let mut s = Sequencer::default();
     s.clock.set_source(ClockSource::Host);
+    s.clock.start(); // RUN
     let p = Pattern::default();
     s.clock.begin_host_block(Transport {
         playing: Some(true),
@@ -109,6 +111,7 @@ fn host_mid_step_start_loop_seek_stop_and_tempo_change() {
 fn continuous_host_tempo_change_keeps_phase_without_retrigger() {
     let mut c = StepClock::new();
     c.set_source(ClockSource::Host);
+    c.start(); // RUN
     c.begin_host_block(Transport {
         playing: Some(true),
         beat_position: Some(0.0),
@@ -477,4 +480,30 @@ fn all_keys_can_be_held_and_repeated_keys_do_not_overflow() {
         }
     }
     assert!(!notes.tick().gate);
+}
+#[test]
+fn host_sync_follows_run_not_the_daw_transport() {
+    let mut c = StepClock::new();
+    c.set_source(ClockSource::Host);
+    let playing = |p: bool| Transport {
+        playing: Some(p),
+        beat_position: Some(0.0),
+        tempo: Some(120.0),
+        ..Transport::default()
+    };
+    // the DAW playing alone does not start the pattern
+    c.begin_host_block(playing(true));
+    assert!(!c.is_running());
+    // RUN while the DAW is stopped runs at the DAW tempo
+    c.begin_host_block(playing(false));
+    c.start();
+    c.begin_host_block(playing(false));
+    assert!(c.is_running());
+    let edges = (0..48_000).filter(|_| c.tick().edge).count();
+    assert_eq!(edges, 8); // 120 BPM sixteenths: 8 per second
+    // stopping the DAW stops the pattern
+    c.begin_host_block(playing(true));
+    assert!(c.is_running());
+    c.begin_host_block(playing(false));
+    assert!(!c.is_running());
 }

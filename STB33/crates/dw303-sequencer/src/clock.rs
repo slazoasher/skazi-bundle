@@ -46,6 +46,8 @@ pub struct StepClock {
     pulse_interval: f64,
     midi_edge: bool,
     invalid: u64,
+    /// Host transport state seen at the last block start.
+    host_playing: bool,
 }
 impl Default for StepClock {
     fn default() -> Self {
@@ -72,6 +74,7 @@ impl StepClock {
             pulse_interval: 1000.0,
             midi_edge: false,
             invalid: 0,
+            host_playing: false,
         }
     }
     /// Configure sample rate and reset timing history.
@@ -160,17 +163,22 @@ impl StepClock {
         self.resync = true;
         self.last = None;
     }
-    /// Apply block-start host context before rendering its first sample.
+    /// Apply block-start host context before rendering its first sample. RUN starts and stops the
+    /// pattern; the host gives the tempo and, while it plays, the grid position. The host stopping
+    /// stops the pattern too.
     /// Missing fields retain existing values. Explicit discontinuities clear gate history.
     /// Tempo ramps and within-block host loops must be split by the caller.
     pub fn begin_host_block(&mut self, transport: Transport) {
         if self.source != ClockSource::Host {
             return;
         }
-        let was_running = self.running;
-        let running = transport.playing.unwrap_or(was_running);
-        let mut jump = transport.discontinuity || running != was_running;
-        let position = match transport.beat_position {
+        let host_playing = transport.playing.unwrap_or(self.host_playing);
+        if self.host_playing && !host_playing {
+            self.stop();
+        }
+        self.host_playing = host_playing;
+        let mut jump = transport.discontinuity;
+        let position = match transport.beat_position.filter(|_| host_playing) {
             Some(b) if b.is_finite() && b.abs() < 1.0e12 => Some(b),
             Some(_) => {
                 self.invalid = self.invalid.saturating_add(1);
@@ -196,10 +204,9 @@ impl StepClock {
             self.anchor_beat = position.unwrap_or(self.anchor_beat);
             self.anchor_sample = self.sample;
         }
-        self.running = running;
         if jump {
             self.last = None;
-            self.resync = running;
+            self.resync = self.running;
         }
     }
     /// Accept MIDI real-time messages; non-clock messages are ignored.
