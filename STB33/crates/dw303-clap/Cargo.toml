@@ -1,0 +1,30 @@
+[package]
+name = "dw303-clap"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+description = "DW-303 CLAP instrument"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[lints.rust]
+unsafe_code = "deny"
+
+[dependencies]
+dw303-engine = { path = "../dw303-engine" }
+ravet-foundation.workspace = true
+ravet-clap = { git = "https://github.com/mo0kid/ravet", tag = "v0.1.1" }
+clack-plugin = "=0.2.0"
+clack-extensions = { version = "=0.2.0", features = ["clack-plugin", "audio-ports", "note-ports", "params", "state", "tail"] }
+
+[features]
+default = ["native-editor"]
+native-editor = ["dep:ravet-webview", "dep:ravet-surface", "dep:serde_json", "clack-extensions/gui", "clack-extensions/timer"]
+
+# Cocoa/WebKit, Win32/WebView2 and GTK/WebKitGTK editors; see docs/plugins.md.
+[target.'cfg(any(target_os = "macos", target_os = "windows", target_os = "linux"))'.dependencies]
+ravet-webview = { git = "https://github.com/mo0kid/ravet", tag = "v0.1.1", optional = true }
+ravet-surface = { git = "https://github.com/mo0kid/ravet", tag = "v0.1.1", optional = true }
+serde_json = { version = "=1.0.151", optional = true }

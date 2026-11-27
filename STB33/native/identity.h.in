@@ -1,0 +1,10 @@
+#pragma once
+// Host identities for every native format, defined once in CMakeLists.txt.
+#define DW303_VERSION "@PROJECT_VERSION@"
+#define DW303_VERSION_INT @DW303_VERSION_INT@
+#define DW303_NAME "@DW303_NAME@"
+#define DW303_COMPANY "@DW303_COMPANY@"
+#define DW303_BUNDLE_ID "@DW303_BUNDLE_ID@"
+#define DW303_MANUFACTURER_CODE '@DW303_MANUFACTURER@'
+#define DW303_PRODUCT_CODE '@DW303_PRODUCT@'
+#define DW303_LV2_URI "@DW303_LV2_URI@"

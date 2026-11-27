@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>CFBundleExecutable</key><string>@DW303_NAME@</string>
+<key>CFBundleIdentifier</key><string>@DW303_BUNDLE_ID@.au</string>
+<key>CFBundleName</key><string>@DW303_NAME@</string>
+<key>CFBundleDisplayName</key><string>@DW303_NAME@</string>
+<key>NSHighResolutionCapable</key><true/>
+<key>CFBundlePackageType</key><string>BNDL</string>
+<key>CFBundleShortVersionString</key><string>@PROJECT_VERSION@</string>
+<key>CFBundleVersion</key><string>@PROJECT_VERSION@</string>
+<key>AudioComponents</key><array><dict>
+<key>description</key><string>Circuit-modelled bass line synthesizer</string>
+<key>factoryFunction</key><string>DW303AUFactory</string>
+<key>manufacturer</key><string>@DW303_MANUFACTURER@</string><key>subtype</key><string>@DW303_PRODUCT@</string><key>type</key><string>aumu</string>
+<key>name</key><string>@DW303_COMPANY@: @DW303_NAME@</string><key>version</key><integer>@DW303_VERSION_INT@</integer>
+<key>sandboxSafe</key><true/>
+<key>tags</key><array><string>Synthesizer</string></array>
+</dict></array>
+</dict></plist>

@@ -1,0 +1,23 @@
+[package]
+name = "dw303-native"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+description = "DW-303 C ABI for the VST3, AU, AAX and LV2 adapters"
+
+[lib]
+crate-type = ["staticlib", "rlib"]
+
+[lints.rust]
+unsafe_code = "deny"
+
+[dependencies]
+dw303-engine = { path = "../dw303-engine" }
+ravet-foundation.workspace = true
+ravet-native-dsp = { git = "https://github.com/mo0kid/ravet", tag = "v0.1.1" }
+serde_json = "=1.0.151"
+
+[target.'cfg(any(target_os = "macos", target_os = "windows", target_os = "linux"))'.dependencies]
+ravet-webview = { git = "https://github.com/mo0kid/ravet", tag = "v0.1.1" }
+ravet-surface = { git = "https://github.com/mo0kid/ravet", tag = "v0.1.1" }

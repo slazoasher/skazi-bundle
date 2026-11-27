@@ -1,0 +1,24 @@
+/target/
+.DS_Store
+__pycache__/
+*.py[cod]
+/reference/captures/**/*.wav
+/reference/spice/**/*.raw
+/reference/schematic/pages/
+# Regenerate with: python3 reference/spice/run.py (99 MB of CSV)
+/reference/golden/**/*.csv
+/reference/captures/2026-10-12-essentials-silent/
+/reference/captures/2026-10-12-probe/
+/reference/captures/2026-10-12-test*/
+__pycache__/
+# Roland service notes: private reference, never commit
+/reference/schematic/TB-303.pdf
+# Private working files (kept local, not in git)
+/PLAN.md
+/docs/STATUS.md
+/docs/harness.md
+/docs/td3-comparison-*.md
+/docs/circuit/*-round*.md
+/docs/circuit/*-2026-10-12.md
+/tools/analysis/
+/crates/*/analysis/

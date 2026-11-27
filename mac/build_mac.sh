@@ -71,6 +71,21 @@ build Skatom      Skatom     "SKATOM"         FETCHCONTENT_SOURCE_DIR_JUCE "$J4"
 build Skazilayzer Skazilayzer "SKAZILAYZER"  FETCHCONTENT_SOURCE_DIR_JUCE "$J4"
 build Skabotic    Skabotic   "SKABOTIC"       FETCHCONTENT_SOURCE_DIR_JUCE "$J4"
 
+# STB33 is Rust + C++ (not JUCE): its own script builds universal VST3, AU and app
+# against the VST3 SDK and Apple's AudioUnitSDK under one sdk root.
+echo "== Building STB33"
+SDK33="$BUILD/sdk33"
+[ -f "$SDK33/vst3/CMakeLists.txt" ] || git clone -q --depth 1 --recursive --branch v3.8.0_build_66 https://github.com/steinbergmedia/vst3sdk.git "$SDK33/vst3"
+[ -d "$SDK33/AudioUnitSDK/include" ] || git clone -q --depth 1 https://github.com/apple/AudioUnitSDK.git "$SDK33/AudioUnitSDK"
+command -v ninja >/dev/null || brew install ninja
+rustup target add aarch64-apple-darwin x86_64-apple-darwin
+export CARGO_TARGET_DIR="$BUILD/t33"
+(cd "$ROOT/STB33" && cargo fetch && python3 scripts/bundle-plugins.py --universal --sdk-root "$SDK33")
+cp -R "$CARGO_TARGET_DIR/plugins/VST3/STB33.vst3" "$STAGE/VST3/SKAZI/"
+cp -R "$CARGO_TARGET_DIR/plugins/AU/STB33.component" "$STAGE/Components/"
+cp -R "$CARGO_TARGET_DIR/plugins/Standalone/DW-303.app" "$STAGE/Applications/SKAZI/STB33.app"
+unset CARGO_TARGET_DIR
+
 cp "$ROOT/mac/Uninstall SKAZI Bundle.command" "$STAGE/Applications/SKAZI/"
 chmod +x "$STAGE/Applications/SKAZI/Uninstall SKAZI Bundle.command"
 

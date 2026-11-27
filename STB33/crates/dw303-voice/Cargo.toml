@@ -1,0 +1,16 @@
+[package]
+name = "dw303-voice"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+description = "DW-303 circuit voice: composes the oscillator, VCF and envelope stages at an oversampled rate"
+
+[dependencies]
+dw303-osc = { path = "../dw303-osc" }
+dw303-vcf = { path = "../dw303-vcf" }
+dw303-env = { path = "../dw303-env" }
+ravet-signal = { git = "https://github.com/mo0kid/ravet", tag = "v0.1.1" }
+
+[lints]
+workspace = true

@@ -1,0 +1,12 @@
+[package]
+name = "dw303-sequencer"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+ravet-foundation.workspace = true
+
+[lints]
+workspace = true

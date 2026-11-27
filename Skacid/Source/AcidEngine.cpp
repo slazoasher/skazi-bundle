@@ -538,8 +538,8 @@ void Engine::process (juce::AudioBuffer<float>& buffer, const juce::MidiBuffer& 
         }
 
         // clock: the host's position while it plays, otherwise our own while a key is held
-        // the arp only runs while keys are held, and starts from its first step on the first key
-        const bool running = s.mode == ModeSeq ? (ht.playing || heldCount > 0) : (s.mode == ModeArp && heldCount > 0);
+        // SEQ and ARP only sound while MIDI holds a note (keyboard, piano roll or any MIDI): the DAW playing alone stays silent
+        const bool running = (s.mode == ModeSeq || s.mode == ModeArp) && heldCount > 0;
         const bool hostClock = ht.playing && s.mode == ModeSeq;
         double beat;
         if (hostClock) beat = ht.ppq + i * beatsPerSample;

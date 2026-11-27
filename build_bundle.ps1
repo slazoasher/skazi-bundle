@@ -72,6 +72,40 @@ function Ensure-WebView2 {
     Expand-Archive -Path $zip -DestinationPath $dir -Force
 }
 
+# STB33 is Rust + C++ (not JUCE): its own script builds the VST3 and the standalone app with the
+# VST3 SDK and WebView2 SDK it expects under one sdk root, inside an MSVC x64 developer environment.
+function Build-Stb33 {
+    Write-Host "== Building STB33"
+    $src = Join-Path $root "STB33"
+    $sdk = Join-Path $BuildRoot "sdk33"
+    if (-not (Test-Path "$sdk\vst3\CMakeLists.txt")) {
+        Run git @("clone", "-q", "--depth", "1", "--recursive", "--branch", "v3.8.0_build_66", "https://github.com/steinbergmedia/vst3sdk.git", "$sdk\vst3")
+    }
+    if (-not (Test-Path "$sdk\WebView2\build\native\include\WebView2.h")) {
+        $zip = Join-Path $BuildRoot "webview2-stb33.zip"
+        Invoke-WebRequest -Uri "https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2/1.0.3650.58" -OutFile $zip -UseBasicParsing
+        Expand-Archive -Path $zip -DestinationPath "$sdk\WebView2" -Force
+    }
+    $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+    $py = if (Get-Command py -ErrorAction SilentlyContinue) { "py -3" } else { "python" }
+    $out = Join-Path $BuildRoot "t33"
+    $cmd = Join-Path $BuildRoot "build-stb33.cmd"
+    # vcvars64 also puts Visual Studio's CMake and Ninja on PATH
+    Set-Content -Encoding ascii $cmd @(
+        "@echo off",
+        "call `"$vs\VC\Auxiliary\Build\vcvars64.bat`" >nul || exit /b 1",
+        "set RAVET_WEBVIEW2_SDK=$sdk\WebView2",
+        "set CARGO_TARGET_DIR=$out",
+        "cd /d `"$src`"",
+        "cargo fetch || exit /b 1",
+        "$py `"$src\scripts\bundle-plugins.py`" --sdk-root `"$sdk`""
+    )
+    Run cmd @("/c", $cmd)
+    Copy-Item -Recurse -Force "$out\plugins\VST3\STB33.vst3" "$stage\VST3\"
+    Copy-Item -Force "$out\plugins\Standalone\DW-303.exe" "$stage\Apps\STB33.exe"
+    Copy-Item -Force "$out\plugins\Standalone\WebView2Loader.dll" "$stage\Apps\"
+}
+
 $stage = Join-Path $BuildRoot "stage"
 
 if (-not $InstallerOnly) {
@@ -91,6 +125,7 @@ if (-not $InstallerOnly) {
         Copy-Item -Recurse -Force (Join-Path $art "VST3\$($p.Name).vst3") "$stage\VST3\"
         Copy-Item -Force (Join-Path $art "Standalone\$($p.Name).exe") "$stage\Apps\"
     }
+    Build-Stb33
 
     New-Item -ItemType Directory -Force "$dist\Plugins" | Out-Null
     Copy-Item -Recurse -Force "$stage\*" "$dist\Plugins\"

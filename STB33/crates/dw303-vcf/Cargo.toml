@@ -1,0 +1,12 @@
+[package]
+name = "dw303-vcf"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+libm.workspace = true
+
+[lints]
+workspace = true

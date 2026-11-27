@@ -1,0 +1,25 @@
+[package]
+name = "dw303-standalone"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[[bin]]
+name = "DW-303"
+path = "src/main.rs"
+
+[lints]
+workspace = true
+
+[dependencies]
+dw303-engine = { path = "../dw303-engine" }
+ravet-foundation.workspace = true
+ravet-device = { git = "https://github.com/mo0kid/ravet", tag = "v0.1.1" }
+ravet-midi-device = { git = "https://github.com/mo0kid/ravet", tag = "v0.1.1" }
+ravet-webview = { git = "https://github.com/mo0kid/ravet", tag = "v0.1.1" }
+ravet-surface = { git = "https://github.com/mo0kid/ravet", tag = "v0.1.1" }
+ravet-native-dsp = { git = "https://github.com/mo0kid/ravet", tag = "v0.1.1" }
+
+[dev-dependencies]
+dw303-sequencer = { path = "../dw303-sequencer" }

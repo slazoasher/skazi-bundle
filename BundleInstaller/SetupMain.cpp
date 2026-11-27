@@ -56,6 +56,7 @@ namespace
         if (name == "SKATOM")         return "Kinetic reactor filter + multi-FX, risers";
         if (name == "SKAZILAYZER")    return "Analyser: spectrum notes, meters, loudness";
         if (name == "SKABOTIC")       return "Robot voice: vocoder, talk box, MIDI, sci-fi FX";
+        if (name == "STB33")          return "Acid bass line synth: 303 circuit model + sequencer, PANIC";
         return "Plugin";
     }
 
@@ -178,6 +179,24 @@ namespace
             programFiles().getChildFile ("Asher Swissa\\SKAZON").deleteRecursively();
             deleteIfEmpty (programFiles().getChildFile ("Asher Swissa"));
             startMenu().getChildFile ("SKAZON.lnk").deleteFile();
+        }
+        if (names.contains ("STB33"))
+        {
+            // STB33 had its own Inno Setup installer under "Asher Swissa" (VST3, CLAP and app); its uninstaller relaunches itself
+            const String inno = "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{9799AD67-6AB4-44F3-A61C-76E28543AF20}_is1";
+            const auto cmd = WindowsRegistry::getValue (inno + "\\UninstallString");
+            if (cmd.isNotEmpty())
+            {
+                ChildProcess p;
+                if (p.start (cmd + " /VERYSILENT /SUPPRESSMSGBOXES /NORESTART", 0))
+                {
+                    p.waitForProcessToFinish (60000);
+                    for (int i = 0; i < 600 && WindowsRegistry::keyExists (inno); ++i)
+                        Thread::sleep (100);
+                }
+            }
+            programFiles().getChildFile ("Asher Swissa\\STB33").deleteRecursively();
+            deleteIfEmpty (programFiles().getChildFile ("Asher Swissa"));
         }
         if (names.contains ("KICKASS"))
         {
@@ -340,6 +359,13 @@ public:
         {
             const auto e = payload.entryName (i);
             if (e.endsWithChar ('/')) continue;
+            // support files beside the apps (STB33 needs WebView2Loader.dll next to its exe)
+            if (e.startsWith ("Apps/") && ! e.endsWithIgnoreCase (".exe"))
+            {
+                if (optApps.getToggleState())
+                    ok = extract (zip, i, appDir().getChildFile (e.fromFirstOccurrenceOf ("Apps/", false, false)));
+                continue;
+            }
             for (auto& n : chosen)
             {
                 if (e.startsWith ("VST3/" + n + ".vst3/"))

@@ -1,0 +1,31 @@
+[workspace]
+members = [
+    "crates/dw303-osc",
+    "crates/dw303-vcf",
+    "crates/dw303-env",
+    "crates/dw303-sequencer",
+    "crates/dw303-voice",
+    "crates/dw303-engine",
+    "crates/dw303-clap",
+    "crates/dw303-standalone",
+    "crates/dw303-native",
+    "tools/dw303-render",
+    "tools/dw303-capture",
+]
+resolver = "3"
+
+[workspace.package]
+version = "0.1.1"
+edition = "2024"
+license = "GPL-3.0-or-later"
+publish = false
+
+[workspace.dependencies]
+libm = { version = "=0.2.16", default-features = false }
+ravet-foundation = { git = "https://github.com/mo0kid/ravet", tag = "v0.1.1" }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[profile.test]
+opt-level = 2

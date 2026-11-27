@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>CFBundleExecutable</key><string>@DW303_NAME@</string>
+<key>CFBundleIdentifier</key><string>@DW303_BUNDLE_ID@.aax</string>
+<key>CFBundleName</key><string>@DW303_NAME@</string>
+<key>CFBundleDisplayName</key><string>@DW303_NAME@</string>
+<key>NSHighResolutionCapable</key><true/>
+<key>CFBundlePackageType</key><string>TDMw</string>
+<key>CFBundleSignature</key><string>PTul</string>
+<key>CFBundleShortVersionString</key><string>@PROJECT_VERSION@</string>
+<key>CFBundleVersion</key><string>@PROJECT_VERSION@</string>
+</dict></plist>
