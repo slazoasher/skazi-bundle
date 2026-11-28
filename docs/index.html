@@ -109,6 +109,17 @@
   .promo .head{margin-bottom:30px}
   .promo .frame{max-width:1000px;margin:0 auto;border-radius:14px;padding:6px;background:var(--metal);box-shadow:0 40px 90px -30px rgba(225,6,0,.55),0 30px 60px -20px #000}
   .promo video{display:block;width:100%;height:auto;aspect-ratio:16/9;border-radius:9px;background:#000}
+  .howto{max-width:1000px;margin:34px auto 0}
+  .howto h3{font-size:13px;letter-spacing:.18em;color:#bbb;margin:0 0 12px;text-align:center;font-weight:700}
+  .howto .row{display:flex;gap:16px;justify-content:center}
+  .howto .clip{position:relative;flex:0 0 200px;border-radius:12px;overflow:hidden;cursor:pointer;background:#000;box-shadow:0 20px 40px -18px rgba(225,6,0,.5);outline:1px solid #333}
+  .howto .clip video{display:block;width:100%;aspect-ratio:9/16;height:auto;object-fit:cover;background:#000}
+  .howto .clip .tag{position:absolute;left:0;right:0;bottom:0;padding:22px 10px 9px;font-size:12px;font-weight:800;letter-spacing:.08em;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.85));pointer-events:none}
+  .howto .clip .tag i{display:block;margin-top:3px;font-size:10px;font-style:normal;color:var(--red2)}
+  .howto .clip.on{outline:2px solid var(--red)}
+  .howto .clip.on .tag i{color:#fff}
+  @media (max-width:700px){.howto .row{justify-content:flex-start;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 4px 6px}.howto .clip{flex-basis:62%;scroll-snap-align:center}}
+  @media (prefers-reduced-motion:reduce){.howto .clip video{animation:none}}
 
   /* new in this update */
   .news .grid{grid-template-columns:repeat(3,1fr);gap:16px}
@@ -238,6 +249,7 @@
   <div class="wrap">
     <div class="head"><h2>WATCH: <span style="color:var(--red)">25 PLUGINS</span> IN 27 SECONDS</h2><p>Every plugin in the bundle, newest first, cut to the last drop of "Sambusak" by Skazi &amp; Shigaon. Sound on.</p></div>
     <div class="frame"><video src="video/skazi-bundle-promo.mp4?v=26" poster="img/promo-poster.jpg?v=26" controls playsinline preload="metadata" width="1920" height="1080"></video></div>
+    <div class="howto"><h3>30-SECOND HOW-TOS</h3><div class="row"><div class="clip" role="button" tabindex="0" aria-label="Play the SKY Z how-to with sound"><video src="video/howto-skyz.mp4?v=1" poster="img/howto-skyz.jpg?v=1" muted loop playsinline preload="none" width="540" height="960"></video><div class="tag">SKY Z <i>&#9654; TAP FOR SOUND</i></div></div><div class="clip" role="button" tabindex="0" aria-label="Play the SKATOM how-to with sound"><video src="video/howto-skatom.mp4?v=1" poster="img/howto-skatom.jpg?v=1" muted loop playsinline preload="none" width="540" height="960"></video><div class="tag">SKATOM <i>&#9654; TAP FOR SOUND</i></div></div><div class="clip" role="button" tabindex="0" aria-label="Play the SKABOTIC how-to with sound"><video src="video/howto-skabotic.mp4?v=1" poster="img/howto-skabotic.jpg?v=1" muted loop playsinline preload="none" width="540" height="960"></video><div class="tag">SKABOTIC <i>&#9654; TAP FOR SOUND</i></div></div></div></div>
   </div>
 </section>
 
@@ -488,6 +500,19 @@
   document.querySelectorAll("img.zoom").forEach(i => i.addEventListener("click", () => { lbImg.src = i.src; lb.classList.add("on"); }));
   lb.addEventListener("click", () => lb.classList.remove("on"));
   document.addEventListener("keydown", e => { if (e.key === "Escape") lb.classList.remove("on"); });
+</script>
+<script>
+(()=>{const clips=[...document.querySelectorAll('.howto .clip')];if(!clips.length)return;
+const calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Silent previews loop only while on screen; a tap restarts one with sound and mutes the rest.
+const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelector('video');
+ if(e.isIntersecting){if(!calm||!v.muted)v.play().catch(()=>{})}else if(v.muted)v.pause()}),{threshold:.4});
+clips.forEach(c=>{io.observe(c);const v=c.querySelector('video'),tag=c.querySelector('.tag i');
+ const go=()=>{if(c.classList.contains('on')){v.muted=true;c.classList.remove('on');tag.innerHTML='&#9654; TAP FOR SOUND';if(calm)v.pause();return}
+  clips.forEach(o=>{if(o!==c&&o.classList.contains('on')){const ov=o.querySelector('video');ov.muted=true;o.classList.remove('on');o.querySelector('.tag i').innerHTML='&#9654; TAP FOR SOUND'}});
+  const promo=document.querySelector('.promo .frame video');if(promo)promo.pause();
+  v.currentTime=0;v.muted=false;v.play().catch(()=>{});c.classList.add('on');tag.innerHTML='&#10074;&#10074; TAP TO MUTE'};
+ c.addEventListener('click',go);c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}})});})();
 </script>
 </body>
 </html>
