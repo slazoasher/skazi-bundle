@@ -163,6 +163,31 @@ namespace skyz
             b.ch (P_aScale, b.chance (0.5f) ? 3 : 1); b.ch (P_aRoot, b.pick (12));
         }
 
+        // The first arp step played must sound, or a short key tap stays silent. Runs after a preset is picked, so the factory list is unchanged.
+        // Not for the PSY / ROLLING basses: their gallop starts on a rest on purpose. Presets keep the default 16 steps, offset 0.
+        void startOnHit (Preset& p, int category)
+        {
+            if (category == 1 || category == 2) return;
+            auto last = [&p] (int id) { for (auto it = p.values.rbegin(); it != p.values.rend(); ++it) if (it->first == id) return it->second; return paramDefs[id].def; };
+            if (last (P_arpOn) < 0.5f) return;
+            auto hit = [&] (int s) { const int g = (int) std::lround (p.lanes.v[Lanes::gate][(s % 32 + 32) % 32]); return g == 1 || g == 2; };
+            int dir = (int) std::lround (last (P_aDir) * 4.0f);
+            if (dir >= 3) // random / walk can start on any step: keep them only when every step sounds
+            {
+                bool all = true;
+                for (int s = 0; s < 16; ++s) all = all && hit (s);
+                if (all) return;
+                dir = 0; p.values.push_back ({ P_aDir, 0.0f });
+            }
+            const int start = dir == 1 ? 15 : 0, way = dir == 1 ? -1 : 1;
+            int k = 0;
+            while (k < 16 && ! hit (start + way * k)) ++k;
+            if (k == 0 || k == 16) return;
+            for (auto& lane : p.lanes.v) // move the first hit onto the start step; lanes are 32 long, the pattern repeats every 16
+                if (dir == 1) std::rotate (std::begin (lane), std::end (lane) - k, std::end (lane));
+                else std::rotate (std::begin (lane), std::begin (lane) + k, std::end (lane));
+        }
+
         void fxOff (B& b) { for (int p : { P_onCHORUS, P_onPHASER, P_onGATE, P_onSTEREO, P_onLOFI }) b.ch (p, 0); }
 
         // Category character on top of vary(): only what defines the category is pinned, with wide ranges and several variants.
@@ -350,6 +375,7 @@ namespace skyz
     {
         category = juce::jlimit (0, numCats - 1, category);
         auto p = recipe (category, seed);
+        startOnHit (p, category);
         juce::StringArray used;
         p.name = nameFor (category, 0, seed, used);
         return p;
@@ -378,6 +404,7 @@ namespace skyz
                         if (nearest > best) { best = nearest; p = std::move (cand); seed = s; }
                     }
                     taken.push_back (fullVector (p));
+                    startOnHit (p, c);
                     p.name = nameFor (c, i, seed, used);
                     const int idx = (int) v.size();
                     p.trimDb = idx < (int) (sizeof (presetTrims) / sizeof (presetTrims[0])) ? presetTrims[idx] : 0.0f;
